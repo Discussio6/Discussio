@@ -1,9 +1,12 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 function Logo() {
   return (
-    <Image src="/images/logo.png" alt="logo" width={220} height={40} />
+    <Link href="/">
+        <Image src="/images/logo.png" alt="logo" width={220} height={40} />
+    </Link>
   )
 }
 
