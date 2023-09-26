@@ -1,3 +1,4 @@
+import SubTopNavbar from "@/components/SubTopNavbar"
 import TopNavbar from "@/components/TopNavbar"
 
 export default function LandingPageLayout({
@@ -8,6 +9,7 @@ export default function LandingPageLayout({
   return (
     <div>
       <TopNavbar />
+      <SubTopNavbar />
       {children}
     </div>
   )
