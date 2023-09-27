@@ -2,8 +2,8 @@
 
 import { SUB_MENUS } from "@/constants/data";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React, { useCallback, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 interface IPos {
 	left: number;
@@ -12,6 +12,7 @@ interface IPos {
 
 function SubTopNavbar() {
 	const pathname = usePathname();
+	const router = useRouter();
 
 	const handleSelect = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
 		const left = (e.target as HTMLElement).offsetLeft;
@@ -46,12 +47,22 @@ function SubTopNavbar() {
 
 	const [pos, setPos] = useState<IPos | null>(null);
 
+	useEffect(() => {
+		if (pathname === "/") {
+			setPos(null);
+		}
+	}, [pathname]);
+
 	return (
 		<div className="flex flex-col relative px-4">
 			<div className="flex items-center h-[40px] w-full">{menuComponents}</div>
 			<div
 				className="h-[3px] bg-green absolute bottom-0 transition-all duration-300"
-				style={{ left: `${pos?.left}px`, width: `${pos?.right}px` }}
+				style={{
+					left: `${pos?.left}px`,
+					width: `${pos?.right}px`,
+					display: pos ? "block" : "none",
+				}}
 			/>
 		</div>
 	);

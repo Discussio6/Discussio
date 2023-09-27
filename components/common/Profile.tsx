@@ -27,6 +27,7 @@ export const ProfileImage = React.forwardRef<HTMLSpanElement, {}>((_, ref) => {
 
 function Profile() {
 	const { data: session, status } = useSession();
+	
 	if (status === "loading")
 		return (
 			<div className="w-10 h-10 rounded-full bg-slate-100 animate-pulse" />
