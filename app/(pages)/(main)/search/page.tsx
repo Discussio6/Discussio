@@ -1,8 +1,13 @@
+"use client";
 import React from 'react'
-
+import SearchBar from './SearchBar'
+import ResultList from './ResultList'
 function SearchPage() {
   return (
-    <div>SearchPage</div>
+    <div>
+      <SearchBar/>
+      <ResultList/> 
+    </div>
   )
 }
 
