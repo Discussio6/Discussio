@@ -12,7 +12,6 @@ interface IPos {
 
 function SubTopNavbar() {
 	const pathname = usePathname();
-	const router = useRouter();
 
 	const handleSelect = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
 		const left = (e.target as HTMLElement).offsetLeft;
