@@ -1,11 +1,11 @@
 
 import { makeAutoObservable } from "mobx";
-import { SearchBy } from "./SearchType";
+import { ContentType, SearchBy } from "./SearchType";
 class SearchStore {
     searchTerm: string = "";
     searchBy: SearchBy = SearchBy.Course;
     semester: string = "";
-    contentType: string = "";
+    contentType: ContentType[] = Object.values(ContentType).filter((value): value is ContentType => typeof value !== "number");
     department: string = "";
 
     constructor() {
@@ -20,8 +20,15 @@ class SearchStore {
     setSemester = (semester: string) => {
         this.semester = semester;
     }
-    setContentType = (contentType: string) => {
-        this.contentType = contentType;
+    addContentType = (contentType: ContentType) => {
+        // check if contentType is already in the list
+        if (this.contentType.includes(contentType)) return;
+        this.contentType.push(contentType);
+    }
+    removeContentType = (contentType: ContentType) => {
+        // check if contentType is already in the list
+        if (!this.contentType.includes(contentType)) return;
+        this.contentType = this.contentType.filter((type) => type !== contentType);
     }
     setDepartment = (department: string) => {
         this.department = department;

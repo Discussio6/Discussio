@@ -1,8 +1,13 @@
+// enum ContentType {
+//     "Contents", "Syllabus", "Exercises", "Lecture slides", "Assignment", "Lecture Notes" 
+// }
 enum ContentType {
-    "Contents", "Syllabus", "Exercises", "Lecture slides", "Assignment", "Lecture Notes" 
+    "필기/노트", "슬라이드/ppt", "과제", "퀴즈", "시험"
 }
 enum SearchBy {
-    "Course", "Professor", "Semester"
+    Course = "과목명",
+    Instructor = "교수명",
+    Id = "과목번호"
 }
 interface DepartmentList {
     공과대학: string[]

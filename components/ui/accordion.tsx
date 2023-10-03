@@ -3,23 +3,14 @@ import { cn } from '@/lib/utils';
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 
-const AccordionRoot = React.forwardRef<
-    React.ElementRef<typeof Accordion.Root>,
-    React.ComponentPropsWithoutRef<typeof Accordion.Root>
->((props) => {
-    return (
-        <Accordion.Root
-            {...props}
-        />
-    );
-});
+const AccordionRoot = Accordion.Root;
 const AccordionTrigger = React.forwardRef<
     React.ElementRef<typeof Accordion.Trigger>,
     React.ComponentPropsWithoutRef<typeof Accordion.Trigger>
 >(({ className, children, ...props }, ref) => {
     return (<Accordion.Header className="AccordionHeader">
         <Accordion.Trigger
-            className={cn('AccordionTrigger', className)}
+            className={cn('flex flex-row', className)}
             {...props}
             ref={ref}
         >
@@ -41,4 +32,16 @@ const AccordionContent = React.forwardRef<
         {children}
     </Accordion.Content>)
 });
-export { AccordionRoot, AccordionTrigger, AccordionContent };
+const AccordionItem = React.forwardRef<
+    React.ElementRef<typeof Accordion.Item>,
+    React.ComponentPropsWithoutRef<typeof Accordion.Item>
+>(({ className, children, ...props }, ref) => {
+    return (<Accordion.Item
+        className={cn('AccordionItem', className)}
+        {...props}
+        ref={ref}
+    >
+        {children}
+    </Accordion.Item>)
+});
+export { AccordionRoot, AccordionTrigger, AccordionContent, AccordionItem };
