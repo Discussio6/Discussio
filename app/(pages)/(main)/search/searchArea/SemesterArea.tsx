@@ -16,7 +16,7 @@ const SemesterArea = () => {
     
     return (
         <SelectRoot onValueChange={handleSemesterChange}>
-            <SelectTrigger placeholder='Semester' className='w-36'>
+            <SelectTrigger placeholder='Semester' className='w-36 text-sm'>
                 {semester}
             </SelectTrigger>
             <SelectContent>

@@ -23,7 +23,7 @@ const SelectContent = React.forwardRef<
                 position='popper'
                 ref={ref}
                 className={cn(
-                    "overflow-hidden position-absolute rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none",
+                    "overflow-hidden position-absolute rounded-md border bg-popover p-2 align-middle align-middle text-popover-foreground shadow-md outline-none",
                     className
                 )}
                 {...props}

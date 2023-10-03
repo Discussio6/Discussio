@@ -14,7 +14,8 @@ const DepartMentArea = () => { // select with accordion
     }
     return (
         <SelectRoot onValueChange={handleDepartmentChange}>
-            <SelectTrigger placeholder='Department' className='w-36 bg-white rounded-md'>
+            <SelectTrigger placeholder='Department' className='w-36 bg-white rounded-md text-sm'>
+                
                 {departMent.length > 6 ? departMent.slice(0,6)+"..." : departMent
                 }
             </SelectTrigger>

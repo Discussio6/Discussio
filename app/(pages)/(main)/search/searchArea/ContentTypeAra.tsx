@@ -23,7 +23,7 @@ const ContentTypeArea = () => {
     }
     return (
         <Popover>
-            <PopoverTrigger className='h-10 w-36 bg-white rounded-md mx-2 border-solid border border-gray-300'>
+            <PopoverTrigger className='h-10 w-36 bg-white rounded-md mx-2 border-solid border border-gray-300 text-sm'>
                 Content Type
             </PopoverTrigger>
             <PopoverContent className="flex flex-col space-y-2 p-2 bg-white rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none">

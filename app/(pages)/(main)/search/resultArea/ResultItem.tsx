@@ -8,21 +8,25 @@ import { LectureNameDiv } from './LectureNameDiv';
 import { InstructorDiv } from './InstructorDiv';
 type Props = {
     item: Content;
+    index: number;
 };
 
-const ResultItem = ({ item }: Props) => {
+const ResultItem = ({ item,index }: Props) => {
 
     const calcTagFontSize = (tag: string) => {
-        if(tag.length > 9) {
+        if(tag.length >= 9) {
             return 'text-xs';
         }
         else {
             return 'text-base';
         }
     }
-
+    const hanldeOnClick = () => {
+        //go to content page with index
+        window.open(`/content?id=${index}`, '_blank');
+    }
     return (
-        <div className='flex flex-row gap-8 items-center'>
+        <div className='flex flex-row gap-8 items-center bg-slate-200 hover:brightness-75 rounded-lg' onClick={hanldeOnClick}>
             <div className='flex flex-col w-60'>
                 <LectureNameDiv lectureName={item.lecture_name} />
                 <div className='flex flex-row gap-2'>
@@ -39,10 +43,10 @@ const ResultItem = ({ item }: Props) => {
                 Admin
             </div>
             <div className='flex flex-row gap-1 w-60'>
-                <Tag className='bg-blue-100 w-24'>
+                <Tag className='bg-blue-100 w-24 h-7 hover:brightness-75'>
                     {item.course_code}
                 </Tag>
-                <Tag className={cn('bg-orange-200 w-24', calcTagFontSize(item.content_type))}> 
+                <Tag className={cn('bg-orange-200 w-24 h-7 hover:brightness-75', calcTagFontSize(item.content_type))}> 
                     {item.content_type}
                 </Tag>
             </div>

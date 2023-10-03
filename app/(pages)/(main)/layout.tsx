@@ -8,8 +8,10 @@ export default function LandingPageLayout({
 }) {
   return (
     <div>
+      <div className="sticky top-0 z-50">
       <TopNavbar />
       <SubTopNavbar />
+      </div>
       {children}
     </div>
   )

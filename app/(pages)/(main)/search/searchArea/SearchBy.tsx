@@ -12,7 +12,7 @@ const SearchByArea = () => {
     }
     return (
         <SelectRoot onValueChange={handleSearchByChange}>
-            <SelectTrigger placeholder={searchBy as unknown as string} className='w-36'>
+            <SelectTrigger placeholder={searchBy as unknown as string} className='w-36 text-sm'>
                 {searchBy}
             </SelectTrigger>
             <SelectContent>
