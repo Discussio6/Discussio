@@ -23,7 +23,7 @@ const ResultItem = ({ item,index }: Props) => {
     }
     const hanldeOnClick = () => {
         //go to content page with index
-        window.open(`/content?id=${index}`, '_blank');
+        window.open(`/content?id=${index}`);
     }
     return (
         <div className='flex flex-row gap-8 items-center bg-slate-200 hover:brightness-75 rounded-lg' onClick={hanldeOnClick}>
@@ -43,7 +43,7 @@ const ResultItem = ({ item,index }: Props) => {
                 Admin
             </div>
             <div className='flex flex-row gap-1 w-60'>
-                <Tag className='bg-blue-100 w-24 h-7 hover:brightness-75'>
+                <Tag className={`bg-blue-100 w-24 h-7 hover:brightness-75 ${item.course_code.length>8?'text-sm':'text-base'}`}>
                     {item.course_code}
                 </Tag>
                 <Tag className={cn('bg-orange-200 w-24 h-7 hover:brightness-75', calcTagFontSize(item.content_type))}> 
