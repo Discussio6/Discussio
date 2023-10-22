@@ -1,9 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { ThumbsUpIcon } from "lucide-react";
+import {
+	HeartIcon,
+	MessageSquareIcon,
+	ShareIcon,
+	StarIcon,
+	ThumbsUpIcon,
+} from "lucide-react";
 import {
 	Card,
 	CardHeader,
@@ -11,14 +17,18 @@ import {
 	CardDescription,
 	CardContent,
 } from "../ui/card";
-import Profile, { ProfileImage } from "./Profile";
 import ProfileCard from "./ProfileCard";
+import { Share1Icon } from "@radix-ui/react-icons";
+import Comments from "../comments/Comments";
+import { cn } from "@/lib/utils";
 
 interface DiscussionCardProps {
 	isAnswer?: boolean;
 }
 
 function DiscussionCard({ isAnswer = false }: DiscussionCardProps) {
+	const [openComments, setOpenComments] = useState(false);
+
 	return (
 		<Card>
 			<CardHeader className="flex flex-col gap-1">
@@ -78,6 +88,27 @@ function DiscussionCard({ isAnswer = false }: DiscussionCardProps) {
 					>
 						<ThumbsUpIcon className="w-5 h-5" />0
 					</Button>
+				</div>
+				<div className="flex gap-2">
+					<Button className="flex items-center gap-2" variant="ghost">
+						<Share1Icon className="w-4 h-4" />
+						공유
+					</Button>
+					<Button className="flex items-center gap-2" variant="ghost">
+						<StarIcon className="w-4 h-4" />
+						찜하기
+					</Button>
+					<Button
+						className={cn("flex items-center gap-2", openComments && "text-blue-500")}
+						variant="ghost"
+						onClick={() => setOpenComments((open) => !open)}
+					>
+						<MessageSquareIcon className="w-4 h-4" />
+						댓글 보기
+					</Button>
+				</div>
+				<div className={cn(!openComments && "hidden", "mt-6")}>
+					<Comments />
 				</div>
 			</CardContent>
 		</Card>
