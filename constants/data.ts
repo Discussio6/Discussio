@@ -1,10 +1,10 @@
 export const SUB_MENUS = [
     {
-        label: '검색',
-        link: '/search',
+        label: '질문하기',
+        link: '/questions',
     },
     {
-        label: '자료 요청',
-        link: '/request',
+        label: '디스커션',
+        link: '/discussions',
     },
 ]

@@ -9,11 +9,11 @@ interface ProfileCardProps {
 function ProfileCard({ name, image }: ProfileCardProps) {
 	return (
 		<div className="flex items-center gap-2 w-fit">
-			<Avatar className="">
+			<Avatar className="w-8 h-8">
 				<AvatarImage src={image} />
 				<AvatarFallback>{name}</AvatarFallback>
 			</Avatar>
-			<h3 className="text-sm text-blue-500">{name}</h3>
+			<h3 className="">{name}</h3>
 		</div>
 	);
 }

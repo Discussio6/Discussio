@@ -21,21 +21,25 @@ import ProfileCard from "./ProfileCard";
 import { Share1Icon } from "@radix-ui/react-icons";
 import Comments from "../comments/Comments";
 import { cn } from "@/lib/utils";
+import { Discussion } from "@/types/schema";
+import moment from "moment";
+import "moment/locale/ko";
+import MDEditor from "@uiw/react-md-editor";
 
 interface DiscussionCardProps {
-	isAnswer?: boolean;
+	discussion: Discussion;
 }
 
-function DiscussionCard({ isAnswer = false }: DiscussionCardProps) {
+function DiscussionCard({ discussion }: DiscussionCardProps) {
 	const [openComments, setOpenComments] = useState(false);
 
 	return (
 		<Card>
 			<CardHeader className="flex flex-col gap-1">
-				<CardTitle>질문 제목</CardTitle>
+				<CardTitle>{discussion.title}</CardTitle>
 				<div className="flex items-center justify-between">
-					<CardDescription>작성일 2023.10.22 00:12:34</CardDescription>
-					{!isAnswer && (
+					<CardDescription>{moment(discussion.cAt).fromNow()}</CardDescription>
+					{!discussion.parent_id && (
 						<div className="flex gap-2 items-center">
 							<CardDescription>조회 0회</CardDescription>
 						</div>
@@ -43,30 +47,7 @@ function DiscussionCard({ isAnswer = false }: DiscussionCardProps) {
 				</div>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
-				<article>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et
-					congue tellus. Fusce blandit in sapien sed dignissim. Maecenas finibus
-					ligula risus, et interdum nunc fringilla a. Integer facilisis mattis
-					mi, vitae varius justo mollis non. Aliquam non urna eu sapien
-					venenatis lobortis. Vestibulum iaculis viverra lacus. Etiam
-					sollicitudin tristique erat nec blandit. Fusce pellentesque mattis
-					ligula, ac aliquam erat mattis in. Cras dui quam, consectetur
-					elementum venenatis sed, fermentum ac ligula. Pellentesque ut nunc
-					eget lacus varius scelerisque. Proin elementum pretium congue. Sed
-					vitae consequat velit. Donec euismod ut velit eget pulvinar. Duis
-					consectetur orci neque, cursus imperdiet massa ultrices malesuada. Sed
-					eu volutpat nulla, non pretium nunc. Vivamus ut mattis turpis.
-					Maecenas sit amet leo eget sapien ultricies auctor quis sed augue.
-					Donec ac sapien sed nibh dictum vulputate vel nec lorem. Proin ut
-					augue molestie, placerat ipsum ac, rutrum dolor. Fusce dictum magna ut
-					turpis imperdiet, sed porta nisl laoreet. Quisque varius venenatis
-					nunc, eu scelerisque lectus elementum vel. Curabitur libero purus,
-					congue vel dictum tincidunt, semper et leo. Proin lectus nisi, aliquet
-					at gravida non, fringilla id ipsum. Duis consectetur dictum porta.
-					Vivamus egestas ac neque a sagittis. Duis volutpat suscipit nisi in
-					tincidunt. Donec malesuada erat quis nunc iaculis, vel tristique purus
-					iaculis. Curabitur pretium elit
-				</article>
+				<MDEditor.Markdown source={discussion.content} />
 				<div className="space-x-2 line-clamp-1 flex-1">
 					<Badge className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200">
 						컴퓨터 공학
@@ -80,7 +61,10 @@ function DiscussionCard({ isAnswer = false }: DiscussionCardProps) {
 				</div>
 				<div className="flex justify-between items-center">
 					<div className="">
-						<ProfileCard name="chanhwi" image="/images/google-login-icon.svg" />
+						<ProfileCard
+							name={discussion.User.name}
+							image={discussion.User.image}
+						/>
 					</div>
 					<Button
 						variant="outline"
@@ -99,7 +83,10 @@ function DiscussionCard({ isAnswer = false }: DiscussionCardProps) {
 						찜하기
 					</Button>
 					<Button
-						className={cn("flex items-center gap-2", openComments && "text-blue-500")}
+						className={cn(
+							"flex items-center gap-2",
+							openComments && "text-blue-500"
+						)}
 						variant="ghost"
 						onClick={() => setOpenComments((open) => !open)}
 					>
