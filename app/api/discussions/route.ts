@@ -6,23 +6,25 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
 	let page = req.nextUrl.searchParams.get("page") || 1;
 	let count = req.nextUrl.searchParams.get("count") || 10;
+	let orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
 
 	page = parseInt(page as string);
 	count = parseInt(count as string);
 	if (page < 1) page = 1;
 	if (count < 1) count = 1;
 
+	const total = await db.discussion.count({ where: { parent_id: null } });
 	const discussions = await db.discussion.findMany({
 		where: { parent_id: null },
 		include: { User: true, Children: { include: { User: true } } },
 		skip: (page - 1) * count,
 		take: count,
+		orderBy: {
+			[orderBy.split(":")[0]]: orderBy.split(":")[1],
+		},
 	});
 
-	return NextResponse.json(
-		{ total: discussions.length, hits: discussions },
-		{ status: 200 }
-	);
+	return NextResponse.json({ total, hits: discussions }, { status: 200 });
 }
 
 export async function POST(req: NextRequest) {

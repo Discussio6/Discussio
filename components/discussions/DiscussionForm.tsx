@@ -18,6 +18,7 @@ import { UseFormReturn, useForm } from "react-hook-form";
 import { Discussion, SingleResponse } from "@/types/schema";
 import { Input } from "../ui/input";
 import MDEditor from "@uiw/react-md-editor";
+import { usePostDiscussion } from "@/lib/queries/discussions";
 
 const formSchema = z.object({
 	title: z
@@ -41,26 +42,30 @@ interface DiscussionFormProps {
 }
 
 function DiscussionForm({ onSuccess, parent_id }: DiscussionFormProps) {
+	const discussionMutation = usePostDiscussion();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: { title: "", content: "" },
 	});
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		const res = (await fetch("http://localhost:3000/api/discussions", {
-			body: JSON.stringify({ ...values, parent_id }),
-			method: "POST",
-			credentials: "include",
-			headers: {
-				"Content-Type": "application/json",
+		discussionMutation.mutate(
+			{
+				...values,
+				parent_id,
 			},
-		}).then((res) => res.json())) as SingleResponse<Discussion>;
-
-		if (res.success) {
-			onSuccess?.({ form, res });
-		} else {
-			alert("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-		}
+			{
+				onSuccess: (res) => {
+					if (res.success) onSuccess?.({ form, res });
+					else
+						throw new Error("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+				},
+				onError: (err) => {
+					console.log(err);
+					alert("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+				},
+			}
+		);
 	};
 
 	return (

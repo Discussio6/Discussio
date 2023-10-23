@@ -18,7 +18,6 @@ function Pagination({ page, count, total, genLink }: PaginationProps) {
 		Math.max(1, page - 2),
 		Math.min(pageEnd, page + 2) + 1
 	);
-	console.log(page);
 
 	return (
 		<div className="flex items-center gap-2">

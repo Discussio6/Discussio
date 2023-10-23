@@ -6,28 +6,31 @@ import { Discussion } from "@/types/schema";
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import DiscussionsList from "./DiscussionsList";
 
 interface QuestionsPageProps {
 	searchParams: {
 		count?: string;
 		page?: string;
+		orderBy?: string;
 	};
 }
 
 const genLink = (page: number) => `/questions?page=${page}`;
 
 async function QuestionsPage({
-	searchParams: { page, count },
+	searchParams: { page, count, orderBy },
 }: QuestionsPageProps) {
 	const numPage = page ? parseInt(page) : 1;
 	const numCount = count ? parseInt(count) : 10;
+	const sort = orderBy || "cAt:desc";
 	const total = await db.discussion.count({ where: { parent_id: null } });
 	const discussions = (await db.discussion.findMany({
 		where: { parent_id: null },
 		include: { User: true },
 		take: numCount,
 		skip: (numPage - 1) * numCount,
-		orderBy: { cAt: "desc" },
+		orderBy: { [sort.split(":")[0]]: sort.split(":")[1] as "asc" | "desc" },
 	})) as Discussion[];
 
 	return (
@@ -41,14 +44,13 @@ async function QuestionsPage({
 					</Button>
 				</Link>
 			</div>
-			<article className="flex flex-col gap-2">
-				<div className="text-large font-bold">{total}개 결과</div>
-				<div className="flex flex-col gap-4">
-					{discussions.map((discussion) => (
-						<DiscussionItem key={discussion.id} discussion={discussion} />
-					))}
-				</div>
-			</article>
+			<DiscussionsList
+				initialDiscussions={discussions}
+				initialTotal={total}
+				page={numPage}
+				count={numCount}
+				orderBy={sort}
+			/>
 			<div className="flex justify-center">
 				<Pagination
 					page={numPage}

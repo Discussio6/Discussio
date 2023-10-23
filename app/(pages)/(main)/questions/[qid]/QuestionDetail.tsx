@@ -5,6 +5,7 @@ import UploadWarningCard from "@/components/common/UploadWarningCard";
 import DiscussionForm, {
 	onSuccess,
 } from "@/components/discussions/DiscussionForm";
+import { useGetDiscussion } from "@/lib/queries/discussions";
 import { Discussion } from "@/types/schema";
 import React, { useCallback } from "react";
 
@@ -13,26 +14,30 @@ interface Props {
 	discussion: Discussion;
 }
 
-function QuestionDetail({ qid, discussion }: Props) {
+function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
+	const { data: discussion } = useGetDiscussion(qid, {
+		initialData: { data: initialDiscussion, success: true },
+	});
 	const handleSuccess = useCallback<onSuccess>(({ form, res }) => {
 		form.reset();
-		console.log(res);
 	}, []);
+
+	if (!discussion?.data) return null;
 
 	return (
 		<main className="container flex flex-col my-8 gap-8">
-			<DiscussionCard discussion={discussion} />
+			<DiscussionCard discussion={discussion.data} />
 			<div className="border p-4 rounded-lg flex flex-col gap-8">
 				<UploadWarningCard className="bg-transparent text-slate-500" />
 				<DiscussionForm onSuccess={handleSuccess} parent_id={qid} />
 			</div>
-			{discussion.Children!.length > 0 ? (
+			{discussion.data.Children!.length > 0 ? (
 				<div className="flex flex-col gap-3">
 					<h1 className="text-xl font-bold">
-						답변 {discussion.Children!.length}개
+						답변 {discussion.data.Children!.length}개
 					</h1>
 					<div className="flex flex-col gap-4">
-						{discussion.Children!.map((item) => (
+						{discussion.data.Children!.map((item) => (
 							<DiscussionCard key={item.id} discussion={item} />
 						))}
 					</div>
