@@ -36,7 +36,7 @@ const ResultList = observer(() => {
     if (searchStore.searchTerm.length === 0) return (<div></div>);
     return (
         <div className="flex overflow-y-auto rounded-lg scrollbar scrollbar-track-transparent scrollbar-thumb-gray-200 scrollbar-rounded-lg scrollbar-w-1 max-h-[80vh]">
-            <div className="flex flex-col h-5/6 space-y-4 min-h-min items-center bg-slate-200 px-5 py-4">
+            <div className="flex flex-col h-5/6 space-y-4 min-h-min items-center bg-slate-200 px-2 py-4">
                 {SearchedList.map((content) => {
                     return <ResultItem item={content} index = {contentList.indexOf(content)} />
                 })

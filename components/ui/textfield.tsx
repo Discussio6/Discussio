@@ -13,7 +13,7 @@ const TextField = React.forwardRef<
     <input
         ref={ref}
         className={cn(
-            "block text-sm font-medium text-gray-900 rounded-lg",
+            "block text-sm font-medium text-gray-900 rounded-lg ",
             className
         )}
         {...props}

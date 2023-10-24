@@ -9,9 +9,10 @@ import { InstructorDiv } from './InstructorDiv';
 type Props = {
     item: Content;
     index: number;
+    className?: string;
 };
 
-const ResultItem = ({ item,index }: Props) => {
+const ResultItem = ({ item,index, className }: Props) => {
 
     const calcTagFontSize = (tag: string) => {
         if(tag.length >= 9) {
@@ -26,7 +27,7 @@ const ResultItem = ({ item,index }: Props) => {
         window.open(`/content?id=${index}`);
     }
     return (
-        <div className='flex flex-row gap-8 items-center bg-slate-200 hover:brightness-75 rounded-lg' onClick={hanldeOnClick}>
+        <div className={cn('flex flex-row gap-8 p-2 items-center bg-slate-200 hover:brightness-75 rounded-lg',className)} onClick={hanldeOnClick}>
             <div className='flex flex-col w-60'>
                 <LectureNameDiv lectureName={item.lecture_name} />
                 <div className='flex flex-row gap-2'>
