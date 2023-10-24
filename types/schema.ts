@@ -8,6 +8,11 @@ export interface ListResponse<T> {
 	hits: T[];
 }
 
+export interface LikeResponse {
+	success: boolean;
+	status: "created" | "deleted";
+}
+
 export interface Discussion {
 	id: number;
 	title: string;
@@ -16,8 +21,12 @@ export interface Discussion {
 	authorId: string;
 	isQna: boolean;
 	isAccepted: boolean;
-    parent_id?: number;
+	parent_id?: number;
 	Children?: Discussion[];
+	Likes?: {
+		User: User;
+		cAt: Date;
+	}[];
 	cAt: Date;
 	mAt: Date;
 }

@@ -24,7 +24,7 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 			<div className="text-sm line-clamp-2">{discussion.content}</div>
 			<div className="flex items-center gap-2 text-sm text-slate-500">
 				<div>조회 0</div>
-				<div>추천 0</div>
+				<div>추천 {discussion.Likes?.length}</div>
 			</div>
 			<div className="mt-2 flex justify-between items-center">
 				<div className="space-x-2 line-clamp-1 flex-1">

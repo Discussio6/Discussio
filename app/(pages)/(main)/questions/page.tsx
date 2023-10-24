@@ -1,4 +1,3 @@
-import DiscussionItem from "@/components/common/DiscussionItem";
 import Pagination from "@/components/common/Pagination";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
@@ -27,7 +26,10 @@ async function QuestionsPage({
 	const total = await db.discussion.count({ where: { parent_id: null } });
 	const discussions = (await db.discussion.findMany({
 		where: { parent_id: null },
-		include: { User: true },
+		include: {
+			User: true,
+			Likes: { select: { User: true, cAt: true } },
+		},
 		take: numCount,
 		skip: (numPage - 1) * numCount,
 		orderBy: { [sort.split(":")[0]]: sort.split(":")[1] as "asc" | "desc" },

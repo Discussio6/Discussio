@@ -25,13 +25,21 @@ import { Discussion } from "@/types/schema";
 import moment from "moment";
 import "moment/locale/ko";
 import MDEditor from "@uiw/react-md-editor";
+import { useLikeDiscussion } from "@/lib/queries/discussions";
+import { useSession } from "next-auth/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/querykeys";
 
 interface DiscussionCardProps {
 	discussion: Discussion;
+	onLike: (id: number) => void;
 }
 
-function DiscussionCard({ discussion }: DiscussionCardProps) {
+function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 	const [openComments, setOpenComments] = useState(false);
+	const { data: session } = useSession();
+
+	const liked = discussion.Likes?.some((like) => like.User.id === session?.id);
 
 	return (
 		<Card>
@@ -68,9 +76,14 @@ function DiscussionCard({ discussion }: DiscussionCardProps) {
 					</div>
 					<Button
 						variant="outline"
-						className="flex items-center gap-2 text-md px-4 py-2"
+						className={cn(
+							"flex items-center justify-between gap-2 text-md px-4 py-2 min-w-[80px]",
+							liked && "text-red-500"
+						)}
+						onClick={() => onLike(discussion.id)}
 					>
-						<ThumbsUpIcon className="w-5 h-5" />0
+						<ThumbsUpIcon className="w-5 h-5" />
+						{discussion.Likes?.length}
 					</Button>
 				</div>
 				<div className="flex gap-2">

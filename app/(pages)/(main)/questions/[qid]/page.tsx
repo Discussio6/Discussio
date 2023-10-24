@@ -15,10 +15,13 @@ async function QuestionDetailPage(props: Props) {
 		include: {
 			User: true,
 			Children: {
+				take: 10,
 				include: {
 					User: true,
+					Likes: { select: { User: true, cAt: true } },
 				},
 			},
+			Likes: { select: { User: true, cAt: true } },
 		},
 	})) as Discussion;
 

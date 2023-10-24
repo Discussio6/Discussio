@@ -9,9 +9,13 @@ export async function GET(
 		where: { id: parseInt(params.id) },
 		include: {
 			User: true,
-			Children: { include: { User: true } },
-			Parent: { include: { User: true } },
+			Children: {
+				take: 10,
+				include: { User: true, Likes: { select: { User: true, cAt: true } } },
+			},
+			Likes: { select: { User: true, cAt: true } },
 		},
 	});
+
 	return NextResponse.json({ success: true, data }, { status: 200 });
 }
