@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
 				User: true,
 				Children: { include: { User: true } },
 				Likes: { select: { User: true, cAt: true } },
+				Tags: true,
 			},
 			skip: (page - 1) * count,
 			take: count,

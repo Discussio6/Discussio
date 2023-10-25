@@ -1,15 +1,9 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import {
-	HeartIcon,
-	MessageSquareIcon,
-	ShareIcon,
-	StarIcon,
-	ThumbsUpIcon,
-} from "lucide-react";
+import { MessageSquareIcon, StarIcon, ThumbsUpIcon } from "lucide-react";
 import {
 	Card,
 	CardHeader,
@@ -25,10 +19,7 @@ import { Discussion } from "@/types/schema";
 import moment from "moment";
 import "moment/locale/ko";
 import MDEditor from "@uiw/react-md-editor";
-import { useLikeDiscussion } from "@/lib/queries/discussions";
 import { useSession } from "next-auth/react";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/constants/querykeys";
 
 interface DiscussionCardProps {
 	discussion: Discussion;
@@ -49,7 +40,7 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 					<CardDescription>{moment(discussion.cAt).fromNow()}</CardDescription>
 					{!discussion.parent_id && (
 						<div className="flex gap-2 items-center">
-							<CardDescription>조회 0회</CardDescription>
+							<CardDescription>조회 {discussion.views}회</CardDescription>
 						</div>
 					)}
 				</div>

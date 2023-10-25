@@ -29,6 +29,7 @@ async function QuestionsPage({
 		include: {
 			User: true,
 			Likes: { select: { User: true, cAt: true } },
+			Tags: true,
 		},
 		take: numCount,
 		skip: (numPage - 1) * numCount,

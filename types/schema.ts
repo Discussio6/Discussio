@@ -21,12 +21,14 @@ export interface Discussion {
 	authorId: string;
 	isQna: boolean;
 	isAccepted: boolean;
+	views: number;
 	parent_id?: number;
 	Children?: Discussion[];
 	Likes?: {
 		User: User;
 		cAt: Date;
 	}[];
+	Tags: Tag[];
 	cAt: Date;
 	mAt: Date;
 }
@@ -37,4 +39,11 @@ export interface User {
 	id: string;
 	image: string;
 	name: string;
+}
+
+export interface Tag {
+	name: string;
+	description?: string;
+	cAt: Date;
+	mAt: Date;
 }

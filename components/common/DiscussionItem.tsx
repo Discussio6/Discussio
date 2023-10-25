@@ -23,7 +23,7 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 			</Link>
 			<div className="text-sm line-clamp-2">{discussion.content}</div>
 			<div className="flex items-center gap-2 text-sm text-slate-500">
-				<div>조회 0</div>
+				<div>조회 {discussion.views}</div>
 				<div>추천 {discussion.Likes?.length}</div>
 			</div>
 			<div className="mt-2 flex justify-between items-center">

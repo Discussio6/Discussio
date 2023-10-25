@@ -89,16 +89,19 @@ model Like {
 }
 
 model IPTable {
-  ip  String   @id
+  ip       String
+  id       Int
   exiresAt DateTime
-  cAt DateTime @default(now())
+  cAt      DateTime @default(now())
+
+  @@id([ip, id])
 }
 
 model Tag {
-  name        String      @id
+  name        String   @id
   description String?
-  cAt         DateTime    @default(now())
-  mAt         DateTime    @updatedAt
+  cAt         DateTime @default(now())
+  mAt         DateTime @updatedAt
 
   Discussions Discussion[]
 }

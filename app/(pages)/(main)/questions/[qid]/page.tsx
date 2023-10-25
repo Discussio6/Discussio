@@ -22,6 +22,7 @@ async function QuestionDetailPage(props: Props) {
 				},
 			},
 			Likes: { select: { User: true, cAt: true } },
+			Tags: true,
 		},
 	})) as Discussion;
 
