@@ -64,6 +64,7 @@ model Discussion {
   content    String?      @db.Text
   isQna      Boolean      @default(false)
   isAccepted Boolean      @default(false)
+  views      Int          @default(0)
   parent_id  Int?
   Parent     Discussion?  @relation("ParentChild", fields: [parent_id], references: [id])
   Children   Discussion[] @relation("ParentChild")
