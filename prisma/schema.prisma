@@ -72,6 +72,7 @@ model Discussion {
   cAt        DateTime     @default(now())
   mAt        DateTime     @updatedAt
   Likes      Like[]
+  Tags       Tag[]
 
   @@index([authorId])
 }
@@ -84,4 +85,19 @@ model Like {
   cAt           DateTime   @default(now())
 
   @@id([discussion_id, userId])
+}
+
+model IPTable {
+  ip  String   @id
+  exiresAt DateTime
+  cAt DateTime @default(now())
+}
+
+model Tag {
+  name        String      @id
+  description String?
+  cAt         DateTime    @default(now())
+  mAt         DateTime    @updatedAt
+
+  Discussions Discussion[]
 }
