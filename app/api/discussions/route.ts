@@ -62,6 +62,9 @@ export async function POST(req: NextRequest) {
 				...(body.parent_id
 					? { Parent: { connect: { id: body.parent_id } } }
 					: {}),
+				Tags: {
+					connect: body.tags.map((tag: string) => ({ name: tag })),
+				},
 			},
 			include: {
 				User: true,
@@ -71,7 +74,7 @@ export async function POST(req: NextRequest) {
 
 		return NextResponse.json(
 			{ success: true, data: discussion },
-			{ status: 200 }
+			{ status: 201 }
 		);
 	} catch (e) {
 		return NextResponse.json({ success: false }, { status: 500 });

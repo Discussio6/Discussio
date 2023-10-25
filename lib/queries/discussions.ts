@@ -3,6 +3,7 @@ import {
 	LikeResponse,
 	ListResponse,
 	SingleResponse,
+	Tag,
 } from "@/types/schema";
 import { api } from "../api";
 import {
@@ -31,7 +32,7 @@ export const getDiscussion = async ({ id }: IdSingleProps) => {
 
 export const useGetDiscussion = (
 	id: number,
-	options: UseQueryOptions<
+	options?: UseQueryOptions<
 		SingleResponse<Discussion>,
 		AxiosError<any>,
 		SingleResponse<Discussion>
@@ -60,7 +61,7 @@ export const getDiscussions = async (params: getDiscussionsProps) => {
 
 export const useGetDiscussions = (
 	params: getDiscussionsProps = { count: 10, page: 1, orderBy: "cAt:desc" },
-	options: UseQueryOptions<
+	options?: UseQueryOptions<
 		ListResponse<Discussion>,
 		AxiosError<any>,
 		ListResponse<Discussion>
@@ -164,4 +165,65 @@ export const useLikeDiscussion = (
 			},
 		}
 	);
+};
+
+interface getDiscussionTagsProps {
+	keyword?: string;
+}
+
+export const getDiscussionTags = async (params: getDiscussionTagsProps) => {
+	const { data } = await api.get<ListResponse<Tag>>(`${apiBaseUrl}/tags`, {
+		params,
+	});
+	return data;
+};
+
+export const useGetDiscussionTags = (
+	params: getDiscussionTagsProps,
+	options?: UseQueryOptions<
+		ListResponse<Tag>,
+		AxiosError<any>,
+		ListResponse<Tag>
+	>
+) => {
+	return useQuery<ListResponse<Tag>, AxiosError<any>, ListResponse<Tag>>(
+		QUERY_KEYS.discussions.tags(params),
+		() => getDiscussionTags(params),
+		options
+	);
+};
+
+export interface postDiscussionTagProps {
+	name: string;
+	description?: string;
+}
+
+export const postDiscussionTag = async (body: postDiscussionTagProps) => {
+	const { data: res } = await api.post<SingleResponse<Tag>>(
+		`${apiBaseUrl}/tags`,
+		body
+	);
+	return res;
+};
+
+export const usePostDiscussionTag = (
+	options?: UseMutationOptions<
+		SingleResponse<Tag>,
+		AxiosError<any>,
+		postDiscussionTagProps
+	>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<
+		SingleResponse<Tag>,
+		AxiosError<any>,
+		postDiscussionTagProps
+	>((props) => postDiscussionTag(props), {
+		...options,
+		onSuccess(data, variables, context) {
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.tagsAll);
+			options?.onSuccess?.(data, variables, context);
+		},
+	});
 };

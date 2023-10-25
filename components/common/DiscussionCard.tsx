@@ -48,15 +48,11 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 			<CardContent className="flex flex-col gap-4">
 				<MDEditor.Markdown source={discussion.content} />
 				<div className="space-x-2 line-clamp-1 flex-1">
-					<Badge className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200">
-						컴퓨터 공학
-					</Badge>
-					<Badge className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200">
-						컴퓨터 공학
-					</Badge>
-					<Badge className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200">
-						컴퓨터 공학
-					</Badge>
+					{discussion.Tags.map((tag) => (
+						<Badge className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200">
+							{tag.name}
+						</Badge>
+					))}
 				</div>
 				<div className="flex justify-between items-center">
 					<div className="">
