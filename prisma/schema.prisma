@@ -67,10 +67,10 @@ model Discussion {
   isAccepted Boolean      @default(false)
   views      Int          @default(0)
   parent_id  Int?
-  Parent     Discussion?  @relation("ParentChild", fields: [parent_id], references: [id])
+  Parent     Discussion?  @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
   Children   Discussion[] @relation("ParentChild")
   authorId   String
-  User       User         @relation(fields: [authorId], references: [id])
+  User       User         @relation(fields: [authorId], references: [id], onDelete: NoAction)
   cAt        DateTime     @default(now())
   mAt        DateTime     @updatedAt
   Likes      Like[]
@@ -81,9 +81,9 @@ model Discussion {
 
 model Like {
   discussion_id Int
-  Discussion    Discussion @relation(fields: [discussion_id], references: [id])
+  Discussion    Discussion @relation(fields: [discussion_id], references: [id], onDelete: Cascade)
   userId        String
-  User          User       @relation(fields: [userId], references: [id])
+  User          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   cAt           DateTime   @default(now())
 
   @@id([discussion_id, userId])

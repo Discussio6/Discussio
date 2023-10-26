@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import * as z from "zod";
@@ -18,15 +18,12 @@ import { UseFormReturn, useForm } from "react-hook-form";
 import { Discussion, SingleResponse } from "@/types/schema";
 import { Input } from "../ui/input";
 import MDEditor from "@uiw/react-md-editor";
-import {
-	useGetDiscussionTags,
-	usePostDiscussion,
-} from "@/lib/queries/discussions";
+import { usePostDiscussion } from "@/lib/queries/discussions";
 import TagAutocomplete from "./TagAutocomplete";
 import { Badge } from "../ui/badge";
 import { XIcon } from "lucide-react";
 
-const formSchema = z.object({
+export const discussionFormSchema = z.object({
 	title: z
 		.string()
 		.min(3, { message: "제목은 3글자 이상이어야 합니다" })
@@ -39,45 +36,34 @@ export type onSuccess = ({
 	form,
 	res,
 }: {
-	form: UseFormReturn<z.infer<typeof formSchema>>;
+	form: UseFormReturn<z.infer<typeof discussionFormSchema>>;
 	res: SingleResponse<Discussion>;
 }) => void;
 
 interface DiscussionFormProps {
-	parent_id?: number;
-	onSuccess?: onSuccess;
+	initialData?: Partial<z.infer<typeof discussionFormSchema>>;
+	onSubmit: (values: z.infer<typeof discussionFormSchema>) => void;
+	onCancel?: () => void;
 }
 
-function DiscussionForm({ onSuccess, parent_id }: DiscussionFormProps) {
-	const discussionMutation = usePostDiscussion();
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
-		defaultValues: { title: "", content: "", tags: [] },
+function DiscussionForm({
+	onSubmit,
+	onCancel,
+	initialData,
+}: DiscussionFormProps) {
+	const form = useForm<z.infer<typeof discussionFormSchema>>({
+		resolver: zodResolver(discussionFormSchema),
+		defaultValues: { title: "", content: "", tags: [], ...initialData },
 	});
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		discussionMutation.mutate(
-			{
-				...values,
-				parent_id,
-			},
-			{
-				onSuccess: (res) => {
-					if (res.success) onSuccess?.({ form, res });
-					else
-						throw new Error("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-				},
-				onError: (err) => {
-					console.log(err);
-					alert("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-				},
-			}
-		);
+	const handleSubmit = async (values: z.infer<typeof discussionFormSchema>) => {
+		form.reset();
+		onSubmit(values);
 	};
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+			<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
 					name="title"
@@ -143,9 +129,16 @@ function DiscussionForm({ onSuccess, parent_id }: DiscussionFormProps) {
 						</FormItem>
 					)}
 				></FormField>
-				<Button type="submit" variant="primary">
-					제출
-				</Button>
+				<div className="flex items-center gap-2">
+					<Button type="submit" variant="primary">
+						제출
+					</Button>
+					{onCancel && (
+						<Button type="button" variant="secondary" onClick={onCancel}>
+							취소
+						</Button>
+					)}
+				</div>
 			</form>
 		</Form>
 	);

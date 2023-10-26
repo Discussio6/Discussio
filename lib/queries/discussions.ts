@@ -71,7 +71,11 @@ export const useGetDiscussions = (
 		ListResponse<Discussion>,
 		AxiosError<any>,
 		ListResponse<Discussion>
-	>(QUERY_KEYS.discussions.list(params), () => getDiscussions(params), options);
+	>(
+		[...QUERY_KEYS.discussions.list, params],
+		() => getDiscussions(params),
+		options
+	);
 };
 
 export const useGetDiscussionsInfinite = (
@@ -86,28 +90,33 @@ export const useGetDiscussionsInfinite = (
 		ListResponse<Discussion>,
 		AxiosError<any>,
 		ListResponse<Discussion>
-	>(QUERY_KEYS.discussions.infinite(params), () => getDiscussions(params), {
-		getNextPageParam: (lastPage, allPages) => {
-			if (
-				lastPage.hits.length + (params.count ?? 10) * (allPages.length - 1) <
-				lastPage.total
-			) {
-				return {
-					...params,
-					page: (params.page ?? 0) + 1,
-				};
-			}
-			return undefined;
-		},
-		...options,
-	});
+	>(
+		[...QUERY_KEYS.discussions.infinite, params],
+		() => getDiscussions(params),
+		{
+			getNextPageParam: (lastPage, allPages) => {
+				if (
+					lastPage.hits.length + (params.count ?? 10) * (allPages.length - 1) <
+					lastPage.total
+				) {
+					return {
+						...params,
+						page: (params.page ?? 0) + 1,
+					};
+				}
+				return undefined;
+			},
+			...options,
+		}
+	);
 };
 
-export interface postDiscussionProps {
-	body: Pick<Discussion, "title" | "content" | "parent_id">;
+export interface postDiscussionProps
+	extends Pick<Discussion, "title" | "content" | "parent_id"> {
+	tags: string[];
 }
 
-export const postDiscussion = async ({ body }: postDiscussionProps) => {
+export const postDiscussion = async (body: postDiscussionProps) => {
 	const { data: res } = await api.post<SingleResponse<Discussion>>(
 		apiBaseUrl,
 		body
@@ -119,7 +128,7 @@ export const usePostDiscussion = (
 	options?: UseMutationOptions<
 		SingleResponse<Discussion>,
 		AxiosError<any>,
-		postDiscussionProps["body"]
+		postDiscussionProps
 	>
 ) => {
 	const queryClient = useQueryClient();
@@ -127,18 +136,82 @@ export const usePostDiscussion = (
 	return useMutation<
 		SingleResponse<Discussion>,
 		AxiosError<any>,
-		postDiscussionProps["body"]
-	>((body) => postDiscussion({ body }), {
+		postDiscussionProps
+	>((body) => postDiscussion(body), {
 		...options,
 		onSuccess(data, variables, context) {
-			queryClient.invalidateQueries(QUERY_KEYS.discussions.list({}));
-			if (variables.parent_id)
-				queryClient.invalidateQueries(
-					QUERY_KEYS.discussions.single(variables.parent_id)
-				);
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.list);
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.infinite);
 			options?.onSuccess?.(data, variables, context);
 		},
 	});
+};
+
+export interface patchDiscussionProps
+	extends Omit<postDiscussionProps, "parent_id">,
+		IdSingleProps {}
+
+export const patchDiscussion = async (body: patchDiscussionProps) => {
+	const { data: res } = await api.patch<SingleResponse<Discussion>>(
+		`${apiBaseUrl}/${body.id}`,
+		body
+	);
+	return res;
+};
+
+export const usePatchDiscussion = (
+	options?: UseMutationOptions<
+		SingleResponse<Discussion>,
+		AxiosError<any>,
+		patchDiscussionProps
+	>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<
+		SingleResponse<Discussion>,
+		AxiosError<any>,
+		patchDiscussionProps
+	>((body) => patchDiscussion(body), {
+		...options,
+		onSuccess(data, variables, context) {
+			queryClient.invalidateQueries(
+				QUERY_KEYS.discussions.single(variables.id)
+			);
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.list);
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.infinite);
+			options?.onSuccess?.(data, variables, context);
+		},
+	});
+};
+
+export const deleteDiscussion = async ({ id }: IdSingleProps) => {
+	const { data: res } = await api.delete<SingleResponse<unknown>>(
+		`${apiBaseUrl}/${id}`
+	);
+	return res;
+};
+
+export const useDeleteDiscussion = (
+	options?: UseMutationOptions<
+		SingleResponse<unknown>,
+		AxiosError<any>,
+		IdSingleProps
+	>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<SingleResponse<unknown>, AxiosError<any>, IdSingleProps>(
+		(props) => deleteDiscussion(props),
+		{
+			...options,
+			onSuccess(data, variables, context) {
+				queryClient.invalidateQueries(QUERY_KEYS.discussions.list);
+				queryClient.invalidateQueries(QUERY_KEYS.discussions.infinite);
+				options?.onSuccess?.(data, variables, context);
+			},
+		}
+	);
 };
 
 export const likeDiscussion = async ({ id }: IdSingleProps) => {
@@ -161,6 +234,8 @@ export const useLikeDiscussion = (
 				queryClient.invalidateQueries(
 					QUERY_KEYS.discussions.single(variables.id)
 				);
+				queryClient.invalidateQueries(QUERY_KEYS.discussions.list);
+				queryClient.invalidateQueries(QUERY_KEYS.discussions.infinite);
 				options?.onSuccess?.(data, variables, context);
 			},
 		}
@@ -187,7 +262,7 @@ export const useGetDiscussionTags = (
 	>
 ) => {
 	return useQuery<ListResponse<Tag>, AxiosError<any>, ListResponse<Tag>>(
-		QUERY_KEYS.discussions.tags(params),
+		[...QUERY_KEYS.discussions.tags, params],
 		() => getDiscussionTags(params),
 		options
 	);

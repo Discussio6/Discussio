@@ -3,17 +3,19 @@
 import DiscussionCard from "@/components/common/DiscussionCard";
 import UploadWarningCard from "@/components/common/UploadWarningCard";
 import DiscussionForm, {
-	onSuccess,
+	discussionFormSchema,
 } from "@/components/discussions/DiscussionForm";
 import { QUERY_KEYS } from "@/constants/querykeys";
 import {
 	useGetDiscussion,
 	useGetDiscussionsInfinite,
 	useLikeDiscussion,
+	usePostDiscussion,
 } from "@/lib/queries/discussions";
 import { Discussion } from "@/types/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useCallback } from "react";
+import * as z from "zod";
 
 interface Props {
 	qid: number;
@@ -25,6 +27,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 	const { data: discussion } = useGetDiscussion(qid, {
 		initialData: { data: initialDiscussion, success: true },
 	});
+	const discussionMutation = usePostDiscussion();
 	const likeMutation = useLikeDiscussion();
 	const queryClient = useQueryClient();
 	const { data: childDiscussions } = useGetDiscussionsInfinite(childParams, {
@@ -38,15 +41,21 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 			],
 		},
 	});
-	const handleSuccess = useCallback<onSuccess>(
-		({ form, res }) => {
-			form.reset();
-			queryClient.invalidateQueries(
-				QUERY_KEYS.discussions.infinite(childParams)
-			);
-		},
-		[queryClient]
-	);
+
+	const handleSubmit = async (values: z.infer<typeof discussionFormSchema>) => {
+		discussionMutation.mutate(
+			{
+				...values,
+				parent_id: qid,
+			},
+			{
+				onError: (err) => {
+					console.log(err);
+					alert("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+				},
+			}
+		);
+	};
 
 	const handleLike = useCallback(
 		(id: number) => {
@@ -55,9 +64,6 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 				{
 					onSuccess: () => {
 						queryClient.invalidateQueries(QUERY_KEYS.discussions.single(id));
-						queryClient.invalidateQueries(
-							QUERY_KEYS.discussions.infinite(childParams)
-						);
 					},
 				}
 			);
@@ -74,7 +80,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 			<DiscussionCard discussion={discussion.data} onLike={handleLike} />
 			<div className="border p-4 rounded-lg flex flex-col gap-8">
 				<UploadWarningCard className="bg-transparent text-slate-500" />
-				<DiscussionForm onSuccess={handleSuccess} parent_id={qid} />
+				<DiscussionForm onSubmit={handleSubmit} />
 			</div>
 			{childDiscussions?.pages?.[0].total ?? 0 > 0 ? (
 				<div className="flex flex-col gap-3">
