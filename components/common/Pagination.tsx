@@ -14,14 +14,15 @@ interface PaginationProps {
 
 function Pagination({ page, count, total, genLink }: PaginationProps) {
 	const pageEnd = Math.ceil(total / count);
+	const pageStart = Math.floor(page - 1) * 10;
 	const pageNums = _.range(
-		Math.max(1, page - 2),
-		Math.min(pageEnd, page + 2) + 1
+		pageStart + 1,
+		Math.min(pageStart + 10, pageEnd) + 1
 	);
 
 	return (
 		<div className="flex items-center gap-2">
-			<Link href={genLink?.(Math.max(1, page - 1)) || ""}>
+			<Link href={genLink?.(Math.max(1, page - 10)) || ""}>
 				<Button size="icon" variant="secondary" disabled={pageNums[0] === 1}>
 					<ChevronLeft />
 				</Button>
@@ -33,7 +34,7 @@ function Pagination({ page, count, total, genLink }: PaginationProps) {
 					</Button>
 				</Link>
 			))}
-			<Link href={genLink?.(Math.min(pageEnd, page + 1)) || ""}>
+			<Link href={genLink?.(Math.min(pageEnd, page + 10)) || ""}>
 				<Button
 					size="icon"
 					variant="secondary"
