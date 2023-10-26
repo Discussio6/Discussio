@@ -38,7 +38,11 @@ export async function GET(
 				User: true,
 				Children: {
 					take: 10,
-					include: { User: true, Likes: { select: { User: true, cAt: true } } },
+					include: {
+						User: true,
+						Likes: { select: { User: true, cAt: true } },
+						Tags: true,
+					},
 				},
 				Likes: { select: { User: true, cAt: true } },
 				Tags: true,

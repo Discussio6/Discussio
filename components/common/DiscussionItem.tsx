@@ -36,6 +36,7 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 						))}
 					</div>
 				)}
+				<div className="flex flex-1" />
 				<div className="flex items-center gap-4 shrink-0">
 					<ProfileCard
 						name={discussion.User.name}

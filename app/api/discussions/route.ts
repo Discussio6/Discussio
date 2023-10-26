@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
 			where: { parent_id },
 			include: {
 				User: true,
-				Children: { include: { User: true } },
 				Likes: { select: { User: true, cAt: true } },
 				Tags: true,
 			},

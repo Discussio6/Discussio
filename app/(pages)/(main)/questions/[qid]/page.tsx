@@ -19,6 +19,7 @@ async function QuestionDetailPage(props: Props) {
 				include: {
 					User: true,
 					Likes: { select: { User: true, cAt: true } },
+					Tags: true,
 				},
 			},
 			Likes: { select: { User: true, cAt: true } },
