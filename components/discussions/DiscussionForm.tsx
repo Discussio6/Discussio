@@ -113,6 +113,7 @@ function DiscussionForm({
 									<div className="flex gap-2">
 										{value.map((tag) => (
 											<Badge
+												key={tag}
 												className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200"
 												onClick={() =>
 													onChange(value.filter((item) => item !== tag))

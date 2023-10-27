@@ -30,7 +30,10 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 				{discussion.Tags.length > 0 && (
 					<div className="space-x-2 line-clamp-1 flex-1">
 						{discussion.Tags.map((tag) => (
-							<Badge className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200">
+							<Badge
+								key={tag.name}
+								className="p-2 rounded-lg text-blue-600 bg-blue-200 cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-200"
+							>
 								{tag.name}
 							</Badge>
 						))}
