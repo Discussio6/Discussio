@@ -93,7 +93,8 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 			{ id: discussion.id },
 			{
 				onSuccess: () => {
-					if (!discussion.parent_id) router.replace("/questions");
+					if (!discussion.parent_id)
+						router.replace(discussion.isQna ? "/questions" : "/discussions");
 				},
 			}
 		);

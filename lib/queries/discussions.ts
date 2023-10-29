@@ -50,6 +50,7 @@ export interface getDiscussionsProps {
 	page?: number;
 	count?: number;
 	orderBy?: string;
+	isQna?: boolean;
 }
 
 export const getDiscussions = async (params: getDiscussionsProps) => {
@@ -114,6 +115,7 @@ export const useGetDiscussionsInfinite = (
 export interface postDiscussionProps
 	extends Pick<Discussion, "title" | "content" | "parent_id"> {
 	tags: string[];
+	isQna?: boolean;
 }
 
 export const postDiscussion = async (body: postDiscussionProps) => {

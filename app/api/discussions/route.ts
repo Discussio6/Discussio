@@ -7,20 +7,22 @@ export async function GET(req: NextRequest) {
 	try {
 		let page = req.nextUrl.searchParams.get("page") || 1;
 		let count = req.nextUrl.searchParams.get("count") || 10;
-		let orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
 		let parent_id: number | string | null =
 			req.nextUrl.searchParams.get("parent_id") || null;
+		let isQna = req.nextUrl.searchParams.get("isQna") || false;
+		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
 
 		page = parseInt(page as string);
 		count = parseInt(count as string);
 		parent_id = parseInt(parent_id as string);
+		isQna = isQna.toString() === "true";
 
 		if (page < 1) page = 1;
 		if (count < 1) count = 1;
 
-		const total = await db.discussion.count({ where: { parent_id } });
+		const total = await db.discussion.count({ where: { parent_id, isQna } });
 		const discussions = await db.discussion.findMany({
-			where: { parent_id },
+			where: { AND: [{ parent_id }, { isQna }] },
 			include: {
 				User: true,
 				Likes: { select: { User: true, cAt: true } },
@@ -64,6 +66,7 @@ export async function POST(req: NextRequest) {
 				Tags: {
 					connect: body.tags.map((tag: string) => ({ name: tag })),
 				},
+				isQna: body.isQna,
 			},
 			include: {
 				User: true,

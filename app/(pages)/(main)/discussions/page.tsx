@@ -7,7 +7,7 @@ import Link from "next/link";
 import React from "react";
 import DiscussionsList from "./DiscussionsList";
 
-interface QuestionsPageProps {
+interface DiscussionPageProps {
 	searchParams: {
 		count?: string;
 		page?: string;
@@ -15,17 +15,17 @@ interface QuestionsPageProps {
 	};
 }
 
-const genLink = (page: number) => `/questions?page=${page}`;
+const genLink = (page: number) => `/discussions?page=${page}`;
 
-async function QuestionsPage({
+async function DiscussionPage({
 	searchParams: { page, count, orderBy },
-}: QuestionsPageProps) {
+}: DiscussionPageProps) {
 	const numPage = page ? parseInt(page) : 1;
 	const numCount = count ? parseInt(count) : 10;
 	const sort = orderBy || "cAt:desc";
 	const total = await db.discussion.count({ where: { parent_id: null } });
 	const discussions = (await db.discussion.findMany({
-		where: { parent_id: null, isQna: true },
+		where: { parent_id: null },
 		include: {
 			User: true,
 			Likes: { select: { User: true, cAt: true } },
@@ -39,11 +39,11 @@ async function QuestionsPage({
 	return (
 		<main className="container flex flex-col my-8 gap-8">
 			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold">전체 질문</h1>
+				<h1 className="text-2xl font-bold">전체 디스커션</h1>
 				<Link href="/questions/upload">
 					<Button variant="primary" className="flex gap-1">
 						<PencilIcon className="w-4 h-4" />
-						질문 쓰기
+						디스커션 쓰기
 					</Button>
 				</Link>
 			</div>
@@ -66,4 +66,4 @@ async function QuestionsPage({
 	);
 }
 
-export default QuestionsPage;
+export default DiscussionPage;

@@ -18,10 +18,10 @@ function DiscussionsList({
 	initialTotal,
 	page,
 	count,
-	orderBy,
+    orderBy,
 }: DiscussionsListProps) {
 	const { data: discussions } = useGetDiscussions(
-		{ page, count, orderBy, isQna: true },
+		{ page, count, orderBy },
 		{
 			initialData: { total: initialTotal, hits: initialDiscussions },
 		}
@@ -29,17 +29,11 @@ function DiscussionsList({
 	return (
 		<article className="flex flex-col gap-2">
 			<div className="text-large font-bold">{discussions?.total}개 결과</div>
-			{discussions && discussions.total > 0 ? (
-				<div className="flex flex-col gap-4">
-					{discussions?.hits.map((discussion) => (
-						<DiscussionItem key={discussion.id} discussion={discussion} />
-					))}
-				</div>
-			) : (
-				<div className="text-center my-16 text-slate-500">
-					검색 결과가 없습니다.
-				</div>
-			)}
+			<div className="flex flex-col gap-4">
+				{discussions?.hits.map((discussion) => (
+					<DiscussionItem key={discussion.id} discussion={discussion} />
+				))}
+			</div>
 		</article>
 	);
 }

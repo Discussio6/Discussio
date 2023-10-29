@@ -16,7 +16,9 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 	return (
 		<div className="flex flex-col gap-1 border p-4 rounded-lg">
 			<Link
-				href={`/questions/${discussion.id}`}
+				href={`/${discussion.isQna ? "questions" : "discussions"}/${
+					discussion.id
+				}`}
 				className="text-lg font-bold line-clamp-2 text-blue-500 hover:text-blue-700 cursor-pointer transition-all duration-200 ease-in-out"
 			>
 				{discussion.title}

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { postDiscussion, usePostDiscussion } from "@/lib/queries/discussions";
 import * as z from "zod";
 
-function QuestionUpload() {
+function DiscussionUpload() {
 	const router = useRouter();
 	const discussionMutation = usePostDiscussion();
 
@@ -18,11 +18,10 @@ function QuestionUpload() {
 			discussionMutation.mutate(
 				{
 					...values,
-					isQna: true,
 				},
 				{
 					onSuccess(data, variables, context) {
-						router.push(`/questions/${data.data.id}`);
+						router.push(`/discussions/${data.data.id}`);
 					},
 					onError: (err) => {
 						console.log(err);
@@ -42,4 +41,4 @@ function QuestionUpload() {
 	);
 }
 
-export default QuestionUpload;
+export default DiscussionUpload;
