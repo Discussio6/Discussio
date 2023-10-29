@@ -85,7 +85,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 			{childDiscussions?.pages?.[0].total ?? 0 > 0 ? (
 				<div className="flex flex-col gap-3">
 					<h1 className="text-xl font-bold">
-						답변 {childDiscussions?.pages?.[0].total}개
+						{childDiscussions?.pages?.[0].total} Answers
 					</h1>
 					<div className="flex flex-col gap-4">
 						{children.map((item) => (
@@ -99,7 +99,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 				</div>
 			) : (
 				<div className="flex flex-col items-center p-4 text-slate-400 mt-8">
-					아직 작성된 답변이 없습니다. 첫 답변을 작성해보세요!
+					No answers have been written yet. Write your first answer!
 				</div>
 			)}
 		</main>

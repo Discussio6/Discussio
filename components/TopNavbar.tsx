@@ -13,7 +13,7 @@ function TopNavbar() {
 			<Logo />
 			<div className="flex gap-4 items-center">
 				{status === "authenticated" && (
-					<Button variant="primary">업로드</Button>
+					<Button variant="primary">Upload</Button>
 				)}
 				<Profile />
 			</div>

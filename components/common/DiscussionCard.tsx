@@ -24,7 +24,6 @@ import Comments from "../comments/Comments";
 import { cn } from "@/lib/utils";
 import { Discussion } from "@/types/schema";
 import moment from "moment";
-import "moment/locale/ko";
 import MDEditor from "@uiw/react-md-editor";
 import { useSession } from "next-auth/react";
 import {
@@ -122,12 +121,12 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 													onClick={() => setIsEdit(true)}
 												>
 													<EditIcon className="w-4 h-4 mr-2" />
-													<span>수정</span>
+													<span>Edit</span>
 												</DropdownMenuItem>
 												<AlertDialogTrigger asChild>
 													<DropdownMenuItem className="cursor-pointer">
 														<TrashIcon className="w-4 h-4 mr-2" />
-														<span>삭제</span>
+														<span>Delete</span>
 													</DropdownMenuItem>
 												</AlertDialogTrigger>
 												<DropdownMenuSeparator />
@@ -135,27 +134,27 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 										)}
 										<DropdownMenuItem className="cursor-pointer">
 											<FlagIcon className="w-4 h-4 mr-2" />
-											<span>신고</span>
+											<span>Report</span>
 										</DropdownMenuItem>
 									</DropdownMenuContent>
 								</DropdownMenu>
 								<AlertDialogContent>
 									<AlertDialogHeader>
 										<AlertDialogTitle>
-											정말로 글을 삭제하시겠습니까?
+											Are you sure you want to delete the post?
 										</AlertDialogTitle>
 										<AlertDialogDescription>
-											삭제한 글은 복구할 수 없으며 답글 및 댓글 또한 모두
-											삭제됩니다.
+											Deleted posts cannot be recovered, and all replies and
+											comments will also be deleted.
 										</AlertDialogDescription>
 									</AlertDialogHeader>
 									<AlertDialogFooter>
-										<AlertDialogCancel>취소</AlertDialogCancel>
+										<AlertDialogCancel>Cancel</AlertDialogCancel>
 										<AlertDialogAction
 											onClick={handleDelete}
 											className="bg-red-500 hover:bg-red-500/90"
 										>
-											삭제
+											Delete
 										</AlertDialogAction>
 									</AlertDialogFooter>
 								</AlertDialogContent>
@@ -167,7 +166,7 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 							</CardDescription>
 							{!discussion.parent_id && (
 								<div className="flex gap-2 items-center">
-									<CardDescription>조회 {discussion.views}회</CardDescription>
+									<CardDescription>{discussion.views} views</CardDescription>
 								</div>
 							)}
 						</div>
@@ -206,11 +205,11 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 						<div className="flex gap-2">
 							<Button className="flex items-center gap-2" variant="ghost">
 								<Share1Icon className="w-4 h-4" />
-								공유
+								Share
 							</Button>
 							<Button className="flex items-center gap-2" variant="ghost">
 								<StarIcon className="w-4 h-4" />
-								찜하기
+								Favorites
 							</Button>
 							<Button
 								className={cn(
@@ -221,7 +220,7 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 								onClick={() => setOpenComments((open) => !open)}
 							>
 								<MessageSquareIcon className="w-4 h-4" />
-								댓글 보기
+								Comments
 							</Button>
 						</div>
 						<div className={cn(!openComments && "hidden", "mt-6")}>

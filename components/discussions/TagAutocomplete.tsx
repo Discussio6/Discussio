@@ -55,7 +55,7 @@ export function TagAutocomplete({ value, onSelect }: TagAutocompleteProps) {
 					aria-expanded={open}
 					className="w-[250px] justify-between"
 				>
-					태그 추가
+					Add tags
 					<PlusIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
@@ -64,18 +64,18 @@ export function TagAutocomplete({ value, onSelect }: TagAutocompleteProps) {
 					<CommandInput
 						value={inputValue}
 						onValueChange={setInputValue}
-						placeholder="태그를 검색해보세요"
+						placeholder="Search tags..."
 					/>
 					<CommandEmpty>
 						<div className="flex flex-col gap-4 text-slate-400">
-							<span>일치하는 태그가 없습니다</span>
+							<span>No search results</span>
 							<Button
 								className="w-fit mx-auto flex items-center gap-1 text-slate-600"
 								variant="ghost"
 								onClick={handleCreateTag}
 							>
 								<PlusCircleIcon className="w-4 h-4" />
-								<span>새 태그 만들기</span>
+								<span>Add a new tag</span>
 							</Button>
 						</div>
 					</CommandEmpty>

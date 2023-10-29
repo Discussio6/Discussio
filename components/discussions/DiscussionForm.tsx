@@ -69,12 +69,12 @@ function DiscussionForm({
 					name="title"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel className="font-bold text-md">제목</FormLabel>
+							<FormLabel className="font-bold text-md">Title</FormLabel>
 							<FormControl>
-								<Input placeholder="제목을 입력해주세요" {...field} />
+								<Input placeholder="Enter the title..." {...field} />
 							</FormControl>
 							<FormDescription>
-								3자 이상 255자 이하로 입력해주세요
+								The title should be at least 3 chatracters and at most 255
 							</FormDescription>
 							<FormMessage />
 						</FormItem>
@@ -85,13 +85,11 @@ function DiscussionForm({
 					name="content"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel className="font-bold text-md">내용</FormLabel>
+							<FormLabel className="font-bold text-md">Contents</FormLabel>
 							<FormControl>
-								<MDEditor placeholder="내용을 입력해주세요" {...field} />
+								<MDEditor placeholder="Enter the contents..." {...field} />
 							</FormControl>
-							<FormDescription>
-								최대 5000자까지 입력할 수 있습니다
-							</FormDescription>
+							<FormDescription>At most 5000 characters</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -101,7 +99,7 @@ function DiscussionForm({
 					name="tags"
 					render={({ field: { value, onChange } }) => (
 						<FormItem>
-							<FormLabel className="font-bold text-md">태그</FormLabel>
+							<FormLabel className="font-bold text-md">Tags</FormLabel>
 							<FormControl>
 								<div className="flex flex-col gap-4">
 									<TagAutocomplete
@@ -132,11 +130,11 @@ function DiscussionForm({
 				></FormField>
 				<div className="flex items-center gap-2">
 					<Button type="submit" variant="primary">
-						제출
+						Submit
 					</Button>
 					{onCancel && (
 						<Button type="button" variant="secondary" onClick={onCancel}>
-							취소
+							Cancel
 						</Button>
 					)}
 				</div>

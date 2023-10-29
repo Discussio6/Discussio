@@ -17,7 +17,7 @@ function UploadWarningCard({ className }: Props) {
 			<div className="flex gap-2 items-center">
 				<AlertCircle />
 				<h2 className="text-md font-bold align-middle">
-					업로드 시 주의해주세요
+					Please follow these guidelines before uploading
 				</h2>
 			</div>
 			<ul className="list-disc list-inside pl-2">

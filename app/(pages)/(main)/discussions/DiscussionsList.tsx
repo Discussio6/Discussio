@@ -28,7 +28,7 @@ function DiscussionsList({
 	);
 	return (
 		<article className="flex flex-col gap-2">
-			<div className="text-large font-bold">{discussions?.total}개 결과</div>
+			<div className="text-large font-bold">{discussions?.total} results</div>
 			<div className="flex flex-col gap-4">
 				{discussions?.hits.map((discussion) => (
 					<DiscussionItem key={discussion.id} discussion={discussion} />

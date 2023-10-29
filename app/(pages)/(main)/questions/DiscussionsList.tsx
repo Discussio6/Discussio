@@ -28,7 +28,7 @@ function DiscussionsList({
 	);
 	return (
 		<article className="flex flex-col gap-2">
-			<div className="text-large font-bold">{discussions?.total}개 결과</div>
+			<div className="text-large font-bold">{discussions?.total} results</div>
 			{discussions && discussions.total > 0 ? (
 				<div className="flex flex-col gap-4">
 					{discussions?.hits.map((discussion) => (
@@ -37,7 +37,7 @@ function DiscussionsList({
 				</div>
 			) : (
 				<div className="text-center my-16 text-slate-500">
-					검색 결과가 없습니다.
+					No results found
 				</div>
 			)}
 		</article>

@@ -59,24 +59,24 @@ function Profile() {
 				<article className="w-full flex flex-col gap-1">
 					<div className="flex flex-col">
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<UploadIcon className="w-4 h-4" />내 업로드 내역
+							<UploadIcon className="w-4 h-4" />My Posts
 						</Button>
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<MessageSquareIcon className="w-4 h-4" />내 댓글 내역
+							<MessageSquareIcon className="w-4 h-4" />My Comments
 						</Button>
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<BellIcon className="w-4 h-4" />내 알림
+							<BellIcon className="w-4 h-4" />Notifications
 						</Button>
 					</div>
 					<Separator />
 					<div className="flex flex-col">
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
 							<UserIcon className="w-4 h-4" />
-							프로필 수정
+							Edit Profile
 						</Button>
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
 							<SettingsIcon className="w-4 h-4" />
-							설정
+							Settings
 						</Button>
 					</div>
 					<Separator />
@@ -86,7 +86,7 @@ function Profile() {
 						onClick={() => signOut()}
 					>
 						<LogOutIcon className="w-4 h-4" />
-						로그아웃
+						Log out
 					</Button>
 				</article>
 			</PopoverContent>

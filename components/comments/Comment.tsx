@@ -28,11 +28,11 @@ function Comment({ content }: CommentProps) {
 					onClick={() => setOpenCommentForm((open) => !open)}
 				>
 					<ReplyIcon className="w-4 h-4" />
-					답글
+					Reply
 				</Button>
 				<Button className="flex items-center gap-2" variant="ghost">
 					<FlagIcon className="w-4 h-4" />
-					신고
+					Report
 				</Button>
 			</div>
 			<div className={cn(!openCommentForm && "hidden")}>

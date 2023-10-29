@@ -4,7 +4,6 @@ import React from "react";
 import { Badge } from "../ui/badge";
 import { Discussion } from "@/types/schema";
 import moment from "moment";
-import "moment/locale/ko";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
 
@@ -25,8 +24,8 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 			</Link>
 			<div className="text-sm line-clamp-2">{discussion.content}</div>
 			<div className="flex items-center gap-2 text-sm text-slate-500">
-				<div>조회 {discussion.views}</div>
-				<div>추천 {discussion.Likes?.length}</div>
+				<div>{discussion.views} views</div>
+				<div>{discussion.Likes?.length} likes</div>
 			</div>
 			<div className="mt-2 flex justify-between items-center">
 				{discussion.Tags.length > 0 && (
