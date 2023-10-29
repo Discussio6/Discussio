@@ -27,7 +27,7 @@ export const ProfileImage = React.forwardRef<HTMLSpanElement, {}>((_, ref) => {
 
 function Profile() {
 	const { data: session, status } = useSession();
-	
+
 	if (status === "loading")
 		return (
 			<div className="w-10 h-10 rounded-full bg-slate-100 animate-pulse" />
@@ -59,13 +59,16 @@ function Profile() {
 				<article className="w-full flex flex-col gap-1">
 					<div className="flex flex-col">
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<UploadIcon className="w-4 h-4" />My Posts
+							<UploadIcon className="w-4 h-4" />
+							My Posts
 						</Button>
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<MessageSquareIcon className="w-4 h-4" />My Comments
+							<MessageSquareIcon className="w-4 h-4" />
+							My Comments
 						</Button>
 						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<BellIcon className="w-4 h-4" />Notifications
+							<BellIcon className="w-4 h-4" />
+							Notifications
 						</Button>
 					</div>
 					<Separator />
