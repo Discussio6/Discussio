@@ -49,6 +49,7 @@ model User {
   sessions      Session[]
   discussions   Discussion[]
   Likes         Like[]
+  comments      Comment[]
 }
 
 model VerificationToken {
@@ -60,21 +61,22 @@ model VerificationToken {
 }
 
 model Discussion {
-  id         Int          @id @default(autoincrement())
-  title      String       @db.VarChar(255)
-  content    String?      @db.Text
-  isQna      Boolean      @default(false)
-  isAccepted Boolean      @default(false)
-  views      Int          @default(0)
-  parent_id  Int?
-  Parent     Discussion?  @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
-  Children   Discussion[] @relation("ParentChild")
-  authorId   String
-  User       User         @relation(fields: [authorId], references: [id], onDelete: NoAction)
-  cAt        DateTime     @default(now())
-  mAt        DateTime     @updatedAt
-  Likes      Like[]
-  Tags       Tag[]
+  id                Int                 @id @default(autoincrement())
+  title             String              @db.VarChar(255)
+  content           String?             @db.Text
+  isQna             Boolean             @default(false)
+  isAccepted        Boolean             @default(false)
+  views             Int                 @default(0)
+  parent_id         Int?
+  Parent            Discussion?         @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
+  Children          Discussion[]        @relation("ParentChild")
+  authorId          String
+  User              User                @relation(fields: [authorId], references: [id], onDelete: NoAction)
+  cAt               DateTime            @default(now())
+  mAt               DateTime            @updatedAt
+  Likes             Like[]
+  Tags              Tag[]
+  DiscussionComment DiscussionComment[]
 
   @@index([authorId])
 }
@@ -107,4 +109,27 @@ model Tag {
   Discussions Discussion[]
 
   @@fulltext([name])
+}
+
+model Comment {
+  id                Int                 @id @default(autoincrement())
+  content_id        Int
+  userId            String
+  User              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment           String              @db.Text
+  parent_comment_id Int?
+  cAt               DateTime            @default(now())
+  mAt               DateTime            @updatedAt
+  DiscussionComment DiscussionComment[]
+
+  @@index([userId])
+}
+
+model DiscussionComment {
+  discussion_id Int
+  Discussion    Discussion @relation(fields: [discussion_id], references: [id], onDelete: Cascade)
+  comment_id    Int
+  Comment       Comment    @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+
+  @@id([discussion_id, comment_id])
 }
