@@ -1,18 +1,44 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
+import {
+	useGetComments,
+	useGetCommentsInfinite,
+	usePostComment,
+} from "@/lib/queries/comments";
 
-function Comments() {
+interface CommentsProps {
+	content_id: number;
+}
+
+function Comments({ content_id }: CommentsProps) {
+	const postComment = usePostComment();
+	const { data } = useGetComments({ content_id, count: 0 });
+	const { data: commentData } = useGetCommentsInfinite({
+		content_id,
+		parent_comment_id: null,
+		page: 1,
+		count: 15,
+		orderBy: "cAt:asc",
+	});
+
+	const comments = (commentData?.pages || []).flatMap((page) => page.hits);
+
+	const handleSubmit = useCallback(
+		(comment: string) => {
+			postComment.mutate({ content_id, parent_comment_id: null, comment });
+		},
+		[postComment]
+	);
+
 	return (
 		<div className="flex flex-col gap-4">
-			<h1 className="text-md font-semibold">5 Comments</h1>
-			<CommentForm />
+			<h1 className="text-md font-semibold">{data?.total} Comments</h1>
+			<CommentForm onSubmit={handleSubmit} />
 			<div className="flex flex-col gap-4 mt-4">
-				<Comment content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum sit amet ligula at mattis. Suspendisse orci ante, sollicitudin quis molestie ut, dictum quis leo. Morbi finibus viverra arcu non rutrum. Nam quis ullamcorper odio, eget ullamcorper nunc. Nam sed augue lobortis est mattis pellentesque. Aliquam ut sollicitudin metus. Morbi eleifend lorem non ipsum mollis, sed sollicitudin lorem bibendum. Vestibulum malesuada convallis risus eget sollicitudin." />
-				<Comment content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum sit amet ligula at mattis. Suspendisse orci ante, sollicitudin quis molestie ut, dictum quis leo. Morbi finibus viverra arcu non rutrum. Nam quis ullamcorper odio, eget ullamcorper nunc. Nam sed augue lobortis est mattis pellentesque. Aliquam ut sollicitudin metus. Morbi eleifend lorem non ipsum mollis, sed sollicitudin lorem bibendum. Vestibulum malesuada convallis risus eget sollicitudin." />
-				<Comment content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum sit amet ligula at mattis. Suspendisse orci ante, sollicitudin quis molestie ut, dictum quis leo. Morbi finibus viverra arcu non rutrum. Nam quis ullamcorper odio, eget ullamcorper nunc. Nam sed augue lobortis est mattis pellentesque. Aliquam ut sollicitudin metus. Morbi eleifend lorem non ipsum mollis, sed sollicitudin lorem bibendum. Vestibulum malesuada convallis risus eget sollicitudin." />
-				<Comment content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum sit amet ligula at mattis. Suspendisse orci ante, sollicitudin quis molestie ut, dictum quis leo. Morbi finibus viverra arcu non rutrum. Nam quis ullamcorper odio, eget ullamcorper nunc. Nam sed augue lobortis est mattis pellentesque. Aliquam ut sollicitudin metus. Morbi eleifend lorem non ipsum mollis, sed sollicitudin lorem bibendum. Vestibulum malesuada convallis risus eget sollicitudin." />
-				<Comment content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum sit amet ligula at mattis. Suspendisse orci ante, sollicitudin quis molestie ut, dictum quis leo. Morbi finibus viverra arcu non rutrum. Nam quis ullamcorper odio, eget ullamcorper nunc. Nam sed augue lobortis est mattis pellentesque. Aliquam ut sollicitudin metus. Morbi eleifend lorem non ipsum mollis, sed sollicitudin lorem bibendum. Vestibulum malesuada convallis risus eget sollicitudin." />
+				{comments?.map((comment) => (
+					<Comment key={comment.id} comment={comment} />
+				))}
 			</div>
 		</div>
 	);

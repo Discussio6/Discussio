@@ -118,6 +118,8 @@ model Comment {
   User              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   comment           String              @db.Text
   parent_comment_id Int?
+  Parent            Comment?            @relation("ParentChild", fields: [parent_comment_id], references: [id], onDelete: Cascade)
+  Children          Comment[]           @relation("ParentChild")
   cAt               DateTime            @default(now())
   mAt               DateTime            @updatedAt
   DiscussionComment DiscussionComment[]

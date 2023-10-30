@@ -7,4 +7,10 @@ export const QUERY_KEYS = {
 		tags: ["discussions", "tags"],
 		tagsAll: ["discussions", "tags"],
 	},
+	comments: {
+		all: ["comments"],
+		single: (id: number) => ["comments", id],
+		list: ["comments", "list"],
+		infinite: ["comments", "infinite"],
+	},
 };

@@ -224,7 +224,7 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 							</Button>
 						</div>
 						<div className={cn(!openComments && "hidden", "mt-6")}>
-							<Comments />
+							<Comments content_id={discussion.id} />
 						</div>
 					</CardContent>
 				</>

@@ -47,3 +47,15 @@ export interface Tag {
 	cAt: Date;
 	mAt: Date;
 }
+
+export interface Comment {
+	id: number;
+	comment: string;
+	content_id: number;
+	parent_comment_id?: number;
+	userId: string;
+	User: User;
+	Children?: Comment[];
+	cAt: Date;
+	mAt: Date;
+}
