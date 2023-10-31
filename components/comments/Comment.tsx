@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 import ProfileCard from "../common/ProfileCard";
 import { Button } from "../ui/button";
 import {
@@ -55,7 +55,7 @@ function Comment({ comment }: CommentProps) {
 	const postComment = usePostComment();
 	const patchComment = usePatchComment();
 	const deleteComment = useDeleteComment();
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 	const {
 		data: replyData,
 		fetchNextPage,
@@ -70,7 +70,7 @@ function Comment({ comment }: CommentProps) {
 	});
 
 	const handleSubmit = useCallback(
-		(content: string) => {
+		(content: string, setContent: Dispatch<SetStateAction<string>>) => {
 			postComment.mutate(
 				{
 					content_id: comment.content_id,
@@ -79,6 +79,7 @@ function Comment({ comment }: CommentProps) {
 				},
 				{
 					onSuccess: () => {
+						setContent("");
 						setOpenCommentForm(false);
 						setOpenReplies(true);
 					},
@@ -89,7 +90,11 @@ function Comment({ comment }: CommentProps) {
 	);
 
 	const handleUpdate = useCallback(
-		(content: string) => {
+		(content: string, setContent: Dispatch<SetStateAction<string>>) => {
+			if (status !== "authenticated") {
+				alert("Please login to comment.");
+				return;
+			}
 			patchComment.mutate(
 				{
 					id: comment.id,
@@ -97,6 +102,7 @@ function Comment({ comment }: CommentProps) {
 				},
 				{
 					onSuccess: () => {
+						setContent("");
 						setIsEdit(false);
 					},
 				}

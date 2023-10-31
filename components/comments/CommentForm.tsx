@@ -1,10 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
 
 interface CommentFormProps {
 	initialContent?: string;
-	onSubmit: (content: string) => void;
+	onSubmit: (
+		content: string,
+		setContent: Dispatch<SetStateAction<string>>
+	) => void;
 	onCancel?: () => void;
 }
 
@@ -13,8 +17,7 @@ function CommentForm({ initialContent, onSubmit, onCancel }: CommentFormProps) {
 
 	const handleSubmit = useCallback(() => {
 		if (!content) return;
-		onSubmit?.(content);
-		setContent("");
+		onSubmit?.(content, setContent);
 	}, [content, setContent]);
 
 	const handleCancel = useCallback(() => {

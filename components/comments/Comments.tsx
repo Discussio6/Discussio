@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { Dispatch, SetStateAction, useCallback } from "react";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 import {
@@ -8,6 +8,7 @@ import {
 } from "@/lib/queries/comments";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 interface CommentsProps {
 	content_id: number;
@@ -15,6 +16,7 @@ interface CommentsProps {
 
 function Comments({ content_id }: CommentsProps) {
 	const postComment = usePostComment();
+	const { status } = useSession();
 	const { data } = useGetComments({ content_id, count: 0 });
 	const {
 		data: commentData,
@@ -32,10 +34,21 @@ function Comments({ content_id }: CommentsProps) {
 	const comments = (commentData?.pages || []).flatMap((page) => page.hits);
 
 	const handleSubmit = useCallback(
-		(comment: string) => {
-			postComment.mutate({ content_id, parent_comment_id: null, comment });
+		(comment: string, setContent: Dispatch<SetStateAction<string>>) => {
+			if (status !== "authenticated") {
+				alert("Please login to comment.");
+				return;
+			}
+			postComment.mutate(
+				{ content_id, parent_comment_id: null, comment },
+				{
+					onSuccess: () => {
+						setContent("");
+					},
+				}
+			);
 		},
-		[postComment]
+		[status, postComment]
 	);
 
 	return (
