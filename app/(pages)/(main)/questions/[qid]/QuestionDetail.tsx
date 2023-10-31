@@ -3,6 +3,7 @@
 import DiscussionCard from "@/components/common/DiscussionCard";
 import UploadWarningCard from "@/components/common/UploadWarningCard";
 import DiscussionForm, {
+	DiscussionFormType,
 	discussionFormSchema,
 } from "@/components/discussions/DiscussionForm";
 import { QUERY_KEYS } from "@/constants/querykeys";
@@ -14,6 +15,7 @@ import {
 } from "@/lib/queries/discussions";
 import { Discussion } from "@/types/schema";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import React, { useCallback } from "react";
 import * as z from "zod";
 
@@ -24,6 +26,7 @@ interface Props {
 
 function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 	const childParams = { parent_id: qid, orderBy: "cAt:asc" };
+	const { status } = useSession();
 	const { data: discussion } = useGetDiscussion(qid, {
 		initialData: { data: initialDiscussion, success: true },
 	});
@@ -42,13 +45,23 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 		},
 	});
 
-	const handleSubmit = async (values: z.infer<typeof discussionFormSchema>) => {
+	const handleSubmit = async (
+		values: z.infer<typeof discussionFormSchema>,
+		form: DiscussionFormType
+	) => {
+		if (status !== "authenticated") {
+			alert("Please login");
+			return;
+		}
 		discussionMutation.mutate(
 			{
 				...values,
 				parent_id: qid,
 			},
 			{
+				onSuccess: () => {
+					form.reset();
+				},
 				onError: (err) => {
 					console.log(err);
 					alert("문제가 발생했습니다. 잠시 후 다시 시도해주세요.");

@@ -30,7 +30,7 @@ function SubTopNavbar() {
 					className="font-bold h-full flex flex-col justify-center px-4"
 					onClick={handleSelect}
 					ref={(node) => {
-						if (item.link !== pathname) return;
+						if (item.link !== `/${pathname.split("/")?.[1]}`) return;
 						setPos({
 							left: node?.offsetLeft || 0,
 							right: node?.offsetWidth || 0,

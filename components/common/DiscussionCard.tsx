@@ -34,6 +34,7 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import DiscussionForm, {
+	DiscussionFormType,
 	discussionFormSchema,
 } from "../discussions/DiscussionForm";
 import {
@@ -62,7 +63,7 @@ interface DiscussionCardProps {
 function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 	const [openComments, setOpenComments] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 	const patchDiscussion = usePatchDiscussion();
 	const deleteDiscussion = useDeleteDiscussion();
 
@@ -71,7 +72,14 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 	const router = useRouter();
 
 	const handleUpdate = useCallback(
-		(values: z.infer<typeof discussionFormSchema>) => {
+		(
+			values: z.infer<typeof discussionFormSchema>,
+			form: DiscussionFormType
+		) => {
+			if (status !== "authenticated") {
+				alert("Please login");
+				return;
+			}
 			patchDiscussion.mutate(
 				{
 					...values,
@@ -79,6 +87,7 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 				},
 				{
 					onSuccess: (res) => {
+						form.reset();
 						setIsEdit(false);
 					},
 				}

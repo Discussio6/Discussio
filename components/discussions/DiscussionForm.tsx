@@ -32,17 +32,24 @@ export const discussionFormSchema = z.object({
 	tags: z.array(z.string()),
 });
 
+export type DiscussionFormType = UseFormReturn<
+	z.infer<typeof discussionFormSchema>
+>;
+
 export type onSuccess = ({
 	form,
 	res,
 }: {
-	form: UseFormReturn<z.infer<typeof discussionFormSchema>>;
+	form: DiscussionFormType;
 	res: SingleResponse<Discussion>;
 }) => void;
 
 interface DiscussionFormProps {
 	initialData?: Partial<z.infer<typeof discussionFormSchema>>;
-	onSubmit: (values: z.infer<typeof discussionFormSchema>) => void;
+	onSubmit: (
+		values: z.infer<typeof discussionFormSchema>,
+		form: DiscussionFormType
+	) => void;
 	onCancel?: () => void;
 }
 
@@ -57,8 +64,7 @@ function DiscussionForm({
 	});
 
 	const handleSubmit = async (values: z.infer<typeof discussionFormSchema>) => {
-		form.reset();
-		onSubmit(values);
+		onSubmit(values, form);
 	};
 
 	return (
