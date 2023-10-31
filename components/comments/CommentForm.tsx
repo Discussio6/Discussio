@@ -3,12 +3,13 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 
 interface CommentFormProps {
+	initialContent?: string;
 	onSubmit: (content: string) => void;
 	onCancel?: () => void;
 }
 
-function CommentForm({ onSubmit, onCancel }: CommentFormProps) {
-	const [content, setContent] = useState("");
+function CommentForm({ initialContent, onSubmit, onCancel }: CommentFormProps) {
+	const [content, setContent] = useState(initialContent ?? "");
 
 	const handleSubmit = useCallback(() => {
 		if (!content) return;

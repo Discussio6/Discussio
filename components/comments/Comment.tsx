@@ -6,15 +6,42 @@ import { Button } from "../ui/button";
 import {
 	ChevronDownIcon,
 	ChevronUpIcon,
+	EditIcon,
 	FlagIcon,
 	MessageSquareIcon,
 	ReplyIcon,
+	TrashIcon,
 } from "lucide-react";
 import CommentForm from "./CommentForm";
 import { cn } from "@/lib/utils";
 import { Comment } from "@/types/schema";
-import { useGetCommentsInfinite, usePostComment } from "@/lib/queries/comments";
+import {
+	useDeleteComment,
+	useGetCommentsInfinite,
+	usePatchComment,
+	usePostComment,
+} from "@/lib/queries/comments";
 import Comments from "./Comments";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { useSession } from "next-auth/react";
 
 interface CommentProps {
 	comment: Comment;
@@ -22,9 +49,13 @@ interface CommentProps {
 
 function Comment({ comment }: CommentProps) {
 	const [openCommentForm, setOpenCommentForm] = useState(false);
+	const [isEdit, setIsEdit] = useState(false);
 	const [openReplies, setOpenReplies] = useState(false);
 	const closeCommentForm = useCallback(() => setOpenCommentForm(false), []);
 	const postComment = usePostComment();
+	const patchComment = usePatchComment();
+	const deleteComment = useDeleteComment();
+	const { data: session } = useSession();
 	const {
 		data: replyData,
 		fetchNextPage,
@@ -56,15 +87,103 @@ function Comment({ comment }: CommentProps) {
 		},
 		[postComment]
 	);
+
+	const handleUpdate = useCallback(
+		(content: string) => {
+			patchComment.mutate(
+				{
+					id: comment.id,
+					comment: content,
+				},
+				{
+					onSuccess: () => {
+						setIsEdit(false);
+					},
+				}
+			);
+		},
+		[patchComment]
+	);
+
+	const handleDelete = useCallback(() => {
+		deleteComment.mutate(
+			{ id: comment.id },
+			{
+				onSuccess: () => {
+					alert("successfully deleted");
+				},
+			}
+		);
+	}, []);
+
+	const isAuthor = comment.User.id === session?.id;
 	const replies = (replyData?.pages || []).flatMap((page) => page.hits);
 	const replyCount = replyData?.pages[0].total;
 
 	return (
 		<div className="flex flex-col gap-2">
-			<div>
+			<div className="flex justify-between items-center">
 				<ProfileCard name={comment.User.name} image={comment.User.image} />
+				<AlertDialog>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button size="icon" variant="ghost">
+								<DotsHorizontalIcon />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							{isAuthor && (
+								<>
+									<DropdownMenuItem
+										className="cursor-pointer"
+										onClick={() => setIsEdit(true)}
+									>
+										<EditIcon className="w-4 h-4 mr-2" />
+										<span>Edit</span>
+									</DropdownMenuItem>
+									<AlertDialogTrigger asChild>
+										<DropdownMenuItem className="cursor-pointer">
+											<TrashIcon className="w-4 h-4 mr-2" />
+											<span>Delete</span>
+										</DropdownMenuItem>
+									</AlertDialogTrigger>
+									<DropdownMenuSeparator />
+								</>
+							)}
+							<DropdownMenuItem className="cursor-pointer">
+								<FlagIcon className="w-4 h-4 mr-2" />
+								<span>Report</span>
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Delete Comment</AlertDialogTitle>
+							<AlertDialogDescription>
+								Are you sure to delete this comment?
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction
+								onClick={handleDelete}
+								className="bg-red-500 hover:bg-red-500/90"
+							>
+								Delete
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
 			</div>
-			<div>{comment.comment}</div>
+			{!isEdit ? (
+				<div>{comment.comment}</div>
+			) : (
+				<CommentForm
+					initialContent={comment.comment}
+					onSubmit={handleUpdate}
+					onCancel={() => setIsEdit(false)}
+				/>
+			)}
 			<div className="flex gap-2">
 				{typeof replyCount !== "undefined" &&
 					replyCount > 0 &&
