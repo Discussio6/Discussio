@@ -4,8 +4,10 @@ import React, { useCallback, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
+	CheckCircle,
 	EditIcon,
 	FlagIcon,
+	MedalIcon,
 	MessageSquareIcon,
 	StarIcon,
 	ThumbsUpIcon,
@@ -54,13 +56,19 @@ import {
 	AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useRouter } from "next/navigation";
+import { Alert, AlertTitle } from "../ui/alert";
 
 interface DiscussionCardProps {
 	discussion: Discussion;
+	hasAcceptBtn?: boolean;
 	onLike: (id: number) => void;
 }
 
-function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
+function DiscussionCard({
+	discussion,
+	hasAcceptBtn,
+	onLike,
+}: DiscussionCardProps) {
 	const [openComments, setOpenComments] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const { data: session, status } = useSession();
@@ -96,6 +104,20 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 		[patchDiscussion]
 	);
 
+	const handleAccept = useCallback(() => {
+		patchDiscussion.mutate(
+			{
+				id: discussion.id,
+				isAccepted: true,
+			},
+			{
+				onSuccess: (data) => {
+					alert("The answer has been adopted.");
+				},
+			}
+		);
+	}, [patchDiscussion]);
+
 	const handleDelete = useCallback(() => {
 		deleteDiscussion.mutate(
 			{ id: discussion.id },
@@ -113,6 +135,12 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 			{!isEdit ? (
 				<>
 					<CardHeader className="flex flex-col gap-1">
+						{discussion.isAccepted && (
+							<div className="flex bg-orange-500 drop-shadow-sm text-white p-2 rounded-lg w-fit gap-2 items-center">
+								<MedalIcon className="w-5 h-5" />
+								Adopted
+							</div>
+						)}
 						<div className="flex items-center justify-between">
 							<CardTitle>{discussion.title}</CardTitle>
 							<AlertDialog>
@@ -199,17 +227,51 @@ function DiscussionCard({ discussion, onLike }: DiscussionCardProps) {
 									image={discussion.User.image}
 								/>
 							</div>
-							<Button
-								variant="outline"
-								className={cn(
-									"flex items-center justify-between gap-2 text-md px-4 py-2 min-w-[80px]",
-									liked && "text-red-500"
+							<div className="flex items-center gap-2">
+								{hasAcceptBtn && (
+									<AlertDialog>
+										<AlertDialogTrigger asChild>
+											<Button
+												variant="primary"
+												className="flex items-center justify-between gap-2 text-md px-4 py-2 min-w-[80px]"
+											>
+												<CheckCircle className="w-5 h-5" />
+												Adopt
+											</Button>
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>
+													Are you sure to adopt this answer?
+												</AlertDialogTitle>
+												<AlertDialogDescription>
+													You can not change the answer after adoption.
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													onClick={handleAccept}
+													className="bg-green-600 hover:bg-green-600/90"
+												>
+													Confirm
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
 								)}
-								onClick={() => onLike(discussion.id)}
-							>
-								<ThumbsUpIcon className="w-5 h-5" />
-								{discussion.Likes?.length}
-							</Button>
+								<Button
+									variant="outline"
+									className={cn(
+										"flex items-center justify-between gap-2 text-md px-4 py-2 min-w-[80px]",
+										liked && "text-red-500"
+									)}
+									onClick={() => onLike(discussion.id)}
+								>
+									<ThumbsUpIcon className="w-5 h-5" />
+									{discussion.Likes?.length}
+								</Button>
+							</div>
 						</div>
 						<div className="flex gap-2">
 							<Button className="flex items-center gap-2" variant="ghost">

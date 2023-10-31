@@ -5,7 +5,7 @@ import { Discussion } from "@/types/schema";
 import DiscussionItem from "@/components/common/DiscussionItem";
 import React from "react";
 
-interface DiscussionsListProps {
+interface QuestionsListProps {
 	initialDiscussions: Discussion[];
 	initialTotal: number;
 	page?: number;
@@ -13,13 +13,13 @@ interface DiscussionsListProps {
 	orderBy?: string;
 }
 
-function DiscussionsList({
+function QuestionsList({
 	initialDiscussions,
 	initialTotal,
 	page,
 	count,
 	orderBy,
-}: DiscussionsListProps) {
+}: QuestionsListProps) {
 	const { data: discussions } = useGetDiscussions(
 		{ page, count, orderBy, isQna: true },
 		{
@@ -36,12 +36,10 @@ function DiscussionsList({
 					))}
 				</div>
 			) : (
-				<div className="text-center my-16 text-slate-500">
-					No results found
-				</div>
+				<div className="text-center my-16 text-slate-500">No results found</div>
 			)}
 		</article>
 	);
 }
 
-export default DiscussionsList;
+export default QuestionsList;

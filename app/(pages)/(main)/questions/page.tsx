@@ -5,7 +5,7 @@ import { Discussion } from "@/types/schema";
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import DiscussionsList from "./DiscussionsList";
+import QuestionsList from "./QuestionsList";
 
 interface QuestionsPageProps {
 	searchParams: {
@@ -47,7 +47,7 @@ async function QuestionsPage({
 					</Button>
 				</Link>
 			</div>
-			<DiscussionsList
+			<QuestionsList
 				initialDiscussions={discussions}
 				initialTotal={total}
 				page={numPage}

@@ -9,6 +9,7 @@ import DiscussionForm, {
 import { QUERY_KEYS } from "@/constants/querykeys";
 import {
 	useGetDiscussion,
+	useGetDiscussions,
 	useGetDiscussionsInfinite,
 	useLikeDiscussion,
 	usePostDiscussion,
@@ -26,7 +27,12 @@ interface Props {
 
 function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 	const childParams = { parent_id: qid, orderBy: "cAt:asc" };
-	const { status } = useSession();
+	const { data: session, status } = useSession();
+	const { data: accpeted } = useGetDiscussions({
+		isAccepted: true,
+		parent_id: qid,
+		isQna: true,
+	});
 	const { data: discussion } = useGetDiscussion(qid, {
 		initialData: { data: initialDiscussion, success: true },
 	});
@@ -57,6 +63,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 			{
 				...values,
 				parent_id: qid,
+				isQna: initialDiscussion.isQna,
 			},
 			{
 				onSuccess: () => {
@@ -84,6 +91,8 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 		[queryClient]
 	);
 
+	const isAuthor = discussion?.data.User.id === session?.id;
+	const isAccepted = accpeted && accpeted.total > 0;
 	const children = childDiscussions?.pages.flatMap((page) => page.hits) ?? [];
 
 	if (!discussion?.data) return null;
@@ -106,6 +115,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 								key={item.id}
 								discussion={item}
 								onLike={handleLike}
+								hasAcceptBtn={discussion.data.isQna && !isAccepted && isAuthor}
 							/>
 						))}
 					</div>

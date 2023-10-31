@@ -9,20 +9,35 @@ export async function GET(req: NextRequest) {
 		let count = req.nextUrl.searchParams.get("count") || 10;
 		let parent_id: number | string | null =
 			req.nextUrl.searchParams.get("parent_id") || null;
-		let isQna = req.nextUrl.searchParams.get("isQna") || false;
+		const isQna = req.nextUrl.searchParams.get("isQna");
+		const isAccepted = req.nextUrl.searchParams.get("isAccepted");
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
+
+		const parsedQna = isQna === "true" ? true : false;
+		const parsedAccepted = isAccepted === "true" ? true : false;
 
 		page = parseInt(page as string);
 		count = parseInt(count as string);
 		parent_id = parseInt(parent_id as string);
-		isQna = isQna.toString() === "true";
 
 		if (page < 1) page = 1;
 		if (count < 1) count = 1;
 
-		const total = await db.discussion.count({ where: { parent_id, isQna } });
+		const total = await db.discussion.count({
+			where: {
+				parent_id,
+				...(isQna ? { isQna: parsedQna } : {}),
+				...(isAccepted ? { isAccepted: parsedAccepted } : {}),
+			},
+		});
 		const discussions = await db.discussion.findMany({
-			where: { AND: [{ parent_id }, { isQna }] },
+			where: {
+				AND: [
+					{ parent_id },
+					...(isQna ? [{ isQna: parsedQna }] : []),
+					...(isAccepted ? [{ isAccepted: parsedAccepted }] : []),
+				],
+			},
 			include: {
 				User: true,
 				Likes: { select: { User: true, cAt: true } },

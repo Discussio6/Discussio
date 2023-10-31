@@ -18,10 +18,10 @@ function DiscussionsList({
 	initialTotal,
 	page,
 	count,
-    orderBy,
+	orderBy,
 }: DiscussionsListProps) {
 	const { data: discussions } = useGetDiscussions(
-		{ page, count, orderBy },
+		{ page, count, orderBy, isQna: false },
 		{
 			initialData: { total: initialTotal, hits: initialDiscussions },
 		}

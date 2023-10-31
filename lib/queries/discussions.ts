@@ -51,6 +51,7 @@ export interface getDiscussionsProps {
 	count?: number;
 	orderBy?: string;
 	isQna?: boolean;
+	isAccepted?: boolean;
 }
 
 export const getDiscussions = async (params: getDiscussionsProps) => {
@@ -148,8 +149,10 @@ export const usePostDiscussion = (
 };
 
 export interface patchDiscussionProps
-	extends Omit<postDiscussionProps, "parent_id">,
-		IdSingleProps {}
+	extends Partial<Omit<postDiscussionProps, "parent_id">>,
+		IdSingleProps {
+	isAccepted?: boolean;
+}
 
 export const patchDiscussion = async (body: patchDiscussionProps) => {
 	const { data: res } = await api.patch<SingleResponse<Discussion>>(
