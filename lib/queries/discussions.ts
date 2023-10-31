@@ -93,17 +93,15 @@ export const useGetDiscussionsInfinite = (
 		ListResponse<Discussion>
 	>(
 		[...QUERY_KEYS.discussions.infinite, params],
-		() => getDiscussions(params),
+		({ pageParam = params.page }) =>
+			getDiscussions({ ...params, page: pageParam }),
 		{
 			getNextPageParam: (lastPage, allPages) => {
 				if (
 					lastPage.hits.length + (params.count ?? 10) * (allPages.length - 1) <
 					lastPage.total
 				) {
-					return {
-						...params,
-						page: (params.page ?? 0) + 1,
-					};
+					return (params.page ?? 0) + 1;
 				}
 				return undefined;
 			},

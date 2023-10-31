@@ -6,6 +6,8 @@ import {
 	useGetCommentsInfinite,
 	usePostComment,
 } from "@/lib/queries/comments";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 interface CommentsProps {
 	content_id: number;
@@ -14,7 +16,12 @@ interface CommentsProps {
 function Comments({ content_id }: CommentsProps) {
 	const postComment = usePostComment();
 	const { data } = useGetComments({ content_id, count: 0 });
-	const { data: commentData } = useGetCommentsInfinite({
+	const {
+		data: commentData,
+		fetchNextPage,
+		isFetchingNextPage,
+		hasNextPage,
+	} = useGetCommentsInfinite({
 		content_id,
 		parent_comment_id: null,
 		page: 1,
@@ -35,10 +42,24 @@ function Comments({ content_id }: CommentsProps) {
 		<div className="flex flex-col gap-4">
 			<h1 className="text-md font-semibold">{data?.total} Comments</h1>
 			<CommentForm onSubmit={handleSubmit} />
-			<div className="flex flex-col gap-4 mt-4">
-				{comments?.map((comment) => (
-					<Comment key={comment.id} comment={comment} />
-				))}
+			<div className="flex flex-col gap-2 mt-4">
+				<div className="flex flex-col gap-4">
+					{comments?.map((comment) => (
+						<Comment key={comment.id} comment={comment} />
+					))}
+				</div>
+				{hasNextPage && (
+					<Button
+						variant="ghost"
+						onClick={() => {
+							if (!isFetchingNextPage) fetchNextPage();
+						}}
+						disabled={isFetchingNextPage}
+						className={cn(isFetchingNextPage && "animate-pulse")}
+					>
+						{isFetchingNextPage ? "Loading more..." : "Load more"}
+					</Button>
+				)}
 			</div>
 		</div>
 	);

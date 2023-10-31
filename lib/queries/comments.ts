@@ -82,21 +82,23 @@ export const useGetCommentsInfinite = (
 		ListResponse<Comment>,
 		AxiosError<any>,
 		ListResponse<Comment>
-	>([...QUERY_KEYS.comments.infinite, params], () => getComments(params), {
-		getNextPageParam: (lastPage, allPages) => {
-			if (
-				lastPage.hits.length + (params.count ?? 10) * (allPages.length - 1) <
-				lastPage.total
-			) {
-				return {
-					...params,
-					page: (params.page ?? 0) + 1,
-				};
-			}
-			return undefined;
-		},
-		...options,
-	});
+	>(
+		[...QUERY_KEYS.comments.infinite, params],
+		({ pageParam = params.page }) =>
+			getComments({ ...params, page: pageParam }),
+		{
+			getNextPageParam: (lastPage, allPages) => {
+				if (
+					lastPage.hits.length + (params.count ?? 10) * (allPages.length - 1) <
+					lastPage.total
+				) {
+					return (params.page ?? 0) + 1;
+				}
+				return undefined;
+			},
+			...options,
+		}
+	);
 };
 
 export interface postCommentProps {

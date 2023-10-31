@@ -25,7 +25,12 @@ function Comment({ comment }: CommentProps) {
 	const [openReplies, setOpenReplies] = useState(false);
 	const closeCommentForm = useCallback(() => setOpenCommentForm(false), []);
 	const postComment = usePostComment();
-	const { data: replyData } = useGetCommentsInfinite({
+	const {
+		data: replyData,
+		fetchNextPage,
+		isFetchingNextPage,
+		hasNextPage,
+	} = useGetCommentsInfinite({
 		content_id: comment.content_id,
 		parent_comment_id: comment.id,
 		page: 1,
@@ -96,10 +101,24 @@ function Comment({ comment }: CommentProps) {
 				<CommentForm onCancel={closeCommentForm} onSubmit={handleSubmit} />
 			</div>
 			{openReplies && replies && replies.length > 0 && (
-				<div className="flex flex-col gap-4 mt-4 pl-12">
-					{replies?.map((reply) => (
-						<Comment key={reply.id} comment={reply} />
-					))}
+				<div className="flex flex-col gap-2 mt-4 pl-12">
+					<div className="flex flex-col gap-4">
+						{replies?.map((reply) => (
+							<Comment key={reply.id} comment={reply} />
+						))}
+					</div>
+					{hasNextPage && (
+						<Button
+							variant="ghost"
+							onClick={() => {
+								if (!isFetchingNextPage) fetchNextPage();
+							}}
+							disabled={isFetchingNextPage}
+							className={cn(isFetchingNextPage && "animate-pulse")}
+						>
+							{isFetchingNextPage ? "Loading more..." : "Load more"}
+						</Button>
+					)}
 				</div>
 			)}
 		</div>
