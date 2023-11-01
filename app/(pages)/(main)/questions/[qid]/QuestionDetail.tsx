@@ -7,6 +7,7 @@ import DiscussionForm, {
 	discussionFormSchema,
 } from "@/components/discussions/DiscussionForm";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { QUERY_KEYS } from "@/constants/querykeys";
 import {
 	useGetDiscussion,
@@ -35,7 +36,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 		count: 10,
 	};
 	const { data: session, status } = useSession();
-	const { data: accpeted } = useGetDiscussions({
+	const { data: accepted } = useGetDiscussions({
 		isAccepted: true,
 		parent_id: qid,
 		isQna: true,
@@ -104,10 +105,10 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 	);
 
 	const isAuthor = discussion?.data.User.id === session?.id;
-	const isAccepted = accpeted && accpeted.total > 0;
+	const isAccepted = accepted && accepted.total > 0;
 	const answers = childDiscussions?.pages.flatMap((page) => page.hits) ?? [];
 
-	if (!discussion?.data) return null;
+	if (!discussion?.data || !accepted) return null;
 
 	return (
 		<main className="container flex flex-col my-8 gap-8">
@@ -116,6 +117,15 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 				<UploadWarningCard className="bg-transparent text-slate-500" />
 				<DiscussionForm onSubmit={handleSubmit} />
 			</div>
+			{isAccepted && (
+				<>
+					<div className="flex flex-col gap-2">
+						<h1 className="text-xl font-bold">Adopted Answer</h1>
+						<DiscussionCard discussion={accepted.hits[0]} onLike={handleLike} />
+					</div>
+					<Separator />
+				</>
+			)}
 			{childDiscussions?.pages?.[0].total ?? 0 > 0 ? (
 				<div className="flex flex-col gap-3">
 					<h1 className="text-xl font-bold">
