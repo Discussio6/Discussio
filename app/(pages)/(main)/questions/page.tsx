@@ -12,20 +12,31 @@ interface QuestionsPageProps {
 		count?: string;
 		page?: string;
 		orderBy?: string;
+		isAccepted?: string;
 	};
 }
 
 const genLink = (page: number) => `/questions?page=${page}`;
 
 async function QuestionsPage({
-	searchParams: { page, count, orderBy },
+	searchParams: { page, count, orderBy, isAccepted },
 }: QuestionsPageProps) {
 	const numPage = page ? parseInt(page) : 1;
 	const numCount = count ? parseInt(count) : 10;
 	const sort = orderBy || "cAt:desc";
-	const total = await db.discussion.count({ where: { parent_id: null } });
+	const total = await db.discussion.count({
+		where: {
+			parent_id: null,
+			isQna: true,
+			...(isAccepted ? { isAccepted: isAccepted === "true" } : {}),
+		},
+	});
 	const discussions = (await db.discussion.findMany({
-		where: { parent_id: null, isQna: true },
+		where: {
+			parent_id: null,
+			isQna: true,
+			...(isAccepted ? { isAccepted: isAccepted === "true" } : {}),
+		},
 		include: {
 			User: true,
 			Likes: { select: { User: true, cAt: true } },
@@ -53,6 +64,7 @@ async function QuestionsPage({
 				page={numPage}
 				count={numCount}
 				orderBy={sort}
+				isAccepted={isAccepted}
 			/>
 			<div className="flex justify-center">
 				<Pagination

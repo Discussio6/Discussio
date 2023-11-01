@@ -6,14 +6,22 @@ import { Discussion } from "@/types/schema";
 import moment from "moment";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface DiscussionItemProps {
 	discussion: Discussion;
 }
 
 function DiscussionItem({ discussion }: DiscussionItemProps) {
+	const unsolved = !discussion.isAccepted && discussion.isQna;
+
 	return (
-		<div className="flex flex-col gap-1 border p-4 rounded-lg">
+		<div
+			className={cn(
+				"flex flex-col gap-1 border p-4 rounded-lg",
+				unsolved && "border-red-500"
+			)}
+		>
 			<Link
 				href={`/${discussion.isQna ? "questions" : "discussions"}/${
 					discussion.id
