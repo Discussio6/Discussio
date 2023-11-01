@@ -57,7 +57,6 @@ import {
 	AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useRouter } from "next/navigation";
-import { Alert, AlertTitle } from "../ui/alert";
 
 interface DiscussionCardProps {
 	discussion: Discussion;
@@ -143,7 +142,7 @@ function DiscussionCard({
 			{!isEdit ? (
 				<>
 					<CardHeader className="flex flex-col gap-1">
-						{discussion.isAccepted && (
+						{discussion.isAccepted && !!discussion.parent_id && (
 							<div className="flex bg-orange-500 drop-shadow-sm text-white p-2 rounded-lg w-fit gap-2 items-center">
 								<MedalIcon className="w-5 h-5" />
 								Adopted
