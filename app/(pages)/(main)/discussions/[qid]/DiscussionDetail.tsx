@@ -6,6 +6,7 @@ import DiscussionForm, {
 	DiscussionFormType,
 	discussionFormSchema,
 } from "@/components/discussions/DiscussionForm";
+import { Button } from "@/components/ui/button";
 import { QUERY_KEYS } from "@/constants/querykeys";
 import {
 	useGetDiscussion,
@@ -13,6 +14,7 @@ import {
 	useLikeDiscussion,
 	usePostDiscussion,
 } from "@/lib/queries/discussions";
+import { cn } from "@/lib/utils";
 import { Discussion } from "@/types/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -25,7 +27,12 @@ interface Props {
 }
 
 function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
-	const childParams = { parent_id: qid, orderBy: "cAt:asc" };
+	const childParams = {
+		parent_id: qid,
+		orderBy: "cAt:asc",
+		page: 1,
+		count: 10,
+	};
 	const { status } = useSession();
 	const { data: discussion } = useGetDiscussion(qid, {
 		initialData: { data: initialDiscussion, success: true },
@@ -33,9 +40,14 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 	const discussionMutation = usePostDiscussion();
 	const likeMutation = useLikeDiscussion();
 	const queryClient = useQueryClient();
-	const { data: childDiscussions } = useGetDiscussionsInfinite(childParams, {
+	const {
+		data: childDiscussions,
+		hasNextPage,
+		fetchNextPage,
+		isFetchingNextPage,
+	} = useGetDiscussionsInfinite(childParams, {
 		initialData: {
-			pageParams: [{ page: 1, count: 10, parent_id: qid }],
+			pageParams: [1],
 			pages: [
 				{
 					hits: discussion?.data.Children ?? [],
@@ -84,7 +96,7 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 		[queryClient]
 	);
 
-	const children = childDiscussions?.pages.flatMap((page) => page.hits) ?? [];
+	const answers = childDiscussions?.pages.flatMap((page) => page.hits) ?? [];
 
 	if (!discussion?.data) return null;
 
@@ -100,14 +112,28 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 					<h1 className="text-xl font-bold">
 						{childDiscussions?.pages?.[0].total} Answers
 					</h1>
-					<div className="flex flex-col gap-4">
-						{children.map((item) => (
-							<DiscussionCard
-								key={item.id}
-								discussion={item}
-								onLike={handleLike}
-							/>
-						))}
+					<div className="flex flex-col gap-2">
+						<div className="flex flex-col gap-4">
+							{answers.map((item) => (
+								<DiscussionCard
+									key={item.id}
+									discussion={item}
+									onLike={handleLike}
+								/>
+							))}
+						</div>
+						{hasNextPage && (
+							<Button
+								variant="ghost"
+								onClick={() => {
+									if (!isFetchingNextPage) fetchNextPage();
+								}}
+								disabled={isFetchingNextPage}
+								className={cn(isFetchingNextPage && "animate-pulse")}
+							>
+								{isFetchingNextPage ? "Loading more..." : "Load more"}
+							</Button>
+						)}
 					</div>
 				</div>
 			) : (
