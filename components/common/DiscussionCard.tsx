@@ -40,6 +40,7 @@ import DiscussionForm, {
 	discussionFormSchema,
 } from "../discussions/DiscussionForm";
 import {
+	useAcceptDiscussion,
 	useDeleteDiscussion,
 	usePatchDiscussion,
 } from "@/lib/queries/discussions";
@@ -74,6 +75,7 @@ function DiscussionCard({
 	const { data: session, status } = useSession();
 	const patchDiscussion = usePatchDiscussion();
 	const deleteDiscussion = useDeleteDiscussion();
+	const acceptDiscussion = useAcceptDiscussion();
 
 	const isAuthor = discussion.User.id === session?.id;
 	const liked = discussion.Likes?.some((like) => like.User.id === session?.id);
@@ -105,10 +107,16 @@ function DiscussionCard({
 	);
 
 	const handleAccept = useCallback(() => {
-		patchDiscussion.mutate(
+		if (status !== "authenticated") {
+			alert("Please login");
+			return;
+		}
+		if (!discussion.parent_id) return;
+
+		acceptDiscussion.mutate(
 			{
 				id: discussion.id,
-				isAccepted: true,
+				parent_id: discussion.parent_id,
 			},
 			{
 				onSuccess: (data) => {
@@ -116,7 +124,7 @@ function DiscussionCard({
 				},
 			}
 		);
-	}, [patchDiscussion]);
+	}, [acceptDiscussion]);
 
 	const handleDelete = useCallback(() => {
 		deleteDiscussion.mutate(

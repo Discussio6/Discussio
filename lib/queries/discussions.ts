@@ -305,3 +305,44 @@ export const usePostDiscussionTag = (
 		},
 	});
 };
+
+interface accepetDiscussionProps extends IdSingleProps {
+	parent_id: number;
+}
+
+export const acceptDiscussion = async (body: accepetDiscussionProps) => {
+	const { data: res } = await api.post<SingleResponse<unknown>>(
+		`${apiBaseUrl}/accept`,
+		body
+	);
+	return res;
+};
+
+export const useAcceptDiscussion = (
+	options?: UseMutationOptions<
+		SingleResponse<unknown>,
+		AxiosError<any>,
+		accepetDiscussionProps
+	>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<
+		SingleResponse<unknown>,
+		AxiosError<any>,
+		accepetDiscussionProps
+	>((props) => acceptDiscussion(props), {
+		...options,
+		onSuccess(data, variables, context) {
+			queryClient.invalidateQueries(
+				QUERY_KEYS.discussions.single(variables.id)
+			);
+			queryClient.invalidateQueries(
+				QUERY_KEYS.discussions.single(variables.parent_id)
+			);
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.list);
+			queryClient.invalidateQueries(QUERY_KEYS.discussions.infinite);
+			options?.onSuccess?.(data, variables, context);
+		},
+	});
+};

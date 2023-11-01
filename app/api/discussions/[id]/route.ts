@@ -74,27 +74,11 @@ export async function PATCH(
 			return NextResponse.json({ success: false }, { status: 401 });
 		}
 
-		if (typeof body.isAccepted !== "undefined") {
-			if (
-				(await db.discussion.count({
-					where: { id: parseInt(params.id), isAccepted: true },
-				})) > 0
-			) {
-				return NextResponse.json(
-					{ success: false, message: "There exists an already adopted answer" },
-					{ status: 400 }
-				);
-			}
-		}
-
 		const discussion = await db.discussion.update({
 			where: { id: parseInt(params.id) },
 			data: {
 				title: body.title,
 				content: body.content,
-				...(typeof body.isAccepted !== "undefined"
-					? { isAccepted: body.isAccepted }
-					: {}),
 				...(body.tags
 					? {
 							Tags: {
