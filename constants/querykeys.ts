@@ -13,4 +13,10 @@ export const QUERY_KEYS = {
 		list: ["comments", "list"],
 		infinite: ["comments", "infinite"],
 	},
+	quizs: {
+		all: ["quizs"],
+		single: (id: number) => ["quizs", id],
+		list: ["quizs", "list"],
+		infinite: ["quizs", "infinite"],
+	},
 };

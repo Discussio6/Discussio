@@ -11,7 +11,16 @@ const Select = SelectPrimitive.Root
 const SelectGroup = SelectPrimitive.Group
 
 const SelectValue = SelectPrimitive.Value
-
+const SelectRoot = React.forwardRef<
+    React.ElementRef<typeof Select>,
+    React.ComponentPropsWithoutRef<typeof Select>
+>((props) => {
+    return (
+        <Select
+            {...props}
+        />
+    );
+});
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
@@ -118,4 +127,5 @@ export {
   SelectLabel,
   SelectItem,
   SelectSeparator,
+  SelectRoot
 }

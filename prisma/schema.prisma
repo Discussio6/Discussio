@@ -135,3 +135,63 @@ model DiscussionComment {
 
   @@id([discussion_id, comment_id])
 }
+model Quiz {
+  quiz_id          Int             @id
+  user_id          String          // Assuming the type is String to match the User id type
+  quiz_name        String          @db.VarChar(255)
+  quiz_description String          @db.Text
+  category         String          @db.VarChar
+  acl              String          @db.VarChar
+  cAt              DateTime
+  mAt              DateTime
+  QuizQuestion     QuizQuestion[]
+  QuizParticipant  QuizParticipant[]
+
+  User             User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+model QuizQuestion {
+  question_id  Int            @id
+  quiz_id      Int
+  content      String         @db.Text
+  difficulty   Int
+  score        Int
+  answer       String         @db.Text
+  is_multiple  Boolean
+  cAt          DateTime
+  mAt          DateTime
+  Quiz         Quiz           @relation(fields: [quiz_id], references: [quiz_id])
+  QuizAnswer   QuizAnswer[]
+}
+model QuizAnswer {
+  answer_id    Int            @id
+  question_id  Int
+  content      String         @db.Text
+  isAnswer     Boolean
+  cAt          DateTime
+  mAt          DateTime
+  QuizQuestion QuizQuestion   @relation(fields: [question_id], references: [question_id])
+}
+model QuizParticipant {
+  part_id         Int                    @id
+  quiz_id         Int
+  user_id         String                 // Assuming the type is String to match the User id type
+  startTime       DateTime                    // Assuming startTime and endTime are DateTime types for timestamps
+  endTime         DateTime
+  cAt             DateTime
+  Quiz            Quiz                   @relation(fields: [quiz_id], references: [quiz_id])
+  User            User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  QuizParticipantAnswer QuizParticipantAnswer[]
+}
+model QuizParticipantAnswer {
+  panswer_id      Int                @id
+  quiz_id         Int
+  question_id     Int
+  part_id         Int
+  answer_id       Int
+  cAt             DateTime
+  mAt             DateTime
+  Quiz            Quiz               @relation(fields: [quiz_id], references: [quiz_id])
+  QuizQuestion    QuizQuestion       @relation(fields: [question_id], references: [question_id])
+  QuizParticipant QuizParticipant    @relation(fields: [part_id], references: [part_id])
+  QuizAnswer      QuizAnswer         @relation(fields: [answer_id], references: [answer_id])
+}
