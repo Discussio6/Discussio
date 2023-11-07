@@ -47,7 +47,72 @@ export interface Tag {
 	cAt: Date;
 	mAt: Date;
 }
+export interface Quiz {
+	quiz_id: number;
+	user_id: string;
+	quiz_name: string;
+	quiz_description: string;
+	category: string;
+	acl: string;
+	cAt: Date;
+	mAt: Date;
+	QuizQuestion: QuizQuestion[];
+	QuizParticipant: QuizParticipant[];
+	User: User;
+	QuizParticipantAnswer: QuizParticipantAnswer[];
+}
 
+export interface QuizQuestion {
+	question_id: number;
+	quiz_id: number;
+	content: string;
+	difficulty: number;
+	score: number;
+	answer: string;
+	is_multiple: boolean;
+	cAt: Date;
+	mAt: Date;
+	Quiz: Quiz;
+	QuizAnswer: QuizAnswer[];
+	QuizParticipantAnswer: QuizParticipantAnswer[];
+}
+
+export interface QuizAnswer {
+	answer_id: number;
+	question_id: number;
+	content: string;
+	isAnswer: boolean;
+	cAt: Date;
+	mAt: Date;
+	QuizQuestion: QuizQuestion;
+	QuizParticipantAnswer: QuizParticipantAnswer[];
+}
+
+export interface QuizParticipant {
+	part_id: number;
+	quiz_id: number;
+	user_id: string;
+	startTime: Date;
+	endTime: Date;
+	cAt: Date;
+	Quiz: Quiz;
+	User: User;
+	QuizParticipantAnswer: QuizParticipantAnswer[];
+}
+
+export interface QuizParticipantAnswer {
+	panswer_id: number;
+	quiz_id: number;
+	question_id: number;
+	part_id: number;
+	answer_id: number;
+	cAt: Date;
+	mAt: Date;
+	Quiz: Quiz;
+	QuizQuestion: QuizQuestion;
+	QuizParticipant: QuizParticipant;
+	QuizAnswer: QuizAnswer;
+}
 export interface Comment {
 	id: number;
 	comment: string;
