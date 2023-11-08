@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma migrate deploy && npx prisma generate && next build",
+    "build": "npx prisma migrate deploy && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -43,7 +44,8 @@
     "react-hook-form": "^7.47.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "prisma": "^5.5.0"
   },
   "devDependencies": {
     "@iconify/react": "^4.1.1",
@@ -58,7 +60,6 @@
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "latest",
-    "prisma": "^5.5.0",
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "latest",
     "typescript": "latest"
