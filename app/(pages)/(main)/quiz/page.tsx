@@ -1,8 +1,11 @@
+import { SearchBar } from '@/components/common/SearchBar'
 import React from 'react'
 
 function QuizPage() {
   return (
-    <div>QuizPage</div>
+    <div>
+        <SearchBar />
+    </div>
   )
 }
 

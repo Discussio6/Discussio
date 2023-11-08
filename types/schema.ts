@@ -52,7 +52,7 @@ export interface Quiz {
 	user_id: string;
 	quiz_name: string;
 	quiz_description: string;
-	category: string;
+	Tags: Tag[];
 	acl: string;
 	cAt: Date;
 	mAt: Date;

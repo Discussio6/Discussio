@@ -1,4 +1,4 @@
-import { Quiz } from "@/types/schema";
+import { Quiz, Tag } from "@/types/schema";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 interface QuizItemProps {
@@ -12,7 +12,12 @@ const QuizPreviewItem = ({ quiz }: QuizItemProps) => {
                 <Icon icon="iconamoon:profile-circle-fill" />
                 <div>{quiz.user_id}</div>
             </div>
-            <div>{quiz.category}</div>
+            <div>{quiz.Tags.map((tag:Tag)=>{
+                return (
+                    <div>{tag.name}</div>
+                )
+            })
+            }</div>
             <div>
                 <button>Preview</button>
             </div>
