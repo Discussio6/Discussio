@@ -143,7 +143,7 @@ model Quiz {
   user_id          String // Assuming the type is String to match the User id type
   quiz_name        String            @db.VarChar(255)
   quiz_description String            @db.Text
-  category         String            @db.VarChar(255)
+  Tags             Tag[]
   acl              String            @db.VarChar(255)
   cAt              DateTime
   mAt              DateTime
