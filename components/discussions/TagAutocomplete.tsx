@@ -12,10 +12,7 @@ import { PlusCircleIcon, PlusIcon } from "lucide-react";
 import React, { useCallback, useRef } from "react";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import {
-	useGetDiscussionTags,
-	usePostDiscussionTag,
-} from "@/lib/queries/discussions";
+import { useGetTags, usePostTag } from "@/lib/queries/tags";
 import { useDebounce } from "@/hooks/useDebounce";
 
 interface TagAutocompleteProps {
@@ -26,9 +23,9 @@ interface TagAutocompleteProps {
 export function TagAutocomplete({ value, onSelect }: TagAutocompleteProps) {
 	const [open, setOpen] = useState(false);
 	const [inputValue, setInputValue] = useState("");
-	const postTag = usePostDiscussionTag();
+	const postTag = usePostTag();
 	const debouncedInputValue = useDebounce(inputValue, 200);
-	const { data: tags } = useGetDiscussionTags({ keyword: debouncedInputValue });
+	const { data: tags } = useGetTags({ keyword: debouncedInputValue });
 	const filteredTags = tags?.hits.filter((tag) => !value?.includes(tag.name));
 
 	const handleCreateTag = useCallback(() => {

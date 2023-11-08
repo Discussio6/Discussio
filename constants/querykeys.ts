@@ -4,9 +4,8 @@ export const QUERY_KEYS = {
 		single: (id: number) => ["discussions", id],
 		list: ["discussions", "list"],
 		infinite: ["discussions", "infinite"],
-		tags: ["discussions", "tags"],
-		tagsAll: ["discussions", "tags"],
 	},
+	tags: ["tags"],
 	comments: {
 		all: ["comments"],
 		single: (id: number) => ["comments", id],
@@ -18,5 +17,10 @@ export const QUERY_KEYS = {
 		single: (id: number) => ["quizs", id],
 		list: ["quizs", "list"],
 		infinite: ["quizs", "infinite"],
+	},
+	flashcards: {
+		all: ["flashcards"],
+		single: (id: number) => ["flashcards", id],
+		list: ["flashcards", "list"],
 	},
 };

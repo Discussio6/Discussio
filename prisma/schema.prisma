@@ -216,7 +216,7 @@ model Flashcard {
   description          String?
   Tags                 Tag[]
   Contents             FlashcardContent[]
-  acl                  Int                    @default(0)
+  acl                  Acl                    @default(PUBLIC)
   cAt                  DateTime               @default(now())
   mAt                  DateTime               @updatedAt
   FlashcardParticipant FlashcardParticipant[]
@@ -225,7 +225,7 @@ model Flashcard {
 model FlashcardContent {
   id         Int       @id @default(autoincrement())
   card_id    Int
-  Flashcard  Flashcard @relation(fields: [card_id], references: [id])
+  Flashcard  Flashcard @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   question   String
   answer     String
   difficulty Int       @default(0)
@@ -237,7 +237,13 @@ model FlashcardParticipant {
   id      Int       @id @default(autoincrement())
   card_id Int
   user_id String
-  User    User      @relation(fields: [user_id], references: [id])
-  Card    Flashcard @relation(fields: [card_id], references: [id])
+  User    User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Card    Flashcard @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   cAt     DateTime  @default(now())
+}
+
+enum Acl {
+  PUBLIC
+  PRIVATE
+  FRIENDS
 }
