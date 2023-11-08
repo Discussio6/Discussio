@@ -40,18 +40,20 @@ model Session {
 }
 
 model User {
-  id              String            @id @default(cuid())
-  name            String?
-  email           String?           @unique
-  emailVerified   DateTime?
-  image           String?
-  accounts        Account[]
-  sessions        Session[]
-  discussions     Discussion[]
-  Likes           Like[]
-  comments        Comment[]
-  Quiz            Quiz[]
-  QuizParticipant QuizParticipant[]
+  id                   String                 @id @default(cuid())
+  name                 String?
+  email                String?                @unique
+  emailVerified        DateTime?
+  image                String?
+  accounts             Account[]
+  sessions             Session[]
+  discussions          Discussion[]
+  Likes                Like[]
+  comments             Comment[]
+  Quiz                 Quiz[]
+  QuizParticipant      QuizParticipant[]
+  Flashcard            Flashcard[]
+  FlashcardParticipant FlashcardParticipant[]
 }
 
 model VerificationToken {
@@ -109,8 +111,8 @@ model Tag {
   mAt         DateTime @updatedAt
 
   Discussions Discussion[]
-
-  @@fulltext([name])
+  Flashcard   Flashcard?   @relation(fields: [flashcardId], references: [id])
+  flashcardId Int?
 }
 
 model Comment {
@@ -204,4 +206,38 @@ model QuizParticipantAnswer {
   QuizQuestion    QuizQuestion    @relation(fields: [question_id], references: [question_id])
   QuizParticipant QuizParticipant @relation(fields: [part_id], references: [part_id])
   QuizAnswer      QuizAnswer      @relation(fields: [answer_id], references: [answer_id])
+}
+
+model Flashcard {
+  id                   Int                    @id @default(autoincrement())
+  user_id              String
+  User                 User                   @relation(fields: [user_id], references: [id])
+  name                 String
+  description          String?
+  Tags                 Tag[]
+  Contents             FlashcardContent[]
+  acl                  Int                    @default(0)
+  cAt                  DateTime               @default(now())
+  mAt                  DateTime               @updatedAt
+  FlashcardParticipant FlashcardParticipant[]
+}
+
+model FlashcardContent {
+  id         Int       @id @default(autoincrement())
+  card_id    Int
+  Flashcard  Flashcard @relation(fields: [card_id], references: [id])
+  question   String
+  answer     String
+  difficulty Int       @default(0)
+  cAt        DateTime  @default(now())
+  mAt        DateTime  @updatedAt
+}
+
+model FlashcardParticipant {
+  id      Int       @id @default(autoincrement())
+  card_id Int
+  user_id String
+  User    User      @relation(fields: [user_id], references: [id])
+  Card    Flashcard @relation(fields: [card_id], references: [id])
+  cAt     DateTime  @default(now())
 }
