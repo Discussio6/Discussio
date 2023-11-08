@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
 	images: {
-		domains: process.env.NODE_ENV === "production" ? [process.env.BASE_URL] : ["localhost"],
+		domains: ["localhost"],
 		remotePatterns: [
 			{
 				protocol: "https",
