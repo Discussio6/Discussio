@@ -16,11 +16,14 @@ function FlashcardItem({ flashcard }: FlashcardItemProps) {
 	return (
 		<div className={cn("flex flex-col gap-1 border p-4 rounded-lg")}>
 			<Link
-				href={`/flashcards"}/${flashcard.id}`}
+				href={`/flashcards/${flashcard.id}`}
 				className="text-lg font-bold line-clamp-2 text-blue-500 hover:text-blue-700 cursor-pointer transition-all duration-200 ease-in-out"
 			>
 				{flashcard.name}
 			</Link>
+			<div className="flex gap-2 text-xs text-slate-500 font-bold mb-2">
+				<div>{flashcard.Contents.length} Questions</div>
+			</div>
 			<div className="text-sm line-clamp-2">{flashcard.description}</div>
 			<div className="mt-2 flex justify-between items-center">
 				{flashcard.Tags.length > 0 && (

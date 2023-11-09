@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
 
 		return NextResponse.json({ total, hits: flashcards }, { status: 200 });
 	} catch (error) {
+		console.log(error);
 		return NextResponse.json({ success: false }, { status: 500 });
 	}
 }
@@ -49,19 +50,21 @@ export async function POST(req: NextRequest) {
 		if (!user) {
 			return NextResponse.json({ success: false }, { status: 401 });
 		}
-
 		const flashcard = await db.flashcard.create({
 			data: {
 				name: body.name,
 				description: body.description,
+				acl: body.acl,
 				User: { connect: { id: user.id } },
 				Tags: {
 					connect: body.tags.map((tag: string) => ({ name: tag })),
 				},
 				Contents: {
-					createMany: {
-						data: body.contents,
-					},
+					create: body.contents.map((content) => ({
+						question: content.question,
+						answer: content.answer,
+						difficulty: content.difficulty,
+					})),
 				},
 			},
 			include: {
@@ -76,6 +79,7 @@ export async function POST(req: NextRequest) {
 			{ status: 201 }
 		);
 	} catch (e) {
+		console.log(e);
 		return NextResponse.json({ success: false }, { status: 500 });
 	}
 }

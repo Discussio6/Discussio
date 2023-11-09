@@ -10,7 +10,7 @@ import {
 import { AxiosError } from "axios";
 import { QUERY_KEYS } from "@/constants/querykeys";
 
-const apiBaseUrl = `/tags`;
+const apiBaseUrl = `/api/tags`;
 
 interface getTagProps {
 	keyword?: string;
