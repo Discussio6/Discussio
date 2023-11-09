@@ -39,7 +39,7 @@ async function FlashcardsPage({
 		<main className="container flex flex-col my-8 gap-8">
 			<div className="flex items-center justify-between">
 				<h1 className="text-2xl font-bold">Flashcards</h1>
-				<Link href="/discussions/upload">
+				<Link href="/flashcards/upload">
 					<Button variant="primary" className="flex gap-1">
 						<PencilIcon className="w-4 h-4" />
 						Make Flashcard
