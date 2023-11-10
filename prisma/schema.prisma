@@ -148,7 +148,6 @@ model Quiz {
   user_id               String // Assuming the type is String to match the User id type
   quiz_name             String                  @db.VarChar(255)
   quiz_description      String                  @db.Text
-  category              String                  @db.VarChar(255)
   acl                   String                  @db.VarChar(255)
   cAt                   DateTime                @default(now())
   mAt                   DateTime                @updatedAt
@@ -156,8 +155,7 @@ model Quiz {
   QuizParticipant       QuizParticipant[]
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   QuizParticipantAnswer QuizParticipantAnswer[]
-  Tag                   Tag?                    @relation(fields: [tagName], references: [name])
-  tagName               String?
+  Tags                  Tag[]
 }
 
 model QuizQuestion {
