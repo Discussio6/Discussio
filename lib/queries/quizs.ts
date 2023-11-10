@@ -3,6 +3,7 @@ import { api } from "../api";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { QUERY_KEYS } from "@/constants/querykeys";
+import { QuizQuestion } from "@prisma/client";
 
 
 interface IdSingleProps {
@@ -24,11 +25,11 @@ export const useGetQuiz = (id: number,
     (QUERY_KEYS.quizs.single(id), () => getQuiz({ id }), options);
 }
 export interface getQuizsProps {
-    count?: number;
-    orderBy?: string;
-    category?: string;
-    page?: number;
-    searchword?: string;
+    count: number;
+    orderBy: string;
+    tags: string[];
+    page: number;
+    searchword: string;
 }
 export const getQuizs = async (params: getQuizsProps) => {
     const { data } = await api.get<SingleResponse<Quiz>>(`${BaseURL}`, {
@@ -50,7 +51,9 @@ export const useGetQuizs = (
 export interface postQuizProps {
     quiz_name: string;
     quiz_description: string;
-    category: string;
+    QuizQuestion: QuizQuestion[];
+    user_id: string;
+    tags: string[];
     acl: string;
     Tags: string[];
 }

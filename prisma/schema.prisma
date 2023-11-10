@@ -109,6 +109,7 @@ model Tag {
   mAt         DateTime @updatedAt
 
   Discussions Discussion[]
+  Quizs       Quiz[]
 
   @@fulltext([name])
 }
@@ -139,14 +140,14 @@ model DiscussionComment {
 }
 
 model Quiz {
-  quiz_id          Int               @id
+  quiz_id          Int                @id @default(autoincrement())
   user_id          String // Assuming the type is String to match the User id type
   quiz_name        String            @db.VarChar(255)
   quiz_description String            @db.Text
   Tags             Tag[]
   acl              String            @db.VarChar(255)
-  cAt              DateTime
-  mAt              DateTime
+  cAt              DateTime          @default(now())
+  mAt              DateTime          @updatedAt
   QuizQuestion     QuizQuestion[]
   QuizParticipant  QuizParticipant[]
 
@@ -162,8 +163,8 @@ model QuizQuestion {
   score                 Int
   answer                String                  @db.Text
   is_multiple           Boolean
-  cAt                   DateTime
-  mAt                   DateTime
+  cAt                   DateTime                @default(now())
+  mAt                   DateTime                @updatedAt
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   QuizAnswer            QuizAnswer[]
   QuizParticipantAnswer QuizParticipantAnswer[]
@@ -174,8 +175,8 @@ model QuizAnswer {
   question_id           Int
   content               String                  @db.Text
   isAnswer              Boolean
-  cAt                   DateTime
-  mAt                   DateTime
+  cAt                   DateTime                @default(now())
+  mAt                   DateTime                @updatedAt
   QuizQuestion          QuizQuestion            @relation(fields: [question_id], references: [question_id])
   QuizParticipantAnswer QuizParticipantAnswer[]
 }
@@ -186,7 +187,7 @@ model QuizParticipant {
   user_id               String // Assuming the type is String to match the User id type
   startTime             DateTime // Assuming startTime and endTime are DateTime types for timestamps
   endTime               DateTime
-  cAt                   DateTime
+  cAt                   DateTime                @default(now())
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   QuizParticipantAnswer QuizParticipantAnswer[]
@@ -198,8 +199,8 @@ model QuizParticipantAnswer {
   question_id     Int
   part_id         Int
   answer_id       Int
-  cAt             DateTime
-  mAt             DateTime
+  cAt             DateTime        @default(now())
+  mAt             DateTime        @updatedAt
   Quiz            Quiz            @relation(fields: [quiz_id], references: [quiz_id])
   QuizQuestion    QuizQuestion    @relation(fields: [question_id], references: [question_id])
   QuizParticipant QuizParticipant @relation(fields: [part_id], references: [part_id])
