@@ -28,11 +28,15 @@ function FlashcardList({
 	return (
 		<article className="flex flex-col gap-2">
 			<div className="text-large font-bold">{flashcards?.total} results</div>
-			<div className="flex flex-col gap-4">
-				{flashcards?.hits.map((flashcard) => (
-					<FlashcardItem key={flashcard.id} flashcard={flashcard} />
-				))}
-			</div>
+			{flashcards && flashcards.total > 0 ? (
+				<div className="flex flex-col gap-4">
+					{flashcards?.hits.map((flashcard) => (
+						<FlashcardItem key={flashcard.id} flashcard={flashcard} />
+					))}
+				</div>
+			) : (
+				<div className="text-center my-16 text-slate-500">No results found</div>
+			)}
 		</article>
 	);
 }

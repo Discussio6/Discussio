@@ -29,11 +29,15 @@ function DiscussionsList({
 	return (
 		<article className="flex flex-col gap-2">
 			<div className="text-large font-bold">{discussions?.total} results</div>
-			<div className="flex flex-col gap-4">
-				{discussions?.hits.map((discussion) => (
-					<DiscussionItem key={discussion.id} discussion={discussion} />
-				))}
-			</div>
+			{discussions && discussions.total > 0 ? (
+				<div className="flex flex-col gap-4">
+					{discussions?.hits.map((discussion) => (
+						<DiscussionItem key={discussion.id} discussion={discussion} />
+					))}
+				</div>
+			) : (
+				<div className="text-center my-16 text-slate-500">No results found</div>
+			)}
 		</article>
 	);
 }
