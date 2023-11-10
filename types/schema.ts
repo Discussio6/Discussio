@@ -2,6 +2,7 @@ import {
 	Flashcard as FlashcardSchema,
 	FlashcardContent as FlashcardContentSchema,
 	FlashcardParticipant as FlashcardParticipantSchema,
+	FlashcardAnswer as FlashcardAnswerSchema,
 } from "@prisma/client";
 
 export interface SingleResponse<T> {
@@ -141,4 +142,9 @@ export interface FlashcardContent extends FlashcardContentSchema {}
 
 export interface FlashcardParticipant extends FlashcardParticipantSchema {
 	User: User;
+	FlashcardAnswer: FlashcardAnswer[];
+}
+
+export interface FlashcardAnswer extends FlashcardAnswerSchema {
+	Content: FlashcardContent;
 }

@@ -1,11 +1,12 @@
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { postFlashcardProps } from "@/lib/queries/flashcards";
+import { postFlashcardParticipantProps } from "@/lib/queries/flashcards";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, params: { id: string }) {
 	try {
+		let id = parseInt(params.id);
 		let page = req.nextUrl.searchParams.get("page") || 1;
 		let count = req.nextUrl.searchParams.get("count") || 10;
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
@@ -16,12 +17,16 @@ export async function GET(req: NextRequest) {
 		if (page < 1) page = 1;
 		if (count < 1) count = 1;
 
-		const total = await db.flashcard.count({});
-		const flashcards = await db.flashcard.findMany({
+		const total = await db.flashcardParticipant.count({ where: { id } });
+		const participants = await db.flashcardParticipant.findMany({
+			where: { id },
 			include: {
 				User: true,
-				Tags: true,
-				Contents: true,
+				FlashcardAnswer: {
+					include: {
+						Content: true,
+					},
+				},
 			},
 			skip: (page - 1) * count,
 			take: count,
@@ -30,16 +35,20 @@ export async function GET(req: NextRequest) {
 			},
 		});
 
-		return NextResponse.json({ total, hits: flashcards }, { status: 200 });
+		return NextResponse.json({ total, hits: participants }, { status: 200 });
 	} catch (error) {
 		console.log(error);
 		return NextResponse.json({ success: false }, { status: 500 });
 	}
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(
+	req: NextRequest,
+	{ params }: { params: { id: string } }
+) {
 	try {
-		const body = (await req.json()) as postFlashcardProps;
+		const id = parseInt(params.id);
+		const body = (await req.json()) as postFlashcardParticipantProps;
 		const session = await getServerSession(authOptions);
 		if (!session) {
 			return NextResponse.json({ success: false }, { status: 401 });
@@ -50,34 +59,45 @@ export async function POST(req: NextRequest) {
 		if (!user) {
 			return NextResponse.json({ success: false }, { status: 401 });
 		}
-		const flashcard = await db.flashcard.create({
+
+		const { card_id, contents } = body;
+
+		const participant = await db.flashcardParticipant.create({
 			data: {
-				name: body.name,
-				description: body.description,
-				acl: body.acl,
-				User: { connect: { id: user.id } },
-				Tags: {
-					connect: body.tags.map((tag: string) => ({ name: tag })),
+				Card: {
+					connect: {
+						id: card_id,
+					},
 				},
-				Contents: {
-					create: body.contents.map((content, index) => ({
-						question: content.question,
-						answer: content.answer,
-						difficulty: content.difficulty,
-						order: index,
+				User: {
+					connect: {
+						id: user.id,
+					},
+				},
+				FlashcardAnswer: {
+					create: contents.map((content) => ({
+						Content: {
+							connect: {
+								id: content.id,
+							},
+						},
+						status: content.status,
 					})),
 				},
 			},
 			include: {
 				User: true,
-				Tags: true,
-				Contents: true,
+				FlashcardAnswer: {
+					include: {
+						Content: true,
+					},
+				},
 			},
 		});
 
 		return NextResponse.json(
-			{ success: true, data: flashcard },
-			{ status: 201 }
+			{ success: true, data: participant },
+			{ status: 200 }
 		);
 	} catch (e) {
 		console.log(e);

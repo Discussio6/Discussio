@@ -44,10 +44,7 @@ export interface postTagProps {
 }
 
 export const postTag = async (body: postTagProps) => {
-	const { data: res } = await api.post<SingleResponse<Tag>>(
-		`${apiBaseUrl}/tags`,
-		body
-	);
+	const { data: res } = await api.post<SingleResponse<Tag>>(apiBaseUrl, body);
 	return res;
 };
 

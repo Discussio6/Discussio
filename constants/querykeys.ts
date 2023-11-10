@@ -22,5 +22,6 @@ export const QUERY_KEYS = {
 		all: ["flashcards"],
 		single: (id: number) => ["flashcards", id],
 		list: ["flashcards", "list"],
+		participants: (id: number) => ["flashcards", id, "participants"],
 	},
 };
