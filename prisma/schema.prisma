@@ -111,6 +111,7 @@ model Tag {
   mAt         DateTime @updatedAt
 
   Discussions Discussion[]
+  Quizs       Quiz[]
   Flashcard   Flashcard?   @relation(fields: [flashcardId], references: [id])
   flashcardId Int?
 }
@@ -141,67 +142,68 @@ model DiscussionComment {
 }
 
 model Quiz {
-  quiz_id          Int               @id
-  user_id          String // Assuming the type is String to match the User id type
-  quiz_name        String            @db.VarChar(255)
-  quiz_description String            @db.Text
-  category         String            @db.VarChar(255)
-  acl              String            @db.VarChar(255)
-  cAt              DateTime
-  mAt              DateTime
-  QuizQuestion     QuizQuestion[]
-  QuizParticipant  QuizParticipant[]
-
+  quiz_id               Int                     @id @default(autoincrement())
+  user_id               String // Assuming the type is String to match the User id type
+  quiz_name             String                  @db.VarChar(255)
+  quiz_description      String                  @db.Text
+  category              String                  @db.VarChar(255)
+  acl                   String                  @db.VarChar(255)
+  cAt                   DateTime                @default(now())
+  mAt                   DateTime                @updatedAt
+  QuizQuestion          QuizQuestion[]
+  QuizParticipant       QuizParticipant[]
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   QuizParticipantAnswer QuizParticipantAnswer[]
+  Tag                   Tag?                    @relation(fields: [tagName], references: [name])
+  tagName               String?
 }
 
 model QuizQuestion {
-  question_id           Int                     @id
+  question_id           Int                     @id @default(autoincrement())
   quiz_id               Int
   content               String                  @db.Text
   difficulty            Int
   score                 Int
   answer                String                  @db.Text
   is_multiple           Boolean
-  cAt                   DateTime
-  mAt                   DateTime
+  cAt                   DateTime                @default(now())
+  mAt                   DateTime                @updatedAt
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   QuizAnswer            QuizAnswer[]
   QuizParticipantAnswer QuizParticipantAnswer[]
 }
 
 model QuizAnswer {
-  answer_id             Int                     @id
+  answer_id             Int                     @id @default(autoincrement())
   question_id           Int
   content               String                  @db.Text
   isAnswer              Boolean
-  cAt                   DateTime
-  mAt                   DateTime
+  cAt                   DateTime                @default(now())
+  mAt                   DateTime                @updatedAt
   QuizQuestion          QuizQuestion            @relation(fields: [question_id], references: [question_id])
   QuizParticipantAnswer QuizParticipantAnswer[]
 }
 
 model QuizParticipant {
-  part_id               Int                     @id
+  part_id               Int                     @id @default(autoincrement())
   quiz_id               Int
   user_id               String // Assuming the type is String to match the User id type
   startTime             DateTime // Assuming startTime and endTime are DateTime types for timestamps
   endTime               DateTime
-  cAt                   DateTime
+  cAt                   DateTime                @default(now())
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   QuizParticipantAnswer QuizParticipantAnswer[]
 }
 
 model QuizParticipantAnswer {
-  panswer_id      Int             @id
+  panswer_id      Int             @id @default(autoincrement())
   quiz_id         Int
   question_id     Int
   part_id         Int
   answer_id       Int
-  cAt             DateTime
-  mAt             DateTime
+  cAt             DateTime        @default(now())
+  mAt             DateTime        @updatedAt
   Quiz            Quiz            @relation(fields: [quiz_id], references: [quiz_id])
   QuizQuestion    QuizQuestion    @relation(fields: [question_id], references: [question_id])
   QuizParticipant QuizParticipant @relation(fields: [part_id], references: [part_id])
@@ -223,27 +225,46 @@ model Flashcard {
 }
 
 model FlashcardContent {
-  id         Int       @id @default(autoincrement())
-  card_id    Int
-  Flashcard  Flashcard @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  question   String
-  answer     String
-  difficulty Int       @default(0)
-  cAt        DateTime  @default(now())
-  mAt        DateTime  @updatedAt
+  id              Int               @id @default(autoincrement())
+  card_id         Int
+  Flashcard       Flashcard         @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  question        String
+  answer          String
+  difficulty      Int               @default(0)
+  order           Int
+  cAt             DateTime          @default(now())
+  mAt             DateTime          @updatedAt
+  FlashcardAnswer FlashcardAnswer[]
 }
 
 model FlashcardParticipant {
-  id      Int       @id @default(autoincrement())
-  card_id Int
-  user_id String
-  User    User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Card    Flashcard @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  cAt     DateTime  @default(now())
+  id              Int               @id @default(autoincrement())
+  card_id         Int
+  user_id         String
+  User            User              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Card            Flashcard         @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cAt             DateTime          @default(now())
+  FlashcardAnswer FlashcardAnswer[]
+}
+
+model FlashcardAnswer {
+  id             Int                   @id @default(autoincrement())
+  content_id     Int
+  participant_id Int
+  status         FlashcardAnswerStatus @default(UNANSWERED)
+  Content        FlashcardContent      @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Participant    FlashcardParticipant  @relation(fields: [participant_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cAt            DateTime              @default(now())
 }
 
 enum Acl {
   PUBLIC
   PRIVATE
   FRIENDS
+}
+
+enum FlashcardAnswerStatus {
+  CORRECT
+  WRONG
+  UNANSWERED
 }

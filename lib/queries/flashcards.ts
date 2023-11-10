@@ -1,6 +1,7 @@
 import {
 	Flashcard,
 	FlashcardContent,
+	FlashcardParticipant,
 	ListResponse,
 	SingleResponse,
 } from "@/types/schema";
@@ -14,7 +15,7 @@ import {
 } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/querykeys";
 import { AxiosError } from "axios";
-import { Acl } from "@prisma/client";
+import { Acl, FlashcardAnswerStatus } from "@prisma/client";
 
 const apiBaseUrl = `/api/flashcards`;
 export interface IdSingleProps {
@@ -181,4 +182,88 @@ export const useDeleteFlashcard = (
 			},
 		}
 	);
+};
+
+export const getFlashcardParticipants = async (
+	params: getFlashcardParticipantsProps
+) => {
+	const { data } = await api.get<ListResponse<FlashcardParticipant>>(
+		`${apiBaseUrl}`,
+		{
+			params,
+		}
+	);
+	return data;
+};
+
+export interface getFlashcardParticipantsProps {
+	page?: number;
+	count?: number;
+	orderBy?: string;
+}
+
+export const useGetFlashcardParticipants = (
+	id: number,
+	params: getFlashcardParticipantsProps = {
+		count: 10,
+		page: 1,
+		orderBy: "cAt:desc",
+	},
+	options?: UseQueryOptions<
+		ListResponse<FlashcardParticipant>,
+		AxiosError<any>,
+		ListResponse<FlashcardParticipant>
+	>
+) => {
+	return useQuery<
+		ListResponse<FlashcardParticipant>,
+		AxiosError<any>,
+		ListResponse<FlashcardParticipant>
+	>(
+		[...QUERY_KEYS.flashcards.participants(id), params],
+		() => getFlashcardParticipants(params),
+		options
+	);
+};
+
+export interface postAnswerProps {
+	id: number;
+	status: FlashcardAnswerStatus;
+}
+
+export interface postFlashcardParticipantProps {
+	card_id: number;
+	contents: postAnswerProps[];
+}
+
+export const postFlashcardParticipant = async (
+	body: postFlashcardParticipantProps
+) => {
+	const { data: res } = await api.post<SingleResponse<FlashcardParticipant>>(
+		`${apiBaseUrl}/result/${body.card_id}`,
+		body
+	);
+	return res;
+};
+
+export const usePostFlashcardParticipant = (
+	options?: UseMutationOptions<
+		SingleResponse<FlashcardParticipant>,
+		AxiosError<any>,
+		postFlashcardParticipantProps
+	>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<
+		SingleResponse<FlashcardParticipant>,
+		AxiosError<any>,
+		postFlashcardParticipantProps
+	>((body) => postFlashcardParticipant(body), {
+		...options,
+		onSuccess(data, variables, context) {
+			queryClient.invalidateQueries(QUERY_KEYS.flashcards.list);
+			options?.onSuccess?.(data, variables, context);
+		},
+	});
 };
