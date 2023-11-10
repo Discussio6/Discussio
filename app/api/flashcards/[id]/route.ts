@@ -67,10 +67,10 @@ export async function PATCH(
 				...(contents
 					? {
 							Contents: {
-								upsert: contents.map((content) => ({
+								upsert: contents.map((content, index) => ({
 									where: { id: content.id },
-									update: content,
-									create: content,
+									update: { ...content, order: index },
+									create: { ...content, order: index },
 								})),
 							},
 					  }
