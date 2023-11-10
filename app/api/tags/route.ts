@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
 		const total = await db.tag.count({
 			where: {
 				name: {
-					search: keyword,
+					contains: keyword,
 				},
 			},
 		});
