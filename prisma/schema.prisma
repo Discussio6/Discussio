@@ -112,6 +112,8 @@ model Tag {
 
   Discussions Discussion[]
   Quizs       Quiz[]
+  Flashcard   Flashcard?   @relation(fields: [flashcardId], references: [id])
+  flashcardId Int?
 
   @@fulltext([name])
 }
@@ -168,8 +170,6 @@ model QuizQuestion {
   is_multiple           Boolean
   cAt                   DateTime                @default(now())
   mAt                   DateTime                @updatedAt
-  cAt                   DateTime                @default(now())
-  mAt                   DateTime                @updatedAt
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   QuizAnswer            QuizAnswer[]
   QuizParticipantAnswer QuizParticipantAnswer[]
@@ -180,8 +180,6 @@ model QuizAnswer {
   question_id           Int
   content               String                  @db.Text
   isAnswer              Boolean
-  cAt                   DateTime                @default(now())
-  mAt                   DateTime                @updatedAt
   cAt                   DateTime                @default(now())
   mAt                   DateTime                @updatedAt
   QuizQuestion          QuizQuestion            @relation(fields: [question_id], references: [question_id])
@@ -195,7 +193,6 @@ model QuizParticipant {
   startTime             DateTime // Assuming startTime and endTime are DateTime types for timestamps
   endTime               DateTime
   cAt                   DateTime                @default(now())
-  cAt                   DateTime                @default(now())
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   QuizParticipantAnswer QuizParticipantAnswer[]
@@ -207,8 +204,6 @@ model QuizParticipantAnswer {
   question_id     Int
   part_id         Int
   answer_id       Int
-  cAt             DateTime        @default(now())
-  mAt             DateTime        @updatedAt
   cAt             DateTime        @default(now())
   mAt             DateTime        @updatedAt
   Quiz            Quiz            @relation(fields: [quiz_id], references: [quiz_id])
