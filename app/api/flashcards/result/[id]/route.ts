@@ -4,9 +4,9 @@ import { postFlashcardParticipantProps } from "@/lib/queries/flashcards";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, params: { id: string }) {
+export async function GET(req: NextRequest, props: { params: { id: string } }) {
 	try {
-		let id = parseInt(params.id);
+		let id = parseInt(props.params.id);
 		let page = req.nextUrl.searchParams.get("page") || 1;
 		let count = req.nextUrl.searchParams.get("count") || 10;
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
@@ -17,9 +17,9 @@ export async function GET(req: NextRequest, params: { id: string }) {
 		if (page < 1) page = 1;
 		if (count < 1) count = 1;
 
-		const total = await db.flashcardParticipant.count({ where: { id } });
+		const total = await db.flashcardParticipant.count({ where: { card_id: id } });
 		const participants = await db.flashcardParticipant.findMany({
-			where: { id },
+			where: { card_id: id },
 			include: {
 				User: true,
 				FlashcardAnswer: {

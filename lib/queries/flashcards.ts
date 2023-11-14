@@ -185,10 +185,11 @@ export const useDeleteFlashcard = (
 };
 
 export const getFlashcardParticipants = async (
+	id: number,
 	params: getFlashcardParticipantsProps
 ) => {
 	const { data } = await api.get<ListResponse<FlashcardParticipant>>(
-		`${apiBaseUrl}`,
+		`${apiBaseUrl}/result/${id}`,
 		{
 			params,
 		}
@@ -221,7 +222,7 @@ export const useGetFlashcardParticipants = (
 		ListResponse<FlashcardParticipant>
 	>(
 		[...QUERY_KEYS.flashcards.participants(id), params],
-		() => getFlashcardParticipants(params),
+		() => getFlashcardParticipants(id, params),
 		options
 	);
 };
