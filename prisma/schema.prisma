@@ -112,8 +112,7 @@ model Tag {
 
   Discussions Discussion[]
   Quizs       Quiz[]
-  Flashcard   Flashcard?   @relation(fields: [flashcardId], references: [id])
-  flashcardId Int?
+  Flashcard   Flashcard[]
 
   @@fulltext([name])
 }
