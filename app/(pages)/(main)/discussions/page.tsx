@@ -59,6 +59,7 @@ async function DiscussionPage({
 					page={numPage}
 					total={total}
 					count={numCount}
+					pageCnt={10}
 					genLink={genLink}
 				/>
 			</div>

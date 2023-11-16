@@ -3,26 +3,33 @@ import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import _ from "lodash-es";
-import { redirect } from "next/navigation";
 
 interface PaginationProps {
 	page: number;
 	count: number;
 	total: number;
+	pageCnt?: number;
 	genLink?: (page: number) => string;
 }
 
-function Pagination({ page, count, total, genLink }: PaginationProps) {
-	const pageEnd = Math.ceil(total / count);
-	const pageStart = Math.floor(page - 1) * 10;
+const getNext = (page: number, pageCnt: number, pageEnd: number) => {
+	return Math.min((Math.floor((page - 1) / pageCnt) + 1) * pageCnt + 1, pageEnd); 
+}
+
+const getPrev = (page: number, pageCnt: number) => {
+	return Math.max(1, Math.floor((page - 1) / pageCnt) * pageCnt)
+}
+function Pagination({ page, count, pageCnt = 10, total, genLink }: PaginationProps) {
+	const pageEnd = Math.max(1, Math.ceil(total / count));
+	const pageStart = Math.floor((page - 1) / pageCnt) * pageCnt + 1;
 	const pageNums = _.range(
-		pageStart + 1,
-		Math.min(pageStart + 10, pageEnd) + 1
+		pageStart,
+		Math.min(pageStart + pageCnt, pageEnd + 1)
 	);
 
 	return (
 		<div className="flex items-center gap-2">
-			<Link href={genLink?.(Math.max(1, page - 10)) || ""}>
+			<Link href={genLink?.(getPrev(page, pageCnt)) || ""}>
 				<Button size="icon" variant="secondary" disabled={pageNums[0] === 1}>
 					<ChevronLeft />
 				</Button>
@@ -34,7 +41,7 @@ function Pagination({ page, count, total, genLink }: PaginationProps) {
 					</Button>
 				</Link>
 			))}
-			<Link href={genLink?.(Math.min(pageEnd, page + 10)) || ""}>
+			<Link href={genLink?.(getNext(page, pageCnt, pageEnd)) || ""}>
 				<Button
 					size="icon"
 					variant="secondary"
