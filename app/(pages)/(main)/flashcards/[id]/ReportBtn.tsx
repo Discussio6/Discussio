@@ -53,7 +53,7 @@ function ReportBtn({ flashcard }: ReportBtnProps) {
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Report a comment</DialogTitle>
+					<DialogTitle>Report a flashcard</DialogTitle>
 					<DialogDescription>
 						Please write down the reason for the report
 					</DialogDescription>
