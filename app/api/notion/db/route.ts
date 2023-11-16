@@ -119,6 +119,31 @@ export async function POST(req: NextRequest) {
 						color: "default",
 					},
 				},
+				{
+					object: "block",
+					heading_2: {
+						rich_text: [
+							{
+								text: {
+									content: "데이터",
+								},
+							},
+						],
+					},
+				},
+				{
+					object: "block",
+					code: {
+						language: "json",
+						rich_text: [
+							{
+								text: {
+									content: body.json,
+								},
+							},
+						],
+					},
+				},
 			],
 		});
 		return NextResponse.json({ success: true, data: res });

@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 import CardResults from "./CardResults";
 import { Badge } from "@/components/ui/badge";
+import ReportBtn from "./ReportBtn";
 
 interface Props {
 	params: {
@@ -29,9 +30,12 @@ async function FlashcardDetailPage(props: Props) {
 		<div className="flex flex-col p-8">
 			<div className=" flex items-center justify-between">
 				<h1 className="text-xl font-bold">{flashcard.name}</h1>
-				<Link href={`/flashcards/${props.params.id}/view`}>
-					<Button variant="primary">View Flashcard</Button>
-				</Link>
+				<div className="flex gap-2 items-center">
+					<Link href={`/flashcards/${props.params.id}/view`}>
+						<Button variant="primary">View Flashcard</Button>
+					</Link>
+					<ReportBtn flashcard={flashcard} />
+				</div>
 			</div>
 			<div className="text-slate-600 pb-4">{flashcard.description}</div>
 			{flashcard.Tags.length > 0 && (
