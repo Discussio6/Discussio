@@ -57,6 +57,16 @@ import {
 	AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useRouter } from "next/navigation";
+import ReportForm, { ReportFormProps } from "./ReportForm";
+import { postReport } from "@/lib/queries/report";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
 
 interface DiscussionCardProps {
 	discussion: Discussion;
@@ -70,6 +80,7 @@ function DiscussionCard({
 	onLike,
 }: DiscussionCardProps) {
 	const [openComments, setOpenComments] = useState(false);
+	const [openReportForm, setOpenReportForm] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const { data: session, status } = useSession();
 	const patchDiscussion = usePatchDiscussion();
@@ -137,6 +148,27 @@ function DiscussionCard({
 		);
 	}, [deleteDiscussion]);
 
+	const handleReport = useCallback<ReportFormProps["onSubmit"]>(
+		(values, form) => {
+			postReport({
+				title: values.title,
+				description: values.description,
+				type: discussion.isQna ? "Questions" : "Discussions",
+				endpoint: window.location.href,
+				json: JSON.stringify(discussion, null, 2),
+			}).then((res) => {
+				if (res.success) {
+					alert("Reported successfully");
+					setOpenReportForm(false);
+					form.reset();
+				} else {
+					alert("Failed to report");
+				}
+			});
+		},
+		[discussion]
+	);
+
 	return (
 		<Card>
 			{!isEdit ? (
@@ -150,59 +182,52 @@ function DiscussionCard({
 						)}
 						<div className="flex items-center justify-between">
 							<CardTitle>{discussion.title}</CardTitle>
-							<AlertDialog>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button size="icon" variant="ghost">
-											<DotsHorizontalIcon />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent>
-										{isAuthor && (
-											<>
-												<DropdownMenuItem
-													className="cursor-pointer"
-													onClick={() => setIsEdit(true)}
-												>
-													<EditIcon className="w-4 h-4 mr-2" />
-													<span>Edit</span>
+							{isAuthor && (
+								<AlertDialog>
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button size="icon" variant="ghost">
+												<DotsHorizontalIcon />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent>
+											<DropdownMenuItem
+												className="cursor-pointer"
+												onClick={() => setIsEdit(true)}
+											>
+												<EditIcon className="w-4 h-4 mr-2" />
+												<span>Edit</span>
+											</DropdownMenuItem>
+											<AlertDialogTrigger asChild>
+												<DropdownMenuItem className="cursor-pointer">
+													<TrashIcon className="w-4 h-4 mr-2" />
+													<span>Delete</span>
 												</DropdownMenuItem>
-												<AlertDialogTrigger asChild>
-													<DropdownMenuItem className="cursor-pointer">
-														<TrashIcon className="w-4 h-4 mr-2" />
-														<span>Delete</span>
-													</DropdownMenuItem>
-												</AlertDialogTrigger>
-												<DropdownMenuSeparator />
-											</>
-										)}
-										<DropdownMenuItem className="cursor-pointer">
-											<FlagIcon className="w-4 h-4 mr-2" />
-											<span>Report</span>
-										</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-								<AlertDialogContent>
-									<AlertDialogHeader>
-										<AlertDialogTitle>
-											Are you sure you want to delete the post?
-										</AlertDialogTitle>
-										<AlertDialogDescription>
-											Deleted posts cannot be recovered, and all replies and
-											comments will also be deleted.
-										</AlertDialogDescription>
-									</AlertDialogHeader>
-									<AlertDialogFooter>
-										<AlertDialogCancel>Cancel</AlertDialogCancel>
-										<AlertDialogAction
-											onClick={handleDelete}
-											className="bg-red-500 hover:bg-red-500/90"
-										>
-											Delete
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
+											</AlertDialogTrigger>
+										</DropdownMenuContent>
+									</DropdownMenu>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
+												Are you sure you want to delete the post?
+											</AlertDialogTitle>
+											<AlertDialogDescription>
+												Deleted posts cannot be recovered, and all replies and
+												comments will also be deleted.
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>Cancel</AlertDialogCancel>
+											<AlertDialogAction
+												onClick={handleDelete}
+												className="bg-red-500 hover:bg-red-500/90"
+											>
+												Delete
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
+							)}
 						</div>
 						<div className="flex items-center justify-between">
 							<CardDescription>
@@ -282,10 +307,6 @@ function DiscussionCard({
 						</div>
 						<div className="flex gap-2">
 							<Button className="flex items-center gap-2" variant="ghost">
-								<Share1Icon className="w-4 h-4" />
-								Share
-							</Button>
-							<Button className="flex items-center gap-2" variant="ghost">
 								<StarIcon className="w-4 h-4" />
 								Favorites
 							</Button>
@@ -300,6 +321,25 @@ function DiscussionCard({
 								<MessageSquareIcon className="w-4 h-4" />
 								Comments
 							</Button>
+							<Dialog open={openReportForm} onOpenChange={setOpenReportForm}>
+								<DialogTrigger asChild>
+									<Button className="flex items-center gap-2" variant="ghost">
+										<FlagIcon className="w-4 h-4" />
+										Report
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>{`Report a ${
+											discussion.isQna ? "question" : "discussion"
+										}`}</DialogTitle>
+										<DialogDescription>
+											Please write down the reason for the report
+										</DialogDescription>
+									</DialogHeader>
+									<ReportForm onSubmit={handleReport} />
+								</DialogContent>
+							</Dialog>
 						</div>
 						<div className={cn(!openComments && "hidden", "mt-6")}>
 							<Comments content_id={discussion.id} />

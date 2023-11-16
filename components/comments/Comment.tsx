@@ -42,6 +42,16 @@ import {
 	AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useSession } from "next-auth/react";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
+import ReportForm, { ReportFormProps } from "../common/ReportForm";
+import { postReport } from "@/lib/queries/report";
 
 interface CommentProps {
 	comment: Comment;
@@ -51,6 +61,7 @@ function Comment({ comment }: CommentProps) {
 	const [openCommentForm, setOpenCommentForm] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const [openReplies, setOpenReplies] = useState(false);
+	const [openReportForm, setOpenReportForm] = useState(false);
 	const closeCommentForm = useCallback(() => setOpenCommentForm(false), []);
 	const postComment = usePostComment();
 	const patchComment = usePatchComment();
@@ -122,6 +133,27 @@ function Comment({ comment }: CommentProps) {
 		);
 	}, []);
 
+	const handleReport = useCallback<ReportFormProps["onSubmit"]>(
+		(values, form) => {
+			postReport({
+				title: values.title,
+				description: values.description,
+				type: "Comments",
+				endpoint: window.location.href,
+				json: JSON.stringify(comment, null, 2),
+			}).then((res) => {
+				if (res.success) {
+					alert("Reported successfully");
+					setOpenReportForm(false);
+					form.reset();
+				} else {
+					alert("Failed to report");
+				}
+			});
+		},
+		[comment]
+	);
+
 	const isAuthor = comment.User.id === session?.id;
 	const replies = (replyData?.pages || []).flatMap((page) => page.hits);
 	const replyCount = replyData?.pages[0].total;
@@ -130,56 +162,49 @@ function Comment({ comment }: CommentProps) {
 		<div className="flex flex-col gap-2">
 			<div className="flex justify-between items-center">
 				<ProfileCard name={comment.User.name} image={comment.User.image} />
-				<AlertDialog>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button size="icon" variant="ghost">
-								<DotsHorizontalIcon />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							{isAuthor && (
-								<>
-									<DropdownMenuItem
-										className="cursor-pointer"
-										onClick={() => setIsEdit(true)}
-									>
-										<EditIcon className="w-4 h-4 mr-2" />
-										<span>Edit</span>
+				{isAuthor && (
+					<AlertDialog>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button size="icon" variant="ghost">
+									<DotsHorizontalIcon />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem
+									className="cursor-pointer"
+									onClick={() => setIsEdit(true)}
+								>
+									<EditIcon className="w-4 h-4 mr-2" />
+									<span>Edit</span>
+								</DropdownMenuItem>
+								<AlertDialogTrigger asChild>
+									<DropdownMenuItem className="cursor-pointer">
+										<TrashIcon className="w-4 h-4 mr-2" />
+										<span>Delete</span>
 									</DropdownMenuItem>
-									<AlertDialogTrigger asChild>
-										<DropdownMenuItem className="cursor-pointer">
-											<TrashIcon className="w-4 h-4 mr-2" />
-											<span>Delete</span>
-										</DropdownMenuItem>
-									</AlertDialogTrigger>
-									<DropdownMenuSeparator />
-								</>
-							)}
-							<DropdownMenuItem className="cursor-pointer">
-								<FlagIcon className="w-4 h-4 mr-2" />
-								<span>Report</span>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>Delete Comment</AlertDialogTitle>
-							<AlertDialogDescription>
-								Are you sure to delete this comment?
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction
-								onClick={handleDelete}
-								className="bg-red-500 hover:bg-red-500/90"
-							>
-								Delete
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
+								</AlertDialogTrigger>
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>Delete Comment</AlertDialogTitle>
+								<AlertDialogDescription>
+									Are you sure to delete this comment?
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<AlertDialogAction
+									onClick={handleDelete}
+									className="bg-red-500 hover:bg-red-500/90"
+								>
+									Delete
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+				)}
 			</div>
 			{!isEdit ? (
 				<div>{comment.comment}</div>
@@ -217,10 +242,23 @@ function Comment({ comment }: CommentProps) {
 					<ReplyIcon className="w-4 h-4" />
 					Reply
 				</Button>
-				<Button className="flex items-center gap-2" variant="ghost">
-					<FlagIcon className="w-4 h-4" />
-					Report
-				</Button>
+				<Dialog open={openReportForm} onOpenChange={setOpenReportForm}>
+					<DialogTrigger asChild>
+						<Button className="flex items-center gap-2" variant="ghost">
+							<FlagIcon className="w-4 h-4" />
+							Report
+						</Button>
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Report a comment</DialogTitle>
+							<DialogDescription>
+								Please write down the reason for the report
+							</DialogDescription>
+						</DialogHeader>
+						<ReportForm onSubmit={handleReport} />
+					</DialogContent>
+				</Dialog>
 			</div>
 			<div className={cn(!openCommentForm && "hidden")}>
 				<CommentForm onCancel={closeCommentForm} onSubmit={handleSubmit} />
