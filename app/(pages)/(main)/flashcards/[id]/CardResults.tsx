@@ -6,7 +6,7 @@ import CardResultItem from "./CardResultItem";
 import { useGetFlashcardParticipants } from "@/lib/queries/flashcards";
 import { Button } from "@/components/ui/button";
 import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
-import { PAGE_SIZE } from "./page";
+import { part_count } from "./page";
 
 interface CardResultsProps {
 	card_id: number;
@@ -23,12 +23,12 @@ function CardResults({
 
 	const { data: participants, isLoading } = useGetFlashcardParticipants(
 		card_id,
-		{ count: PAGE_SIZE, orderBy: "cAt:desc", page },
+		{ count: part_count, orderBy: "cAt:desc", page },
 		{ initialData: { hits: initialData, total } }
 	);
 
 	const hasNext =
-		(page - 1) * PAGE_SIZE + (participants?.hits?.length ?? 0) < total;
+		(page - 1) * part_count + (participants?.hits?.length ?? 0) < total;
 	const hasPrev = page > 1;
 
 	const handleNext = useCallback(() => {

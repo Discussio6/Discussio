@@ -11,7 +11,7 @@ interface Props {
 	};
 }
 
-export const PAGE_SIZE = 6;
+export const part_count = 6;
 
 async function FlashcardDetailPage(props: Props) {
 	const session = await getServerSession(authOptions);
@@ -30,7 +30,7 @@ async function FlashcardDetailPage(props: Props) {
 		where: { card_id: parseInt(props.params.id) },
 		include: { User: true, FlashcardAnswer: { include: { Content: true } } },
 		orderBy: { cAt: "desc" },
-		take: PAGE_SIZE,
+		take: part_count,
 	})) as FlashcardParticipant[];
 
 	const isAuthor = session?.id === flashcard.user_id;
