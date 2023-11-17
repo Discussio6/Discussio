@@ -1,5 +1,6 @@
 import ProfileCard from "@/components/common/ProfileCard";
 import { FlashcardParticipant } from "@/types/schema";
+import moment from "moment";
 import React from "react";
 
 interface CardResultItemProps {
@@ -13,8 +14,9 @@ function CardResultItem({ participant }: CardResultItemProps) {
 	const total = participant.FlashcardAnswer.length;
 
 	return (
-		<div className="bg-slate-100 rounded-lg p-4 flex justify-between">
-			<div className="font-bold flex items-center gap-2">
+		<div className="shadow-md rounded-lg p-4 flex flex-col justify-between aspect-square">
+			<div className="text-xs self-end">{moment(participant.cAt).fromNow()}</div>
+			<div className="font-bold text-sm justify-center self-center flex gap-2">
 				<span>{Math.round((correctCount / total) * 100)}</span>
 				<span>{`(${correctCount} / ${total})`}</span>
 			</div>
