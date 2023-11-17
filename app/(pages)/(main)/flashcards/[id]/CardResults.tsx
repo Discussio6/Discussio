@@ -6,14 +6,13 @@ import CardResultItem from "./CardResultItem";
 import { useGetFlashcardParticipants } from "@/lib/queries/flashcards";
 import { Button } from "@/components/ui/button";
 import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
+import { PAGE_SIZE } from "./page";
 
 interface CardResultsProps {
 	card_id: number;
 	total: number;
 	participants: FlashcardParticipant[];
 }
-
-const PAGE_SIZE = 10;
 
 function CardResults({
 	card_id,
@@ -28,7 +27,8 @@ function CardResults({
 		{ initialData: { hits: initialData, total } }
 	);
 
-	const hasNext = (page - 1) * PAGE_SIZE + (participants?.hits?.length ?? 0) < total;
+	const hasNext =
+		(page - 1) * PAGE_SIZE + (participants?.hits?.length ?? 0) < total;
 	const hasPrev = page > 1;
 
 	const handleNext = useCallback(() => {
@@ -40,15 +40,15 @@ function CardResults({
 		if (hasPrev) setPage((prev) => prev - 1);
 	}, [page]);
 
-	if (isLoading) return <div>loading</div>;
-
 	return (
-		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-2">
-				<h1>{`${total} Participants`}</h1>
-				{(participants?.hits ?? []).map((participant) => (
-					<CardResultItem participant={participant} />
-				))}
+		<div className="flex flex-col gap-12">
+			<div className="flex flex-col gap-3">
+				<h1 className="text-lg font-bold">Participations ({total})</h1>
+				<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+					{(participants?.hits ?? []).map((participant) => (
+						<CardResultItem participant={participant} />
+					))}
+				</div>
 			</div>
 			<div className="flex gap-4 items-center self-center">
 				<Button
