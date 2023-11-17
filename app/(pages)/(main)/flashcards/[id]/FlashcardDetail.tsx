@@ -13,7 +13,7 @@ import ActionBtn from "./ActionBtn";
 import { Badge } from "@/components/ui/badge";
 import CardContents from "./CardContents";
 import CardResults from "./CardResults";
-import { part_count } from "./page";
+import { FLASHCARD_RESULT_PAGE_COUNT } from "@/constants/data";
 
 interface FlashcardDetailProps {
 	id: number;
@@ -36,7 +36,7 @@ function FlashcardDetail({
 
 	const { data: flashcardParticipant } = useGetFlashcardParticipants(
 		id,
-		{ orderBy: "cAt:desc", count: part_count },
+		{ orderBy: "cAt:desc", count: FLASHCARD_RESULT_PAGE_COUNT },
 		{
 			initialData: { hits: initialParticipants, total: initialPartTotal },
 		}
