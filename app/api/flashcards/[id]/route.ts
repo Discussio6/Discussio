@@ -15,7 +15,7 @@ export async function GET(
 			include: {
 				User: true,
 				Tags: true,
-				Contents: true,
+				Contents: { orderBy: { order: "asc" } },
 			},
 		});
 		return NextResponse.json({ success: true, data }, { status: 200 });
@@ -51,12 +51,12 @@ export async function PATCH(
 			return NextResponse.json({ success: false }, { status: 401 });
 		}
 
-		const { id, tags, contents } = body;
+		const { id, tags, contents, ...others } = body;
 
 		const flashcard = await db.flashcard.update({
 			where: { id: parseInt(params.id) },
 			data: {
-				...body,
+				...others,
 				...(tags
 					? {
 							Tags: {
@@ -67,11 +67,14 @@ export async function PATCH(
 				...(contents
 					? {
 							Contents: {
-								upsert: contents.map((content, index) => ({
-									where: { id: content.id },
-									update: { ...content, order: index },
-									create: { ...content, order: index },
-								})),
+								upsert: contents.map((content, index) => {
+									const { id, answer, question, difficulty } = content;
+									return {
+										where: { id },
+										update: { answer, question, difficulty, order: index },
+										create: { answer, question, difficulty, order: index },
+									};
+								}),
 							},
 					  }
 					: {}),

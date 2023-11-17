@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import * as z from "zod";
@@ -51,7 +51,7 @@ export const flashcardFormSchema = z.object({
 	contents: z.array(
 		z.object({
 			id: z.number().optional(),
-			tid: z.number(),
+			tid: z.number().optional(),
 			question: z
 				.string()
 				.max(500, { message: "Question is at most 500 characters" }),
@@ -90,6 +90,16 @@ let curId = 1;
 const getId = () => curId++;
 
 function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
+	const data = useMemo(() => {
+		if (!initialData) return;
+		return {
+			...initialData,
+			contents: (initialData?.contents ?? []).map((content) => ({
+				...content,
+				tid: getId(),
+			})),
+		};
+	}, [initialData]);
 	const form = useForm<z.infer<typeof flashcardFormSchema>>({
 		resolver: zodResolver(flashcardFormSchema),
 		defaultValues: {
@@ -98,7 +108,7 @@ function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
 			tags: [],
 			acl: "PUBLIC",
 			contents: [{ question: "", answer: "", difficulty: 0, tid: 0 }],
-			...initialData,
+			...data,
 		},
 	});
 	const { fields, append, move, remove } = useFieldArray({
@@ -228,7 +238,7 @@ function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
 										return (
 											<Draggable
 												key={item.tid}
-												draggableId={item.tid.toString()}
+												draggableId={item.tid!.toString()}
 												index={index}
 											>
 												{(provided, snapshot) => (
