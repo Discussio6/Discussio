@@ -3,6 +3,7 @@ import {
 	FlashcardContent as FlashcardContentSchema,
 	FlashcardParticipant as FlashcardParticipantSchema,
 	FlashcardAnswer as FlashcardAnswerSchema,
+	CommentType,
 } from "@prisma/client";
 
 export interface SingleResponse<T> {
@@ -125,6 +126,7 @@ export interface Comment {
 	comment: string;
 	content_id: number;
 	parent_comment_id?: number;
+	type: CommentType;
 	userId: string;
 	User: User;
 	Children?: Comment[];

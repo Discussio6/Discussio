@@ -9,15 +9,17 @@ import {
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import { CommentType } from "@prisma/client";
 
 interface CommentsProps {
 	content_id: number;
+	type?: CommentType;
 }
 
-function Comments({ content_id }: CommentsProps) {
+function Comments({ content_id, type }: CommentsProps) {
 	const postComment = usePostComment();
 	const { status } = useSession();
-	const { data } = useGetComments({ content_id, count: 0 });
+	const { data } = useGetComments({ content_id, count: 0, type });
 	const {
 		data: commentData,
 		fetchNextPage,
@@ -29,6 +31,7 @@ function Comments({ content_id }: CommentsProps) {
 		page: 1,
 		count: 15,
 		orderBy: "cAt:asc",
+		type,
 	});
 
 	const comments = (commentData?.pages || []).flatMap((page) => page.hits);
@@ -40,7 +43,7 @@ function Comments({ content_id }: CommentsProps) {
 				return;
 			}
 			postComment.mutate(
-				{ content_id, parent_comment_id: null, comment },
+				{ content_id, parent_comment_id: null, comment, type },
 				{
 					onSuccess: () => {
 						setContent("");
@@ -48,7 +51,7 @@ function Comments({ content_id }: CommentsProps) {
 				}
 			);
 		},
-		[status, postComment]
+		[status, postComment, content_id, type]
 	);
 
 	return (

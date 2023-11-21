@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { CommentType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,6 +11,7 @@ export async function GET(req: NextRequest) {
 		let parent_comment_id = req.nextUrl.searchParams.get("parent_comment_id");
 		let content_id: number | string | null =
 			req.nextUrl.searchParams.get("content_id") || null;
+		const type = req.nextUrl.searchParams.get("type") || "DISCUSSION";
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
 
 		page = parseInt(page as string);
@@ -27,12 +29,14 @@ export async function GET(req: NextRequest) {
 		const total = await db.comment.count({
 			where: {
 				...(hasPid ? { parent_comment_id: pid } : {}),
+				...(type ? { type: type as CommentType } : {}),
 				content_id,
 			},
 		});
 		const comments = await db.comment.findMany({
 			where: {
 				...(hasPid ? { parent_comment_id: pid } : {}),
+				...(type ? { type: type as CommentType } : {}),
 				content_id,
 			},
 			include: {
@@ -74,6 +78,7 @@ export async function POST(req: NextRequest) {
 					? { Parent: { connect: { id: body.parent_comment_id } } }
 					: {}),
 				content_id: body.content_id,
+				type: body.type,
 			},
 			include: {
 				User: true,
