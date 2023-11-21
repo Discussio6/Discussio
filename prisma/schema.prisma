@@ -124,6 +124,7 @@ model Comment {
   User              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   comment           String              @db.Text
   parent_comment_id Int?
+  type              CommentType         @default(DISCUSSION)
   Parent            Comment?            @relation("ParentChild", fields: [parent_comment_id], references: [id], onDelete: Cascade)
   Children          Comment[]           @relation("ParentChild")
   cAt               DateTime            @default(now())
@@ -254,6 +255,12 @@ model FlashcardAnswer {
   Content        FlashcardContent      @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Participant    FlashcardParticipant  @relation(fields: [participant_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   cAt            DateTime              @default(now())
+}
+
+enum CommentType {
+  DISCUSSION
+  FLASHCARD
+  QUIZ
 }
 
 enum Acl {

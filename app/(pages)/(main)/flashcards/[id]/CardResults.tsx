@@ -28,7 +28,9 @@ function CardResults({
 	);
 
 	const hasNext =
-		(page - 1) * FLASHCARD_RESULT_PAGE_COUNT + (participants?.hits?.length ?? 0) < total;
+		(page - 1) * FLASHCARD_RESULT_PAGE_COUNT +
+			(participants?.hits?.length ?? 0) <
+		total;
 	const hasPrev = page > 1;
 
 	const handleNext = useCallback(() => {
