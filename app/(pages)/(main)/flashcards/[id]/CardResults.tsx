@@ -48,7 +48,7 @@ function CardResults({
 				<h1 className="text-lg font-bold">Participations ({total})</h1>
 				<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
 					{(participants?.hits ?? []).map((participant) => (
-						<CardResultItem participant={participant} />
+						<CardResultItem key={participant.id} participant={participant} />
 					))}
 				</div>
 			</div>

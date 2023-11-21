@@ -12,6 +12,7 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { api } from "../api";
+import { CommentType } from "@prisma/client";
 
 const apiBaseUrl = `/api/comments`;
 export interface IdSingleProps {
@@ -46,6 +47,7 @@ export interface getCommentsProps {
 	page?: number;
 	count?: number;
 	orderBy?: string;
+	type?: CommentType;
 }
 
 export const getComments = async (params: getCommentsProps) => {
@@ -56,7 +58,12 @@ export const getComments = async (params: getCommentsProps) => {
 };
 
 export const useGetComments = (
-	params: getCommentsProps = { count: 10, page: 1, orderBy: "cAt:desc" },
+	params: getCommentsProps = {
+		count: 10,
+		page: 1,
+		orderBy: "cAt:desc",
+		type: "DISCUSSION",
+	},
 	options?: UseQueryOptions<
 		ListResponse<Comment>,
 		AxiosError<any>,
@@ -105,6 +112,7 @@ export interface postCommentProps {
 	comment: string;
 	content_id: number;
 	parent_comment_id?: number | null;
+	type?: CommentType;
 }
 
 export const postComment = async (body: postCommentProps) => {

@@ -342,7 +342,7 @@ function DiscussionCard({
 							</Dialog>
 						</div>
 						<div className={cn(!openComments && "hidden", "mt-6")}>
-							<Comments content_id={discussion.id} />
+							<Comments content_id={discussion.id} type="DISCUSSION" />
 						</div>
 					</CardContent>
 				</>

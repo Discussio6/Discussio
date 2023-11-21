@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import CardContents from "./CardContents";
 import CardResults from "./CardResults";
 import { FLASHCARD_RESULT_PAGE_COUNT } from "@/constants/data";
+import { useGetComments } from "@/lib/queries/comments";
+import Comments from "@/components/comments/Comments";
 
 interface FlashcardDetailProps {
 	id: number;
@@ -43,8 +45,8 @@ function FlashcardDetail({
 	);
 
 	const flashcard = flashcardData?.data as Flashcard;
-    const participants = flashcardParticipant?.hits ?? [];
-    const participantTotal = flashcardParticipant?.total ?? 0;
+	const participants = flashcardParticipant?.hits ?? [];
+	const participantTotal = flashcardParticipant?.total ?? 0;
 
 	return (
 		<div className="flex flex-col p-8 gap-8">
@@ -80,6 +82,9 @@ function FlashcardDetail({
 					participants={participants}
 					total={participantTotal}
 				/>
+			</div>
+			<div>
+				<Comments content_id={initialFlashcard.id} type="FLASHCARD" />
 			</div>
 		</div>
 	);
