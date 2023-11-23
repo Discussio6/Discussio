@@ -46,7 +46,7 @@ function Profile() {
 	if (status === "unauthenticated")
 		return (
 			<Button variant="primary" onClick={() => signIn()}>
-				로그인
+				Sign in
 			</Button>
 		);
 
@@ -99,7 +99,7 @@ function Profile() {
 								onClick={() => setOpen(false)}
 							>
 								<UploadIcon className="w-4 h-4" />
-								My Uploads
+								Uploads
 							</Button>
 						</Link>
 					</div>

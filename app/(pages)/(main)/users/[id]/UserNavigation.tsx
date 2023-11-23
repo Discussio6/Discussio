@@ -44,7 +44,7 @@ async function UserNavigation({ session }: UserNavigationProps) {
 						className="w-full flex gap-2 justify-start items-center"
 					>
 						<UploadIcon className="w-4 h-4" />
-						My Uploads
+						Uploads
 					</Button>
 				</Link>
 			</div>
