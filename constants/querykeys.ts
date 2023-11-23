@@ -5,6 +5,9 @@ export const QUERY_KEYS = {
 		list: ["discussions", "list"],
 		infinite: ["discussions", "infinite"],
 	},
+	users: {
+		single: (id: number) => ["users", id],
+	},
 	tags: ["tags"],
 	comments: {
 		all: ["comments"],

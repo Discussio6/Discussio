@@ -1,9 +1,21 @@
-import React from 'react'
+import { db } from "@/lib/db";
+import { User } from "@/types/schema";
+import React from "react";
 
-function HomePage() {
-  return (
-    <div>HomePage</div>
-  )
+interface Props {
+	params: {
+		id: string;
+	};
 }
 
-export default HomePage
+async function HomePage({ params: { id } }: Props) {
+	const user = (await db.user.findUnique({
+		where: {
+			id,
+		},
+	})) as User;
+
+	return <div>{user.name}</div>;
+}
+
+export default HomePage;
