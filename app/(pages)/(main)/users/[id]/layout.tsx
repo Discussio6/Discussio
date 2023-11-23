@@ -2,9 +2,17 @@ import React, { ReactNode } from "react";
 import MyNavigation from "./UserNavigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Metadata, ResolvingMetadata } from "next";
+import { db } from "@/lib/db";
 
 interface UserDetailPageLayoutProps {
 	children: ReactNode;
+}
+
+interface Props {
+	params: {
+		id: string;
+	};
 }
 
 async function UserDetailPageLayout({ children }: UserDetailPageLayoutProps) {
@@ -22,3 +30,17 @@ async function UserDetailPageLayout({ children }: UserDetailPageLayoutProps) {
 }
 
 export default UserDetailPageLayout;
+
+export async function generateMetadata(
+	{ params: { id } }: Props,
+	parent: ResolvingMetadata
+): Promise<Metadata> {
+	const user = await db.user.findUnique({
+		where: { id },
+		select: { name: true },
+	});
+
+	return {
+		title: `${user?.name} | Discussio`,
+	};
+}

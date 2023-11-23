@@ -2,12 +2,17 @@ import React from "react";
 import FlashcardEdit from "./FlashcardEdit";
 import { db } from "@/lib/db";
 import { Flashcard } from "@/types/schema";
+import { Metadata } from "next";
 
 interface Props {
 	params: {
 		id: string;
 	};
 }
+
+export const metadata: Metadata = {
+	title: "Edit Flashcard | Discussio",
+};
 
 async function FlashcardEditPage(props: Props) {
 	const flashcard = (await db.flashcard.findUnique({
