@@ -49,6 +49,7 @@ export interface getFlashcardsProps {
 	page?: number;
 	count?: number;
 	orderBy?: string;
+	favoriteUserId?: string;
 }
 
 export const getFlashcards = async (params: getFlashcardsProps) => {

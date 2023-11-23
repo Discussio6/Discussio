@@ -16,7 +16,7 @@ async function UserDetailPageLayout({ children }: UserDetailPageLayoutProps) {
 				<MyNavigation session={session} />
 			</div>
 
-			<div className="flex-1 mt-8 px-4">{children}</div>
+			<div className="flex-1 my-8 px-4">{children}</div>
 		</div>
 	);
 }

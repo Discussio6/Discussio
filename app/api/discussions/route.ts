@@ -7,35 +7,63 @@ export async function GET(req: NextRequest) {
 	try {
 		let page = req.nextUrl.searchParams.get("page") || 1;
 		let count = req.nextUrl.searchParams.get("count") || 10;
-		let parent_id: number | string | null =
-			req.nextUrl.searchParams.get("parent_id") || null;
+		const parent_id = req.nextUrl.searchParams.get("parent_id");
 		const isQna = req.nextUrl.searchParams.get("isQna");
 		const isAccepted = req.nextUrl.searchParams.get("isAccepted");
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
+		const userId = req.nextUrl.searchParams.get("userId");
+		const favoriteUserId = req.nextUrl.searchParams.get("favoriteUserId");
 
 		const parsedQna = isQna === "true" ? true : false;
 		const parsedAccepted = isAccepted === "true" ? true : false;
 
 		page = parseInt(page as string);
 		count = parseInt(count as string);
-		parent_id = parseInt(parent_id as string);
 
 		if (page < 1) page = 1;
 		if (count < 1) count = 1;
 
 		const total = await db.discussion.count({
 			where: {
-				parent_id,
+				...(parent_id
+					? {
+							parent_id:
+								parent_id === "0"
+									? null
+									: parent_id === "-1"
+									? { not: null }
+									: parseInt(parent_id),
+					  }
+					: {}),
 				...(isQna ? { isQna: parsedQna } : {}),
 				...(isAccepted ? { isAccepted: parsedAccepted } : {}),
+				...(userId ? { User: { id: userId } } : {}),
+				...(favoriteUserId
+					? { DiscussionFavorites: { some: { userId: favoriteUserId } } }
+					: {}),
 			},
 		});
 		const discussions = await db.discussion.findMany({
 			where: {
 				AND: [
-					{ parent_id },
+					...(parent_id
+						? [
+								{
+									parent_id:
+										parent_id === "0"
+											? null
+											: parent_id === "-1"
+											? { not: null }
+											: parseInt(parent_id),
+								},
+						  ]
+						: []),
 					...(isQna ? [{ isQna: parsedQna }] : []),
 					...(isAccepted ? [{ isAccepted: parsedAccepted }] : []),
+					...(userId ? [{ User: { id: userId } }] : []),
+					...(favoriteUserId
+						? [{ DiscussionFavorites: { some: { userId: favoriteUserId } } }]
+						: []),
 				],
 			},
 			include: {

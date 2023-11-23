@@ -49,6 +49,7 @@
     "react-dom": "latest",
     "react-hook-form": "^7.47.0",
     "react-sortablejs": "^6.1.4",
+    "react-spinners": "^0.13.8",
     "sortablejs": "^1.15.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",

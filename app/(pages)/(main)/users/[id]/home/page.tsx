@@ -1,8 +1,8 @@
 import ProfileCard from "@/components/common/ProfileCard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { db } from "@/lib/db";
 import { User } from "@/types/schema";
-import Image from "next/image";
 import React from "react";
 
 interface Props {
@@ -31,13 +31,18 @@ async function HomePage({ params: { id } }: Props) {
 	return (
 		<Card>
 			<CardHeader>
-				<ProfileCard image={user.image} name={user.name} />
+				<div className="flex items-center gap-2 w-fit">
+					<Avatar className="w-8 h-8">
+						<AvatarImage src={user.image} />
+						<AvatarFallback>{user.name}</AvatarFallback>
+					</Avatar>
+					<div className="flex flex-col">
+						<h3 className="text-sm font-bold text-slate-600">{user.name}</h3>
+						<h3 className="text-xs text-slate-400">{user.email}</h3>
+					</div>
+				</div>
 			</CardHeader>
 			<CardContent className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-4">
-				<div className="flex flex-col gap-1">
-					<span className="text-sm font-semibold">Email Address</span>
-					<span className="text-sm text-slate-500">{user.email}</span>
-				</div>
 				<div className="flex flex-col gap-1">
 					<span className="text-sm font-semibold">Questions uploaded</span>
 					<span className="text-sm text-slate-500">{questionCount}</span>
@@ -45,6 +50,10 @@ async function HomePage({ params: { id } }: Props) {
 				<div className="flex flex-col gap-1">
 					<span className="text-sm font-semibold">Answers wrote</span>
 					<span className="text-sm text-slate-500">{answerCount}</span>
+				</div>
+				<div className="flex flex-col gap-1">
+					<span className="text-sm font-semibold">Flashcards created</span>
+					<span className="text-sm text-slate-500">{flashcardCount}</span>
 				</div>
 				<div className="flex flex-col gap-1">
 					<span className="text-sm font-semibold">Comments wrote</span>
