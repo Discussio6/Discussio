@@ -6,6 +6,7 @@ import React from "react";
 import FlashcardList from "./FlashcardList";
 import { db } from "@/lib/db";
 import { Flashcard } from "@/types/schema";
+import { Metadata } from "next";
 
 interface FlashcardPageProps {
 	searchParams: {
@@ -16,6 +17,10 @@ interface FlashcardPageProps {
 }
 
 const genLink = (page: number) => `/flashcards?page=${page}`;
+
+export const metadata: Metadata = {
+	title: "Flashcards | Discussio",
+};
 
 async function FlashcardsPage({
 	searchParams: { page, count, orderBy },

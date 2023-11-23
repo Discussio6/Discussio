@@ -54,6 +54,7 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 					<ProfileCard
 						name={discussion.User.name}
 						image={discussion.User.image}
+						id={discussion.User.id}
 					/>
 					<div className="shrink-0 flex items-center gap-2 text-xs text-slate-500">
 						{moment(discussion.cAt).fromNow()}

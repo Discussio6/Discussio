@@ -23,6 +23,7 @@ function CardResultItem({ participant }: CardResultItemProps) {
 			<ProfileCard
 				name={participant.User.name}
 				image={participant.User.image}
+				id={participant.User.id}
 			/>
 		</div>
 	);

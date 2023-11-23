@@ -1,4 +1,3 @@
-import ProfileCard from "@/components/common/ProfileCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { db } from "@/lib/db";
@@ -14,7 +13,7 @@ interface Props {
 async function HomePage({ params: { id } }: Props) {
 	const commentCount = await db.comment.count({ where: { userId: id } });
 	const questionCount = await db.discussion.count({
-		where: { authorId: id, isQna: true },
+		where: { authorId: id, isQna: true, parent_id: null },
 	});
 	const answerCount = await db.discussion.count({
 		where: { authorId: id, isQna: false },

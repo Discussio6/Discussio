@@ -5,6 +5,7 @@ import { Discussion } from "@/types/schema";
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import type { Metadata, ResolvingMetadata } from "next";
 import DiscussionsList from "./DiscussionsList";
 
 interface DiscussionPageProps {
@@ -16,6 +17,10 @@ interface DiscussionPageProps {
 }
 
 const genLink = (page: number) => `/discussions?page=${page}`;
+
+export const metadata: Metadata = {
+	title: "Discussions | Discussio"
+};
 
 async function DiscussionPage({
 	searchParams: { page, count, orderBy },

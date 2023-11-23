@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { Discussion } from "@/types/schema";
 import React from "react";
 import QuestionDetail from "./DiscussionDetail";
+import { Metadata } from "next";
 
 interface Props {
 	params: {
@@ -34,3 +35,14 @@ async function DiscussionDetailPage(props: Props) {
 }
 
 export default DiscussionDetailPage;
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const discussion = await db.discussion.findUnique({
+		where: { id: parseInt(params.qid) },
+		select: { title: true },
+	});
+
+	return {
+		title: `${discussion?.title} | Discussio`,
+	};
+}

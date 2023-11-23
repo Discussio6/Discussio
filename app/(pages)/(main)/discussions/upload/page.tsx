@@ -1,7 +1,12 @@
-import QuestionUpload from "./DiscussionUpload";
+import { Metadata } from "next";
+import DiscussionUpload from "./DiscussionUpload";
 
-function QuestionUploadPage() {
-	return <QuestionUpload />;
+export const metadata: Metadata = {
+	title: "Discussion Upload | Discussio",
+};
+
+function DiscussionUploadPage() {
+	return <DiscussionUpload />;
 }
 
-export default QuestionUploadPage;
+export default DiscussionUploadPage;

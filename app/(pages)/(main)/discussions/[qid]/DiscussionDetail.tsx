@@ -130,7 +130,7 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 			{childDiscussions?.pages?.[0].total ?? 0 > 0 ? (
 				<div className="flex flex-col gap-3">
 					<h1 className="text-xl font-bold">
-						{childDiscussions?.pages?.[0].total} Answers
+						{childDiscussions?.pages?.[0].total} Follow-ups
 					</h1>
 					<div className="flex flex-col gap-2">
 						<div className="flex flex-col gap-4">

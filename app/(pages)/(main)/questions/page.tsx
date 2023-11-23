@@ -6,6 +6,7 @@ import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import QuestionsList from "./QuestionsList";
+import { Metadata } from "next";
 
 interface QuestionsPageProps {
 	searchParams: {
@@ -17,6 +18,10 @@ interface QuestionsPageProps {
 }
 
 const genLink = (page: number) => `/questions?page=${page}`;
+
+export const metadata: Metadata = {
+	title: "Questions | Discussio"
+};
 
 async function QuestionsPage({
 	searchParams: { page, count, orderBy, isAccepted },

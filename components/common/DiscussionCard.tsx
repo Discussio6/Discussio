@@ -266,6 +266,7 @@ function DiscussionCard({
 								<ProfileCard
 									name={discussion.User.name}
 									image={discussion.User.image}
+									id={discussion.User.id}
 								/>
 							</div>
 							<div className="flex items-center gap-2">

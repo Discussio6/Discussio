@@ -161,7 +161,11 @@ function Comment({ comment }: CommentProps) {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="flex justify-between items-center">
-				<ProfileCard name={comment.User.name} image={comment.User.image} />
+				<ProfileCard
+					name={comment.User.name}
+					image={comment.User.image}
+					id={comment.User.id}
+				/>
 				{isAuthor && (
 					<AlertDialog>
 						<DropdownMenu>

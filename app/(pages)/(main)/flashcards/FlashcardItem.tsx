@@ -43,6 +43,7 @@ function FlashcardItem({ flashcard }: FlashcardItemProps) {
 					<ProfileCard
 						name={flashcard.User.name}
 						image={flashcard.User.image}
+						id={flashcard.User.id}
 					/>
 					<div className="shrink-0 flex items-center gap-2 text-xs text-slate-500">
 						{moment(flashcard.cAt).fromNow()}
