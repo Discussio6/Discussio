@@ -1,9 +1,10 @@
-import React from 'react'
+import SettingsDetail from "./SettingsDetail";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-function SettingsPage() {
-  return (
-    <div>SettingsPage</div>
-  )
+async function SettingsPage() {
+  const session = await getServerSession(authOptions);
+	return <SettingsDetail session={session} />;
 }
 
-export default SettingsPage
+export default SettingsPage;

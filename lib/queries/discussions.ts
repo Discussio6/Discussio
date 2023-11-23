@@ -52,6 +52,8 @@ export interface getDiscussionsProps {
 	orderBy?: string;
 	isQna?: boolean;
 	isAccepted?: boolean;
+	userId?: string;
+	favoriteUserId?: string;
 }
 
 export const getDiscussions = async (params: getDiscussionsProps) => {

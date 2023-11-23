@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
 		let page = req.nextUrl.searchParams.get("page") || 1;
 		let count = req.nextUrl.searchParams.get("count") || 10;
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
+		const favoriteUserId = req.nextUrl.searchParams.get("favoriteUserId");
 
 		page = parseInt(page as string);
 		count = parseInt(count as string);
@@ -16,8 +17,19 @@ export async function GET(req: NextRequest) {
 		if (page < 1) page = 1;
 		if (count < 1) count = 1;
 
-		const total = await db.flashcard.count({});
+		const total = await db.flashcard.count({
+			where: {
+				...(favoriteUserId
+					? { FlashcardFavorites: { some: { userId: favoriteUserId } } }
+					: {}),
+			},
+		});
 		const flashcards = await db.flashcard.findMany({
+			where: {
+				...(favoriteUserId
+					? { FlashcardFavorites: { some: { userId: favoriteUserId } } }
+					: {}),
+			},
 			include: {
 				User: true,
 				Tags: true,

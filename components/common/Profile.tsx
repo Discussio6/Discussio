@@ -130,7 +130,7 @@ function Profile() {
 					<Button
 						variant="ghost"
 						className="w-full flex gap-1 text-red-500 hover:text-red-700 justify-start"
-						onClick={() => signOut()}
+						onClick={() => signOut({ callbackUrl: "/" })}
 					>
 						<LogOutIcon className="w-4 h-4" />
 						Log out

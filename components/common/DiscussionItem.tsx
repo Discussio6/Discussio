@@ -13,7 +13,8 @@ interface DiscussionItemProps {
 }
 
 function DiscussionItem({ discussion }: DiscussionItemProps) {
-	const unsolved = !discussion.isAccepted && discussion.isQna;
+	const unsolved =
+		!discussion.isAccepted && discussion.isQna && discussion.parent_id === null;
 
 	return (
 		<div
@@ -24,7 +25,7 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 		>
 			<Link
 				href={`/${discussion.isQna ? "questions" : "discussions"}/${
-					discussion.id
+					discussion.parent_id || discussion.id
 				}`}
 				className="text-lg font-bold line-clamp-2 text-blue-500 hover:text-blue-700 cursor-pointer transition-all duration-200 ease-in-out"
 			>

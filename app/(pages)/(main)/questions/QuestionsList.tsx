@@ -38,6 +38,7 @@ function QuestionsList({
 			count,
 			orderBy,
 			isQna: true,
+			parent_id: 0,
 			...(isAccepted ? { isAccepted: isAccepted === "true" } : {}),
 		},
 		{
