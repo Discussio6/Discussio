@@ -8,10 +8,12 @@ function SignInPage() {
 			<div className="container bg-white h-full">
 				<main className="flex flex-col h-full items-center justify-center gap-4">
 					<Logo />
-                    <article className="flex flex-col gap-8 w-full max-w-lg items-center">
-                        <p className="text-slate-500 text-sm">소셜 로그인으로 간편하게 가입해보세요</p>
-                        <GoogleLogin />
-                    </article>
+					<article className="flex flex-col gap-8 w-full max-w-lg items-center">
+						<p className="text-slate-500 text-sm">
+							Sign up easily with social login
+						</p>
+						<GoogleLogin />
+					</article>
 				</main>
 			</div>
 		</div>

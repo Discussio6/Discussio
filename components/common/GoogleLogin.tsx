@@ -20,7 +20,7 @@ function GoogleLogin({ className }: GoogleLoginProps) {
 			onClick={() => signIn("google", { callbackUrl: "/" })}
 		>
 			<Image width={32} height={32} alt="G" src={GoogleIcon} />
-			<span className="font-bold">구글 계정으로 가입</span>
+			<span className="font-bold">Sign in with Google</span>
 		</Button>
 	);
 }
