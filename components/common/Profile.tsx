@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -6,13 +6,23 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import {
 	LogOutIcon,
-	UploadIcon,
 	MessageSquareIcon,
-	UserIcon,
 	SettingsIcon,
 	BellIcon,
+	ReplyIcon,
+	RectangleHorizontalIcon,
+	BookIcon,
 } from "lucide-react";
 import { Separator } from "../ui/separator";
+import Link from "next/link";
+import {
+	HeartFilledIcon,
+	HeartIcon,
+	HomeIcon,
+	PaperPlaneIcon,
+	QuestionMarkCircledIcon,
+	UploadIcon,
+} from "@radix-ui/react-icons";
 
 export const ProfileImage = React.forwardRef<HTMLSpanElement, {}>((_, ref) => {
 	const { data: session } = useSession();
@@ -27,6 +37,7 @@ export const ProfileImage = React.forwardRef<HTMLSpanElement, {}>((_, ref) => {
 
 function Profile() {
 	const { data: session, status } = useSession();
+	const [open, setOpen] = useState(false);
 
 	if (status === "loading")
 		return (
@@ -38,8 +49,11 @@ function Profile() {
 				로그인
 			</Button>
 		);
+
+	const userId = session?.id;
+
 	return (
-		<Popover>
+		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild className="cursor-pointer">
 				<div className="w-10 h-10">
 					<ProfileImage />
@@ -58,29 +72,59 @@ function Profile() {
 				<Separator />
 				<article className="w-full flex flex-col gap-1">
 					<div className="flex flex-col">
-						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<UploadIcon className="w-4 h-4" />
-							My Posts
-						</Button>
-						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<MessageSquareIcon className="w-4 h-4" />
-							My Comments
-						</Button>
-						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<BellIcon className="w-4 h-4" />
-							Notifications
-						</Button>
+						<Link href={`/users/${userId}/home`}>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-2 justify-start items-center"
+								onClick={() => setOpen(false)}
+							>
+								<HomeIcon className="w-4 h-4" />
+								Home
+							</Button>
+						</Link>
+						<Link href={`/users/${userId}/favorites`}>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-2 justify-start items-center"
+								onClick={() => setOpen(false)}
+							>
+								<HeartFilledIcon className="w-4 h-4" />
+								Favorites
+							</Button>
+						</Link>
+						<Link href={`/users/${userId}/uploads`}>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-2 justify-start items-center"
+								onClick={() => setOpen(false)}
+							>
+								<UploadIcon className="w-4 h-4" />
+								My Uploads
+							</Button>
+						</Link>
 					</div>
 					<Separator />
 					<div className="flex flex-col">
-						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<UserIcon className="w-4 h-4" />
-							Edit Profile
-						</Button>
-						<Button variant="ghost" className="w-full flex gap-1 justify-start">
-							<SettingsIcon className="w-4 h-4" />
-							Settings
-						</Button>
+						<Link href={`/users/${userId}/notifications`}>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-1 justify-start"
+								onClick={() => setOpen(false)}
+							>
+								<BellIcon className="w-4 h-4" />
+								Notifications
+							</Button>
+						</Link>
+						<Link href={`/users/${userId}/settings`}>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-1 justify-start"
+								onClick={() => setOpen(false)}
+							>
+								<SettingsIcon className="w-4 h-4" />
+								Settings
+							</Button>
+						</Link>
 					</div>
 					<Separator />
 					<Button

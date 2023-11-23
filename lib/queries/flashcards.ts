@@ -2,6 +2,7 @@ import {
 	Flashcard,
 	FlashcardContent,
 	FlashcardParticipant,
+	LikeResponse,
 	ListResponse,
 	SingleResponse,
 } from "@/types/schema";
@@ -267,4 +268,31 @@ export const usePostFlashcardParticipant = (
 			options?.onSuccess?.(data, variables, context);
 		},
 	});
+};
+
+export const favoriteFlashcard = async ({ id }: IdSingleProps) => {
+	const { data: res } = await api.post<LikeResponse>(
+		`${apiBaseUrl}/favorites/${id}`
+	);
+	return res;
+};
+
+export const usefavoriteFlashcard = (
+	options?: UseMutationOptions<LikeResponse, AxiosError<any>, IdSingleProps>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<LikeResponse, AxiosError<any>, IdSingleProps>(
+		(props) => favoriteFlashcard(props),
+		{
+			...options,
+			onSuccess(data, variables, context) {
+				queryClient.invalidateQueries(
+					QUERY_KEYS.discussions.single(variables.id)
+				);
+				queryClient.invalidateQueries(QUERY_KEYS.flashcards.list);
+				options?.onSuccess?.(data, variables, context);
+			},
+		}
+	);
 };

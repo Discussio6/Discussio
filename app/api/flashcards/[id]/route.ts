@@ -15,6 +15,7 @@ export async function GET(
 			include: {
 				User: true,
 				Tags: true,
+				FlashcardFavorites: { select: { User: true, cAt: true } },
 				Contents: { orderBy: { order: "asc" } },
 			},
 		});
@@ -82,6 +83,7 @@ export async function PATCH(
 			include: {
 				User: true,
 				Tags: true,
+				FlashcardFavorites: { select: { User: true, cAt: true } },
 				Contents: true,
 			},
 		});

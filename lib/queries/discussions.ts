@@ -245,6 +245,34 @@ export const useLikeDiscussion = (
 	);
 };
 
+export const favoriteDiscussion = async ({ id }: IdSingleProps) => {
+	const { data: res } = await api.post<LikeResponse>(
+		`${apiBaseUrl}/favorites/${id}`
+	);
+	return res;
+};
+
+export const usefavoriteDiscussion = (
+	options?: UseMutationOptions<LikeResponse, AxiosError<any>, IdSingleProps>
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation<LikeResponse, AxiosError<any>, IdSingleProps>(
+		(props) => favoriteDiscussion(props),
+		{
+			...options,
+			onSuccess(data, variables, context) {
+				queryClient.invalidateQueries(
+					QUERY_KEYS.discussions.single(variables.id)
+				);
+				queryClient.invalidateQueries(QUERY_KEYS.discussions.list);
+				queryClient.invalidateQueries(QUERY_KEYS.discussions.infinite);
+				options?.onSuccess?.(data, variables, context);
+			},
+		}
+	);
+};
+
 interface accepetDiscussionProps extends IdSingleProps {
 	parent_id: number;
 }

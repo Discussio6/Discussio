@@ -18,6 +18,7 @@ async function FlashcardViewPage(props: Props) {
 			Contents: true,
 			User: true,
 			Tags: true,
+			FlashcardFavorites: { select: { User: true, cAt: true } },
 		},
 	})) as Flashcard;
 

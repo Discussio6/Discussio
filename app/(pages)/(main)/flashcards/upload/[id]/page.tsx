@@ -16,6 +16,7 @@ async function FlashcardEditPage(props: Props) {
 			User: true,
 			Tags: true,
 			Contents: { orderBy: { order: "asc" } },
+			FlashcardFavorites: { select: { User: true, cAt: true } },
 		},
 	})) as Flashcard;
 

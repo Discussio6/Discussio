@@ -54,6 +54,8 @@ model User {
   QuizParticipant      QuizParticipant[]
   Flashcard            Flashcard[]
   FlashcardParticipant FlashcardParticipant[]
+  DiscussionFavorites  DiscussionFavorites[]
+  FlashcardFavorites   FlashcardFavorites[]
 }
 
 model VerificationToken {
@@ -65,22 +67,23 @@ model VerificationToken {
 }
 
 model Discussion {
-  id                Int                 @id @default(autoincrement())
-  title             String              @db.VarChar(255)
-  content           String?             @db.Text
-  isQna             Boolean             @default(false)
-  isAccepted        Boolean             @default(false)
-  views             Int                 @default(0)
-  parent_id         Int?
-  Parent            Discussion?         @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
-  Children          Discussion[]        @relation("ParentChild")
-  authorId          String
-  User              User                @relation(fields: [authorId], references: [id], onDelete: NoAction)
-  cAt               DateTime            @default(now())
-  mAt               DateTime            @updatedAt
-  Likes             Like[]
-  Tags              Tag[]
-  DiscussionComment DiscussionComment[]
+  id                  Int                   @id @default(autoincrement())
+  title               String                @db.VarChar(255)
+  content             String?               @db.Text
+  isQna               Boolean               @default(false)
+  isAccepted          Boolean               @default(false)
+  views               Int                   @default(0)
+  parent_id           Int?
+  Parent              Discussion?           @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
+  Children            Discussion[]          @relation("ParentChild")
+  authorId            String
+  User                User                  @relation(fields: [authorId], references: [id], onDelete: NoAction)
+  cAt                 DateTime              @default(now())
+  mAt                 DateTime              @updatedAt
+  Likes               Like[]
+  Tags                Tag[]
+  DiscussionComment   DiscussionComment[]
+  DiscussionFavorites DiscussionFavorites[]
 
   @@index([authorId])
 }
@@ -222,6 +225,7 @@ model Flashcard {
   cAt                  DateTime               @default(now())
   mAt                  DateTime               @updatedAt
   FlashcardParticipant FlashcardParticipant[]
+  FlashcardFavorites   FlashcardFavorites[]
 }
 
 model FlashcardContent {
@@ -255,6 +259,26 @@ model FlashcardAnswer {
   Content        FlashcardContent      @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Participant    FlashcardParticipant  @relation(fields: [participant_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   cAt            DateTime              @default(now())
+}
+
+model DiscussionFavorites {
+  discussionId Int
+  userId       String
+  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  cAt          DateTime   @default(now())
+
+  @@id([discussionId, userId])
+}
+
+model FlashcardFavorites {
+  flashcardId Int
+  userId      String
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  cAt         DateTime  @default(now())
+
+  @@id([flashcardId, userId])
 }
 
 enum CommentType {

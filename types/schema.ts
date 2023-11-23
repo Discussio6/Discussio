@@ -36,6 +36,10 @@ export interface Discussion {
 		User: User;
 		cAt: Date;
 	}[];
+	DiscussionFavorites?: {
+		User: User;
+		cAt: Date;
+	}[];
 	Tags: Tag[];
 	cAt: Date;
 	mAt: Date;
@@ -137,6 +141,7 @@ export interface Comment {
 export interface Flashcard extends FlashcardSchema {
 	Contents: FlashcardContent[];
 	User: User;
+	FlashcardFavorites?: { User: User; cAt: Date }[];
 	Tags: Tag[];
 }
 

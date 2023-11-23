@@ -24,4 +24,14 @@ export const QUERY_KEYS = {
 		list: ["flashcards", "list"],
 		participants: (id: number) => ["flashcards", id, "participants"],
 	},
+	favorites: {
+		discussions: {
+			all: ["favorites", "discussions"],
+			list: (userId: string) => ["favorites", "discussions", userId],
+		},
+		flashcards: {
+			all: ["favorites", "flashcards"],
+			list: (userId: string) => ["favorites", "flashcards", "list"],
+		},
+	},
 };

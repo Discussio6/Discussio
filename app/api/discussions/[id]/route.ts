@@ -43,9 +43,11 @@ export async function GET(
 					include: {
 						User: true,
 						Likes: { select: { User: true, cAt: true } },
+						DiscussionFavorites: { select: { User: true, cAt: true } },
 						Tags: true,
 					},
 				},
+				DiscussionFavorites: { select: { User: true, cAt: true } },
 				Likes: { select: { User: true, cAt: true } },
 				Tags: true,
 			},
@@ -94,9 +96,11 @@ export async function PATCH(
 					include: {
 						User: true,
 						Likes: { select: { User: true, cAt: true } },
+						DiscussionFavorites: { select: { User: true, cAt: true } },
 						Tags: true,
 					},
 				},
+				DiscussionFavorites: { select: { User: true, cAt: true } },
 				Likes: { select: { User: true, cAt: true } },
 				Tags: true,
 			},

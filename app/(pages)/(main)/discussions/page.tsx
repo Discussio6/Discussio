@@ -23,12 +23,15 @@ async function DiscussionPage({
 	const numPage = page ? parseInt(page) : 1;
 	const numCount = count ? parseInt(count) : 10;
 	const sort = orderBy || "cAt:desc";
-	const total = await db.discussion.count({ where: { parent_id: null } });
+	const total = await db.discussion.count({
+		where: { parent_id: null, isQna: false },
+	});
 	const discussions = (await db.discussion.findMany({
-		where: { parent_id: null },
+		where: { parent_id: null, isQna: false },
 		include: {
 			User: true,
 			Likes: { select: { User: true, cAt: true } },
+			DiscussionFavorites: { select: { User: true, cAt: true } },
 			Tags: true,
 		},
 		take: numCount,

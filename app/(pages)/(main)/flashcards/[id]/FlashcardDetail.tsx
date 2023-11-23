@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import {
 	useGetFlashcard,
 	useGetFlashcardParticipants,
+	usefavoriteFlashcard,
 } from "@/lib/queries/flashcards";
 import { Flashcard, FlashcardParticipant } from "@/types/schema";
 import Link from "next/link";
-import React from "react";
+import React, { useCallback } from "react";
 import ReportBtn from "./ReportBtn";
 import ActionBtn from "./ActionBtn";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,9 @@ import CardResults from "./CardResults";
 import { FLASHCARD_RESULT_PAGE_COUNT } from "@/constants/data";
 import { useGetComments } from "@/lib/queries/comments";
 import Comments from "@/components/comments/Comments";
+import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/querykeys";
 
 interface FlashcardDetailProps {
 	id: number;
@@ -32,6 +36,8 @@ function FlashcardDetail({
 	initialPartTotal,
 	isAuthor,
 }: FlashcardDetailProps) {
+	const queryClient = useQueryClient();
+	const favoriteMutation = usefavoriteFlashcard();
 	const { data: flashcardData } = useGetFlashcard(id, {
 		initialData: { data: initialFlashcard, success: true },
 	});
@@ -44,9 +50,26 @@ function FlashcardDetail({
 		}
 	);
 
+	const handleFavorite = useCallback(
+		(id: number) => {
+			favoriteMutation.mutate(
+				{ id },
+				{
+					onSuccess(data, variables, context) {
+						queryClient.invalidateQueries(QUERY_KEYS.flashcards.single(id));
+					},
+				}
+			);
+		},
+		[queryClient]
+	);
+
 	const flashcard = flashcardData?.data as Flashcard;
 	const participants = flashcardParticipant?.hits ?? [];
 	const participantTotal = flashcardParticipant?.total ?? 0;
+	const favorited = flashcard?.FlashcardFavorites?.some(
+		(fav) => fav.User.id === flashcard.user_id
+	);
 
 	return (
 		<div className="flex flex-col p-8 gap-8">
@@ -57,6 +80,18 @@ function FlashcardDetail({
 						<Link href={`/flashcards/${id}/view`}>
 							<Button variant="primary">View Flashcard</Button>
 						</Link>
+						<Button
+							variant="outline"
+							className="flex gap-2"
+							onClick={() => handleFavorite(flashcard.id)}
+						>
+							{favorited ? (
+								<StarFilledIcon className="w-4 h-4" />
+							) : (
+								<StarIcon className="w-4 h-4" />
+							)}
+							Favorites
+						</Button>
 						<ReportBtn flashcard={flashcard} />
 						{isAuthor && <ActionBtn id={flashcard.id} />}
 					</div>

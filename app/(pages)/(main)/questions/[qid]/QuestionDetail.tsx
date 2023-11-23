@@ -15,6 +15,7 @@ import {
 	useGetDiscussionsInfinite,
 	useLikeDiscussion,
 	usePostDiscussion,
+	usefavoriteDiscussion,
 } from "@/lib/queries/discussions";
 import { cn } from "@/lib/utils";
 import { Discussion } from "@/types/schema";
@@ -46,6 +47,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 	});
 	const discussionMutation = usePostDiscussion();
 	const likeMutation = useLikeDiscussion();
+	const favoriteMutation = usefavoriteDiscussion();
 	const queryClient = useQueryClient();
 	const {
 		data: childDiscussions,
@@ -104,6 +106,20 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 		[queryClient]
 	);
 
+	const handleFavorite = useCallback(
+		(id: number) => {
+			favoriteMutation.mutate(
+				{ id },
+				{
+					onSuccess: () => {
+						queryClient.invalidateQueries(QUERY_KEYS.discussions.single(id));
+					},
+				}
+			);
+		},
+		[queryClient]
+	);
+
 	const isAuthor = discussion?.data.User.id === session?.id;
 	const isAccepted = accepted && accepted.total > 0;
 	const answers = childDiscussions?.pages.flatMap((page) => page.hits) ?? [];
@@ -112,7 +128,11 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 
 	return (
 		<main className="container flex flex-col my-8 gap-8">
-			<DiscussionCard discussion={discussion.data} onLike={handleLike} />
+			<DiscussionCard
+				discussion={discussion.data}
+				onLike={handleLike}
+				onFavorite={handleFavorite}
+			/>
 			<div className="border p-4 rounded-lg flex flex-col gap-8">
 				<UploadWarningCard className="bg-transparent text-slate-500" />
 				<DiscussionForm onSubmit={handleSubmit} />
@@ -121,7 +141,11 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 				<>
 					<div className="flex flex-col gap-2">
 						<h1 className="text-xl font-bold">Adopted Answer</h1>
-						<DiscussionCard discussion={accepted.hits[0]} onLike={handleLike} />
+						<DiscussionCard
+							discussion={accepted.hits[0]}
+							onLike={handleLike}
+							onFavorite={handleFavorite}
+						/>
 					</div>
 					<Separator />
 				</>
@@ -138,6 +162,7 @@ function QuestionDetail({ qid, discussion: initialDiscussion }: Props) {
 									key={item.id}
 									discussion={item}
 									onLike={handleLike}
+									onFavorite={handleFavorite}
 									hasAcceptBtn={
 										discussion.data.isQna && !isAccepted && isAuthor
 									}

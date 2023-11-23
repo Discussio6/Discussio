@@ -46,7 +46,7 @@ function ReportBtn({ flashcard }: ReportBtnProps) {
 	return (
 		<Dialog open={openReportForm} onOpenChange={setOpenReportForm}>
 			<DialogTrigger asChild>
-				<Button className="flex items-center gap-2" variant="secondary">
+				<Button className="flex items-center gap-2" variant="outline">
 					<FlagIcon className="w-4 h-4" />
 					Report
 				</Button>
