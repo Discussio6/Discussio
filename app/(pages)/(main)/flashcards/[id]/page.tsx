@@ -19,6 +19,7 @@ async function FlashcardDetailPage(props: Props) {
 		include: {
 			User: true,
 			Tags: true,
+			FlashcardFavorites: { select: { User: true, cAt: true } },
 			Contents: { orderBy: { order: "asc" } },
 		},
 	})) as Flashcard;

@@ -12,7 +12,7 @@ export default function LandingPageLayout({
 				<TopNavbar />
 				<SubTopNavbar />
 			</div>
-			{children}
+			<div className="relative">{children}</div>
 		</div>
 	);
 }

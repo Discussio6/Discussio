@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
 				User: true,
 				Tags: true,
 				Contents: true,
+				FlashcardFavorites: { select: { User: true, cAt: true } },
 			},
 			skip: (page - 1) * count,
 			take: count,
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
 				User: true,
 				Tags: true,
 				Contents: true,
+				FlashcardFavorites: { select: { User: true, cAt: true } },
 			},
 		});
 

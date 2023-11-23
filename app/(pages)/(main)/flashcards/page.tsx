@@ -7,7 +7,7 @@ import FlashcardList from "./FlashcardList";
 import { db } from "@/lib/db";
 import { Flashcard } from "@/types/schema";
 
-interface DiscussionPageProps {
+interface FlashcardPageProps {
 	searchParams: {
 		count?: string;
 		page?: string;
@@ -19,7 +19,7 @@ const genLink = (page: number) => `/flashcards?page=${page}`;
 
 async function FlashcardsPage({
 	searchParams: { page, count, orderBy },
-}: DiscussionPageProps) {
+}: FlashcardPageProps) {
 	const numPage = page ? parseInt(page) : 1;
 	const numCount = count ? parseInt(count) : 10;
 	const sort = orderBy || "cAt:desc";
@@ -28,6 +28,7 @@ async function FlashcardsPage({
 		include: {
 			Tags: true,
 			User: true,
+			FlashcardFavorites: { select: { User: true, cAt: true } },
 			Contents: true,
 		},
 		take: numCount,

@@ -13,6 +13,7 @@ import {
 	useGetDiscussionsInfinite,
 	useLikeDiscussion,
 	usePostDiscussion,
+	usefavoriteDiscussion,
 } from "@/lib/queries/discussions";
 import { cn } from "@/lib/utils";
 import { Discussion } from "@/types/schema";
@@ -39,6 +40,7 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 	});
 	const discussionMutation = usePostDiscussion();
 	const likeMutation = useLikeDiscussion();
+	const favoriteMutation = usefavoriteDiscussion();
 	const queryClient = useQueryClient();
 	const {
 		data: childDiscussions,
@@ -96,13 +98,31 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 		[queryClient]
 	);
 
+	const handleFavorite = useCallback(
+		(id: number) => {
+			favoriteMutation.mutate(
+				{ id },
+				{
+					onSuccess: () => {
+						queryClient.invalidateQueries(QUERY_KEYS.discussions.single(id));
+					},
+				}
+			);
+		},
+		[queryClient]
+	);
+
 	const answers = childDiscussions?.pages.flatMap((page) => page.hits) ?? [];
 
 	if (!discussion?.data) return null;
 
 	return (
 		<main className="container flex flex-col my-8 gap-8">
-			<DiscussionCard discussion={discussion.data} onLike={handleLike} />
+			<DiscussionCard
+				discussion={discussion.data}
+				onLike={handleLike}
+				onFavorite={handleFavorite}
+			/>
 			<div className="border p-4 rounded-lg flex flex-col gap-8">
 				<UploadWarningCard className="bg-transparent text-slate-500" />
 				<DiscussionForm onSubmit={handleSubmit} />
@@ -119,6 +139,7 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 									key={item.id}
 									discussion={item}
 									onLike={handleLike}
+									onFavorite={handleFavorite}
 								/>
 							))}
 						</div>

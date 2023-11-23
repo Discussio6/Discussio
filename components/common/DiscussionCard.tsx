@@ -21,7 +21,11 @@ import {
 	CardContent,
 } from "../ui/card";
 import ProfileCard from "./ProfileCard";
-import { DotsHorizontalIcon, Share1Icon } from "@radix-ui/react-icons";
+import {
+	DotsHorizontalIcon,
+	Share1Icon,
+	StarFilledIcon,
+} from "@radix-ui/react-icons";
 import Comments from "../comments/Comments";
 import { cn } from "@/lib/utils";
 import { Discussion } from "@/types/schema";
@@ -72,12 +76,14 @@ interface DiscussionCardProps {
 	discussion: Discussion;
 	hasAcceptBtn?: boolean;
 	onLike: (id: number) => void;
+	onFavorite: (id: number) => void;
 }
 
 function DiscussionCard({
 	discussion,
 	hasAcceptBtn,
 	onLike,
+	onFavorite,
 }: DiscussionCardProps) {
 	const [openComments, setOpenComments] = useState(false);
 	const [openReportForm, setOpenReportForm] = useState(false);
@@ -89,6 +95,9 @@ function DiscussionCard({
 
 	const isAuthor = discussion.User.id === session?.id;
 	const liked = discussion.Likes?.some((like) => like.User.id === session?.id);
+	const favorited = discussion.DiscussionFavorites?.some(
+		(favorite) => favorite.User.id === session?.id
+	);
 	const router = useRouter();
 
 	const handleUpdate = useCallback(
@@ -306,8 +315,16 @@ function DiscussionCard({
 							</div>
 						</div>
 						<div className="flex gap-2">
-							<Button className="flex items-center gap-2" variant="ghost">
-								<StarIcon className="w-4 h-4" />
+							<Button
+								className="flex items-center gap-2"
+								variant="ghost"
+								onClick={() => onFavorite(discussion.id)}
+							>
+								{favorited ? (
+									<StarFilledIcon className="w-4 h-4" />
+								) : (
+									<StarIcon className="w-4 h-4" />
+								)}
 								Favorites
 							</Button>
 							<Button

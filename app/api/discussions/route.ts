@@ -41,6 +41,7 @@ export async function GET(req: NextRequest) {
 			include: {
 				User: true,
 				Likes: { select: { User: true, cAt: true } },
+				DiscussionFavorites: { select: { User: true, cAt: true } },
 				Tags: true,
 			},
 			skip: (page - 1) * count,

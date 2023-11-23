@@ -19,6 +19,7 @@ async function DiscussionDetailPage(props: Props) {
 				include: {
 					User: true,
 					Likes: { select: { User: true, cAt: true } },
+					DiscussionFavorites: { select: { User: true, cAt: true } },
 					Tags: true,
 				},
 			},
