@@ -28,7 +28,7 @@ function DiscussionsList({
 	);
 	return (
 		<article className="flex flex-col gap-2">
-			<div className="text-large font-bold">{discussions?.total} results</div>
+			<div className="text-lg font-bold">{discussions?.total} results</div>
 			{discussions && discussions.total > 0 ? (
 				<div className="flex flex-col gap-4">
 					{discussions?.hits.map((discussion) => (

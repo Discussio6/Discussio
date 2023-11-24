@@ -9,6 +9,7 @@ export async function GET(
 	{ params }: { params: { id: string } }
 ) {
 	try {
+		const session = await getServerSession(authOptions);
 		const id = parseInt(params.id);
 		const data = await db.flashcard.findUnique({
 			where: { id },
@@ -19,6 +20,9 @@ export async function GET(
 				Contents: { orderBy: { order: "asc" } },
 			},
 		});
+		if (session?.id !== data?.user_id && data?.acl !== "PUBLIC") {
+			return NextResponse.json({ success: false }, { status: 401 });
+		}
 		return NextResponse.json({ success: true, data }, { status: 200 });
 	} catch (error) {
 		console.log(error);
