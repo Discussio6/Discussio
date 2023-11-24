@@ -1,11 +1,11 @@
 import SessionProvider from "@/components/providers/SessionProvider";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import QueryProvider from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({ weight: ["400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: "Discussio",
@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className={inter.className}>
+			<body className={roboto.className}>
 				<SessionProvider>
 					<QueryProvider>
 						{children}
