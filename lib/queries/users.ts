@@ -43,3 +43,37 @@ export const useGetUser = (
 		options
 	);
 };
+
+export interface patchUserProps {
+	id: string;
+	name: string;
+	email: string;
+	image: string;
+}
+
+export interface patchUserResponse {
+	success: boolean;
+	data: User;
+}
+
+export const patchUser = async (body: patchUserProps) => {
+	const { id, ...others } = body;
+	const { data: res } = await api.patch<patchUserResponse>(
+		`${apiBaseUrl}/${id}`,
+		others
+	);
+	return res;
+};
+
+export const usePatchUser = (
+	options?: UseMutationOptions<
+		patchUserResponse,
+		AxiosError<any>,
+		patchUserProps
+	>
+) => {
+	return useMutation<patchUserResponse, AxiosError<any>, patchUserProps>(
+		(body) => patchUser(body),
+		options
+	);
+};

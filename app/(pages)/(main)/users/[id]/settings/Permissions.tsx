@@ -1,7 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -58,7 +64,11 @@ function Permissions({ initialPermissions }: PermissionsProps) {
 		postPermissions.mutate(values, {
 			onSuccess: (data) => {
 				form.reset(data);
-				toast({ title: "Permissions updated!", variant: "success", duration: 1000 });
+				toast({
+					title: "Permissions updated!",
+					variant: "success",
+					duration: 1000,
+				});
 				revalidatePath("/users/[id]/home");
 				revalidatePath("/users/[id]/favorites");
 				revalidatePath("/users/[id]/uploads");
@@ -70,6 +80,9 @@ function Permissions({ initialPermissions }: PermissionsProps) {
 		<Card>
 			<CardHeader>
 				<CardTitle>Permission Settings</CardTitle>
+				<CardDescription>
+					Control the permissions of other users' access to your profile
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Form {...form}>
@@ -153,7 +166,9 @@ function Permissions({ initialPermissions }: PermissionsProps) {
 							variant="primary"
 							type="submit"
 							disabled={!form.formState.isDirty}
-							className={cn(postPermissions.isLoading && "opacity-50 animate-pulse")}
+							className={cn(
+								postPermissions.isLoading && "opacity-50 animate-pulse"
+							)}
 						>
 							Save changes
 						</Button>
