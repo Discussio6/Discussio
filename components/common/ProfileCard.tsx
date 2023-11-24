@@ -13,7 +13,7 @@ function ProfileCard({ name, image, id }: ProfileCardProps) {
 		<Link href={`/users/${id}`} className="flex items-center gap-2 w-fit">
 			<Avatar className="w-8 h-8">
 				<AvatarImage src={image} />
-				<AvatarFallback>{name}</AvatarFallback>
+				<AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
 			</Avatar>
 			<h3 className="">{name}</h3>
 		</Link>

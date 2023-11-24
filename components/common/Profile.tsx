@@ -26,11 +26,10 @@ import {
 
 export const ProfileImage = React.forwardRef<HTMLSpanElement, {}>((_, ref) => {
 	const { data: session } = useSession();
-
 	return (
 		<Avatar ref={ref} className="w-full h-full">
 			<AvatarImage src={session?.user?.image || ""} />
-			<AvatarFallback>{session?.user?.name?.[0]}</AvatarFallback>
+			<AvatarFallback>{session?.user?.name?.[0]?.toUpperCase()}</AvatarFallback>
 		</Avatar>
 	);
 });
