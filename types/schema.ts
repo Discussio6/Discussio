@@ -29,6 +29,15 @@ export interface PermissionResponse {
 	uploads: Acl;
 }
 
+export interface FileUploadResponse {
+	id: string;
+	name: string;
+	size: number;
+	url: string;
+	userId: string;
+	cAt: string;
+}
+
 export interface Discussion {
 	id: number;
 	title: string;
