@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetDiscussions } from "@/lib/queries/discussions";
 import { useGetFlashcards } from "@/lib/queries/flashcards";
+import { ListIcon, LoaderIcon } from "lucide-react";
 import moment from "moment";
+import Link from "next/link";
 import React from "react";
 
 const Loader = ({ text }: { text: string }) => {
@@ -85,7 +87,14 @@ function HomeDetail({ qcount, acount, dcount, fcount }: HomeDetailProps) {
 				<div className="grid xl:grid-cols-3 grid-cols-1 md:grid-cols-2 mt-4 gap-4">
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-lg">Recent questions</CardTitle>
+							<div className="flex justify-between items-center">
+								<CardTitle className="text-lg">Recent questions</CardTitle>
+								<Link href="/questions">
+									<Button variant="ghost" size="icon">
+										<ListIcon />
+									</Button>
+								</Link>
+							</div>
 						</CardHeader>
 						{!questionLoading ? (
 							<CardContent
@@ -118,7 +127,14 @@ function HomeDetail({ qcount, acount, dcount, fcount }: HomeDetailProps) {
 					</Card>
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-lg">Recent discussions</CardTitle>
+							<div className="flex justify-between items-center">
+								<CardTitle className="text-lg">Recent discussions</CardTitle>
+								<Link href="/discussions">
+									<Button variant="ghost" size="icon">
+										<ListIcon />
+									</Button>
+								</Link>
+							</div>
 						</CardHeader>
 						{!discussionLoading ? (
 							<CardContent
@@ -149,7 +165,14 @@ function HomeDetail({ qcount, acount, dcount, fcount }: HomeDetailProps) {
 					</Card>
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-lg">Recent flashcards</CardTitle>
+							<div className="flex justify-between items-center">
+								<CardTitle className="text-lg">Recent flashcards</CardTitle>
+								<Link href="/flashcards">
+									<Button variant="ghost" size="icon">
+										<ListIcon />
+									</Button>
+								</Link>
+							</div>
 						</CardHeader>
 						{!flashcardLoading ? (
 							<CardContent

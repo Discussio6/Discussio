@@ -41,7 +41,7 @@ function SubTopNavbar() {
 					{item.label}
 				</Link>
 			)),
-		[]
+		[pathname]
 	);
 
 	const [pos, setPos] = useState<IPos | null>(null);
