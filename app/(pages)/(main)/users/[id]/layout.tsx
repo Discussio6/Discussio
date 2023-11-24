@@ -1,13 +1,9 @@
 import React, { ReactNode } from "react";
 import MyNavigation from "./UserNavigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { Metadata, ResolvingMetadata } from "next";
 import { db } from "@/lib/db";
-
-interface UserDetailPageLayoutProps {
-	children: ReactNode;
-}
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 interface Props {
 	params: {
@@ -15,13 +11,20 @@ interface Props {
 	};
 }
 
-async function UserDetailPageLayout({ children }: UserDetailPageLayoutProps) {
+interface UserDetailPageLayoutProps extends Props {
+	children: ReactNode;
+}
+
+async function UserDetailPageLayout({
+	children,
+	params: { id },
+}: UserDetailPageLayoutProps) {
 	const session = await getServerSession(authOptions);
 
 	return (
 		<div className="flex-col flex lg:flex-row">
 			<div className="flex flex-col w-full lg:w-[300px] pt-8">
-				<MyNavigation session={session} />
+				<MyNavigation userId={id} sessionId={session?.id} />
 			</div>
 
 			<div className="flex-1 my-8 px-4">{children}</div>

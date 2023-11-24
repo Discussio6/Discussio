@@ -56,6 +56,7 @@ model User {
   FlashcardParticipant FlashcardParticipant[]
   DiscussionFavorites  DiscussionFavorites[]
   FlashcardFavorites   FlashcardFavorites[]
+  ProfilePermission    ProfilePermission[]
 }
 
 model VerificationToken {
@@ -281,6 +282,18 @@ model FlashcardFavorites {
   @@id([flashcardId, userId])
 }
 
+model ProfilePermission {
+  userId    String
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  home      Acl      @default(PUBLIC)
+  favorites Acl      @default(PUBLIC)
+  uploads   Acl      @default(PUBLIC)
+  cAt       DateTime @default(now())
+  mAt       DateTime @updatedAt
+
+  @@id([userId])
+}
+
 enum CommentType {
   DISCUSSION
   FLASHCARD
@@ -290,7 +303,6 @@ enum CommentType {
 enum Acl {
   PUBLIC
   PRIVATE
-  FRIENDS
 }
 
 enum FlashcardAnswerStatus {

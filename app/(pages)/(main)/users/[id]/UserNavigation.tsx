@@ -14,11 +14,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface UserNavigationProps {
-	session: Session | null;
+	userId: string;
+	sessionId: string | undefined;
 }
 
-function UserNavigation({ session }: UserNavigationProps) {
-	const userId = session?.id;
+function UserNavigation({ userId, sessionId }: UserNavigationProps) {
 	const pathname = usePathname();
 	const target = pathname.split("/").pop();
 
@@ -63,27 +63,37 @@ function UserNavigation({ session }: UserNavigationProps) {
 					</Button>
 				</Link>
 			</div>
-			<Separator />
-			<div className="flex flex-col">
-				<Link
-					href={`/users/${userId}/notifications`}
-					className={`${target === "notifications" ? "text-blue-500" : ""}`}
-				>
-					<Button variant="ghost" className="w-full flex gap-1 justify-start">
-						<BellIcon className="w-4 h-4" />
-						Notifications
-					</Button>
-				</Link>
-				<Link
-					href={`/users/${userId}/settings`}
-					className={`${target === "settings" ? "text-blue-500" : ""}`}
-				>
-					<Button variant="ghost" className="w-full flex gap-1 justify-start">
-						<SettingsIcon className="w-4 h-4" />
-						Settings
-					</Button>
-				</Link>
-			</div>
+			{sessionId === userId && (
+				<>
+					<Separator />
+					<div className="flex flex-col">
+						<Link
+							href={`/users/${userId}/notifications`}
+							className={`${target === "notifications" ? "text-blue-500" : ""}`}
+						>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-1 justify-start"
+							>
+								<BellIcon className="w-4 h-4" />
+								Notifications
+							</Button>
+						</Link>
+						<Link
+							href={`/users/${userId}/settings`}
+							className={`${target === "settings" ? "text-blue-500" : ""}`}
+						>
+							<Button
+								variant="ghost"
+								className="w-full flex gap-1 justify-start"
+							>
+								<SettingsIcon className="w-4 h-4" />
+								Settings
+							</Button>
+						</Link>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

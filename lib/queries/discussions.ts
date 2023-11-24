@@ -3,7 +3,6 @@ import {
 	LikeResponse,
 	ListResponse,
 	SingleResponse,
-	Tag,
 } from "@/types/schema";
 import { api } from "../api";
 import {

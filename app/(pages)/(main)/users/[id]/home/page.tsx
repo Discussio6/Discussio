@@ -1,7 +1,10 @@
+import Blocking from "@/components/common/Blocking";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { User } from "@/types/schema";
+import { getServerSession } from "next-auth";
 import React from "react";
 
 interface Props {
@@ -10,7 +13,17 @@ interface Props {
 	};
 }
 
+export const revalidate = 3600;
+
 async function HomePage({ params: { id } }: Props) {
+	const session = await getServerSession(authOptions);
+	const permission = await db.profilePermission.findUnique({
+		where: { userId: id },
+		select: { home: true },
+	});
+	if (session?.id !== id && permission?.home === "PRIVATE")
+		return <Blocking />;
+
 	const commentCount = await db.comment.count({ where: { userId: id } });
 	const questionCount = await db.discussion.count({
 		where: { authorId: id, isQna: true, parent_id: null },

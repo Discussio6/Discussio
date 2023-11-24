@@ -18,7 +18,6 @@ import { UseFormReturn, useForm } from "react-hook-form";
 import { Discussion, SingleResponse } from "@/types/schema";
 import { Input } from "../ui/input";
 import MDEditor from "@uiw/react-md-editor";
-import { usePostDiscussion } from "@/lib/queries/discussions";
 import TagAutocomplete from "./TagAutocomplete";
 import { Badge } from "../ui/badge";
 import { XIcon } from "lucide-react";

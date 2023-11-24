@@ -4,6 +4,7 @@ import {
 	FlashcardParticipant as FlashcardParticipantSchema,
 	FlashcardAnswer as FlashcardAnswerSchema,
 	CommentType,
+	Acl,
 } from "@prisma/client";
 
 export interface SingleResponse<T> {
@@ -19,6 +20,13 @@ export interface ListResponse<T> {
 export interface LikeResponse {
 	success: boolean;
 	status: "created" | "deleted";
+}
+
+export interface PermissionResponse {
+	success: boolean;
+	home: Acl;
+	favorites: Acl;
+	uploads: Acl;
 }
 
 export interface Discussion {
