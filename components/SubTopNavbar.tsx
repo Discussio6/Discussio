@@ -53,7 +53,7 @@ function SubTopNavbar() {
 	}, [pathname]);
 
 	return (
-		<div className="flex flex-col relative px-4 bg-white overflow-scroll">
+		<div className="flex flex-col relative px-4 bg-white overflow-scroll shadow-md">
 			<div className="flex items-center h-[40px] w-full">{menuComponents}</div>
 			<div
 				className="h-[3px] bg-green absolute bottom-0 transition-all duration-300"
