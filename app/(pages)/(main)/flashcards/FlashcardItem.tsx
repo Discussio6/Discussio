@@ -19,7 +19,10 @@ function FlashcardItem({ flashcard }: FlashcardItemProps) {
 				href={`/flashcards/${flashcard.id}`}
 				className="text-lg font-bold line-clamp-2 text-blue-500 hover:text-blue-700 cursor-pointer transition-all duration-200 ease-in-out"
 			>
-				{flashcard.name}
+				<span>{flashcard.name}</span>
+				{flashcard.acl === "PRIVATE" && (
+					<span className="text-xs text-slate-500 ml-2">(Private)</span>
+				)}
 			</Link>
 			<div className="flex gap-2 text-xs text-slate-500 font-bold mb-2">
 				<div>{flashcard.Contents.length} Questions</div>

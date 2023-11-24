@@ -4,17 +4,15 @@ import React from "react";
 
 interface ContentListItemProps {
 	title: string;
-	downloadCount: number;
-	thumbsUpCount: number;
 	date: string;
+	author?: string;
 	href?: string;
 }
 
 function ContentListItem({
 	title,
-	downloadCount,
-	thumbsUpCount,
 	date,
+	author,
 	href = "/",
 }: ContentListItemProps) {
 	return (
@@ -25,14 +23,7 @@ function ContentListItem({
 			<h3 className="text-sm line-clamp-1 flex-1">{title}</h3>
 			<span className="text-xs text-slate-400 shrink-0">{date}</span>
 			<div className="flex gap-3 shrink-0 text-xs">
-				<div className="flex items-center gap-1">
-					<DownloadIcon className="w-4 h-4" />
-					{downloadCount}
-				</div>
-				<div className="flex items-center gap-1">
-					<ThumbsUpIcon className="w-4 h-4" />
-					{thumbsUpCount}
-				</div>
+				{author}
 			</div>
 		</Link>
 	);
