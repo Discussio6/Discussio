@@ -67,7 +67,7 @@ function UserNavigation({ userId, sessionId }: UserNavigationProps) {
 				<>
 					<Separator />
 					<div className="flex flex-col">
-						<Link
+						{/* <Link
 							href={`/users/${userId}/notifications`}
 							className={`${target === "notifications" ? "text-blue-500" : ""}`}
 						>
@@ -78,7 +78,7 @@ function UserNavigation({ userId, sessionId }: UserNavigationProps) {
 								<BellIcon className="w-4 h-4" />
 								Notifications
 							</Button>
-						</Link>
+						</Link> */}
 						<Link
 							href={`/users/${userId}/settings`}
 							className={`${target === "settings" ? "text-blue-500" : ""}`}
