@@ -12,7 +12,13 @@ import FlashcardItem from "../../../flashcards/FlashcardItem";
 import { Button } from "@/components/ui/button";
 import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
 
-function FlashcardCard() {
+interface Props {
+	params: {
+		id: string;
+	};
+}
+
+function FlashcardCard({ params: { id } }: Props) {
 	const { data: session } = useSession();
 	const [page, setPage] = useState(1);
 	const { data: flashcardsData } = useGetFlashcards(
@@ -20,7 +26,7 @@ function FlashcardCard() {
 			count: 10,
 			page,
 			orderBy: "cAt:desc",
-			favoriteUserId: session?.id,
+			userId: id,
 		},
 		{ suspense: true }
 	);
