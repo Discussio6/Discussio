@@ -19,7 +19,7 @@ interface DiscussionPageProps {
 const genLink = (page: number) => `/discussions?page=${page}`;
 
 export const metadata: Metadata = {
-	title: "Discussions | Discussio"
+	title: "Discussions | Discussio",
 };
 
 async function DiscussionPage({
@@ -47,7 +47,7 @@ async function DiscussionPage({
 	return (
 		<main className="container flex flex-col my-8 gap-8">
 			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold">All discussions</h1>
+				<h1 className="text-2xl font-bold">Discussions</h1>
 				<Link href="/discussions/upload">
 					<Button variant="primary" className="flex gap-1">
 						<PencilIcon className="w-4 h-4" />
