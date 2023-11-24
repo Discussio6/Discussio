@@ -56,7 +56,7 @@ async function QuestionsPage({
 	return (
 		<main className="container flex flex-col my-8 gap-8">
 			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold">All questions</h1>
+				<h1 className="text-2xl font-bold">Questions</h1>
 				<Link href="/questions/upload">
 					<Button variant="primary" className="flex gap-1">
 						<PencilIcon className="w-4 h-4" />
