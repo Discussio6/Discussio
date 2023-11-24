@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
 	try {
+		const session = await getServerSession(authOptions);
 		let page = req.nextUrl.searchParams.get("page") || 1;
 		let count = req.nextUrl.searchParams.get("count") || 10;
 		const orderBy = req.nextUrl.searchParams.get("orderBy") || "cAt:desc";
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest) {
 				...(favoriteUserId
 					? { FlashcardFavorites: { some: { userId: favoriteUserId } } }
 					: {}),
+				OR: [{ acl: "PUBLIC" }, { user_id: session?.id }],
 			},
 		});
 		const flashcards = await db.flashcard.findMany({
@@ -29,6 +31,7 @@ export async function GET(req: NextRequest) {
 				...(favoriteUserId
 					? { FlashcardFavorites: { some: { userId: favoriteUserId } } }
 					: {}),
+				OR: [{ acl: "PUBLIC" }, { user_id: session?.id }],
 			},
 			include: {
 				User: true,
