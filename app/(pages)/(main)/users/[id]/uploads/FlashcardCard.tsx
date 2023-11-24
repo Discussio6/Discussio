@@ -11,22 +11,17 @@ import React, { useState } from "react";
 import FlashcardItem from "../../../flashcards/FlashcardItem";
 import { Button } from "@/components/ui/button";
 import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
+import { useParams } from "next/navigation";
 
-interface Props {
-	params: {
-		id: string;
-	};
-}
-
-function FlashcardCard({ params: { id } }: Props) {
-	const { data: session } = useSession();
+function FlashcardCard() {
+	const { id } = useParams();
 	const [page, setPage] = useState(1);
 	const { data: flashcardsData } = useGetFlashcards(
 		{
 			count: 10,
 			page,
 			orderBy: "cAt:desc",
-			userId: id,
+			userId: id as string,
 		},
 		{ suspense: true }
 	);
