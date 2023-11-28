@@ -7,6 +7,9 @@ import FlashcardList from "./FlashcardList";
 import { db } from "@/lib/db";
 import { Flashcard } from "@/types/schema";
 import { Metadata } from "next";
+import { Acl } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 interface FlashcardPageProps {
 	searchParams: {
@@ -25,11 +28,15 @@ export const metadata: Metadata = {
 async function FlashcardsPage({
 	searchParams: { page, count, orderBy },
 }: FlashcardPageProps) {
+	const session = await getServerSession(authOptions);
 	const numPage = page ? parseInt(page) : 1;
 	const numCount = count ? parseInt(count) : 10;
 	const sort = orderBy || "cAt:desc";
 	const total = await db.flashcard.count({});
 	const flashcards = (await db.flashcard.findMany({
+		where: {
+			OR: [{ user_id: session?.id }, { acl: Acl.PUBLIC }],
+		},
 		include: {
 			Tags: true,
 			User: true,
