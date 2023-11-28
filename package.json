@@ -61,6 +61,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.11",
     "@iconify/react": "^4.1.1",
     "@tanstack/react-query-devtools": "^4.35.3",
     "@types/lodash-es": "^4.17.10",
