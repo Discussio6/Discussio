@@ -77,10 +77,17 @@ export async function GET(req: NextRequest) {
         let total = discussions.length + quizs.length + flashcards.length;
         return NextResponse.json({
             total,
-            data: {
-                discussions,
-                quizs,
-                flashcards,
+            discussions: {
+                total: discussions.length,
+                data: discussions,
+            },
+            quizs: {
+                total: quizs.length,
+                data: quizs,
+            },
+            flashcards: {
+                total: flashcards.length,
+                data: flashcards,
             },
         }, { status: 200 });
 
@@ -88,7 +95,4 @@ export async function GET(req: NextRequest) {
         console.log(e);
         return NextResponse.json({ success: false }, { status: 500 });
     }
-
-
-
 }

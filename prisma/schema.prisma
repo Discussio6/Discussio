@@ -1,9 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -11,7 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Nextauth
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -25,10 +21,10 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId], map: "Account_userId_fkey")
 }
 
 model Session {
@@ -37,6 +33,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Session_userId_fkey")
 }
 
 model User {
@@ -46,17 +44,17 @@ model User {
   emailVerified        DateTime?
   image                String?
   accounts             Account[]
-  sessions             Session[]
-  discussions          Discussion[]
-  Likes                Like[]
   comments             Comment[]
+  discussions          Discussion[]
+  DiscussionFavorites  DiscussionFavorites[]
+  Flashcard            Flashcard[]
+  FlashcardFavorites   FlashcardFavorites[]
+  FlashcardParticipant FlashcardParticipant[]
+  Likes                Like[]
+  ProfilePermission    ProfilePermission?
   Quiz                 Quiz[]
   QuizParticipant      QuizParticipant[]
-  Flashcard            Flashcard[]
-  FlashcardParticipant FlashcardParticipant[]
-  DiscussionFavorites  DiscussionFavorites[]
-  FlashcardFavorites   FlashcardFavorites[]
-  ProfilePermission    ProfilePermission[]
+  sessions             Session[]
 }
 
 model VerificationToken {
@@ -75,28 +73,30 @@ model Discussion {
   isAccepted          Boolean               @default(false)
   views               Int                   @default(0)
   parent_id           Int?
-  Parent              Discussion?           @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
-  Children            Discussion[]          @relation("ParentChild")
   authorId            String
-  User                User                  @relation(fields: [authorId], references: [id], onDelete: NoAction)
   cAt                 DateTime              @default(now())
   mAt                 DateTime              @updatedAt
-  Likes               Like[]
-  Tags                Tag[]
+  User                User                  @relation(fields: [authorId], references: [id], onDelete: NoAction)
+  Parent              Discussion?           @relation("ParentChild", fields: [parent_id], references: [id], onDelete: Cascade)
+  Children            Discussion[]          @relation("ParentChild")
   DiscussionComment   DiscussionComment[]
   DiscussionFavorites DiscussionFavorites[]
+  Likes               Like[]
+  Tags                Tag[]                 @relation("DiscussionToTag")
 
   @@index([authorId])
+  @@index([parent_id], map: "Discussion_parent_id_fkey")
 }
 
 model Like {
   discussion_id Int
-  Discussion    Discussion @relation(fields: [discussion_id], references: [id], onDelete: Cascade)
   userId        String
-  User          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   cAt           DateTime   @default(now())
+  Discussion    Discussion @relation(fields: [discussion_id], references: [id], onDelete: Cascade)
+  User          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([discussion_id, userId])
+  @@index([userId], map: "Like_userId_fkey")
 }
 
 model IPTable {
@@ -109,14 +109,13 @@ model IPTable {
 }
 
 model Tag {
-  name        String   @id
+  name        String       @id
   description String?
-  cAt         DateTime @default(now())
-  mAt         DateTime @updatedAt
-
-  Discussions Discussion[]
-  Quizs       Quiz[]
-  Flashcard   Flashcard[]
+  cAt         DateTime     @default(now())
+  mAt         DateTime     @updatedAt
+  Discussions Discussion[] @relation("DiscussionToTag")
+  Flashcard   Flashcard[]  @relation("FlashcardToTag")
+  Quizs       Quiz[]       @relation("QuizToTag")
 
   @@fulltext([name])
 }
@@ -125,41 +124,45 @@ model Comment {
   id                Int                 @id @default(autoincrement())
   content_id        Int
   userId            String
-  User              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   comment           String              @db.Text
   parent_comment_id Int?
+  cAt               DateTime            @default(now())
+  mAt               DateTime            @updatedAt
   type              CommentType         @default(DISCUSSION)
   Parent            Comment?            @relation("ParentChild", fields: [parent_comment_id], references: [id], onDelete: Cascade)
   Children          Comment[]           @relation("ParentChild")
-  cAt               DateTime            @default(now())
-  mAt               DateTime            @updatedAt
+  User              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   DiscussionComment DiscussionComment[]
 
   @@index([userId])
+  @@index([parent_comment_id], map: "Comment_parent_comment_id_fkey")
 }
 
 model DiscussionComment {
   discussion_id Int
-  Discussion    Discussion @relation(fields: [discussion_id], references: [id], onDelete: Cascade)
   comment_id    Int
   Comment       Comment    @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+  Discussion    Discussion @relation(fields: [discussion_id], references: [id], onDelete: Cascade)
 
   @@id([discussion_id, comment_id])
+  @@index([comment_id], map: "DiscussionComment_comment_id_fkey")
 }
 
 model Quiz {
   quiz_id               Int                     @id @default(autoincrement())
-  user_id               String // Assuming the type is String to match the User id type
+  user_id               String
   quiz_name             String                  @db.VarChar(255)
   quiz_description      String                  @db.Text
   acl                   String                  @db.VarChar(255)
   cAt                   DateTime                @default(now())
   mAt                   DateTime                @updatedAt
-  QuizQuestion          QuizQuestion[]
-  QuizParticipant       QuizParticipant[]
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  QuizParticipant       QuizParticipant[]
   QuizParticipantAnswer QuizParticipantAnswer[]
-  Tags                  Tag[]
+  QuizQuestion          QuizQuestion[]
+  Tags                  Tag[]                   @relation("QuizToTag")
+
+  @@index([user_id], map: "Quiz_user_id_fkey")
 }
 
 model QuizQuestion {
@@ -172,9 +175,11 @@ model QuizQuestion {
   is_multiple           Boolean
   cAt                   DateTime                @default(now())
   mAt                   DateTime                @updatedAt
-  Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   QuizAnswer            QuizAnswer[]
   QuizParticipantAnswer QuizParticipantAnswer[]
+  Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
+
+  @@index([quiz_id], map: "QuizQuestion_quiz_id_fkey")
 }
 
 model QuizAnswer {
@@ -186,18 +191,23 @@ model QuizAnswer {
   mAt                   DateTime                @updatedAt
   QuizQuestion          QuizQuestion            @relation(fields: [question_id], references: [question_id])
   QuizParticipantAnswer QuizParticipantAnswer[]
+
+  @@index([question_id], map: "QuizAnswer_question_id_fkey")
 }
 
 model QuizParticipant {
   part_id               Int                     @id @default(autoincrement())
   quiz_id               Int
-  user_id               String // Assuming the type is String to match the User id type
-  startTime             DateTime // Assuming startTime and endTime are DateTime types for timestamps
+  user_id               String
+  startTime             DateTime
   endTime               DateTime
   cAt                   DateTime                @default(now())
   Quiz                  Quiz                    @relation(fields: [quiz_id], references: [quiz_id])
   User                  User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   QuizParticipantAnswer QuizParticipantAnswer[]
+
+  @@index([quiz_id], map: "QuizParticipant_quiz_id_fkey")
+  @@index([user_id], map: "QuizParticipant_user_id_fkey")
 }
 
 model QuizParticipantAnswer {
@@ -208,31 +218,37 @@ model QuizParticipantAnswer {
   answer_id       Int
   cAt             DateTime        @default(now())
   mAt             DateTime        @updatedAt
-  Quiz            Quiz            @relation(fields: [quiz_id], references: [quiz_id])
-  QuizQuestion    QuizQuestion    @relation(fields: [question_id], references: [question_id])
-  QuizParticipant QuizParticipant @relation(fields: [part_id], references: [part_id])
   QuizAnswer      QuizAnswer      @relation(fields: [answer_id], references: [answer_id])
+  QuizParticipant QuizParticipant @relation(fields: [part_id], references: [part_id])
+  QuizQuestion    QuizQuestion    @relation(fields: [question_id], references: [question_id])
+  Quiz            Quiz            @relation(fields: [quiz_id], references: [quiz_id])
+
+  @@index([answer_id], map: "QuizParticipantAnswer_answer_id_fkey")
+  @@index([part_id], map: "QuizParticipantAnswer_part_id_fkey")
+  @@index([question_id], map: "QuizParticipantAnswer_question_id_fkey")
+  @@index([quiz_id], map: "QuizParticipantAnswer_quiz_id_fkey")
 }
 
 model Flashcard {
   id                   Int                    @id @default(autoincrement())
   user_id              String
-  User                 User                   @relation(fields: [user_id], references: [id])
   name                 String
   description          String?
-  Tags                 Tag[]
-  Contents             FlashcardContent[]
   acl                  Acl                    @default(PUBLIC)
   cAt                  DateTime               @default(now())
   mAt                  DateTime               @updatedAt
-  FlashcardParticipant FlashcardParticipant[]
+  User                 User                   @relation(fields: [user_id], references: [id])
+  Contents             FlashcardContent[]
   FlashcardFavorites   FlashcardFavorites[]
+  FlashcardParticipant FlashcardParticipant[]
+  Tags                 Tag[]                  @relation("FlashcardToTag")
+
+  @@index([user_id], map: "Flashcard_user_id_fkey")
 }
 
 model FlashcardContent {
   id              Int               @id @default(autoincrement())
   card_id         Int
-  Flashcard       Flashcard         @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   question        String
   answer          String
   difficulty      Int               @default(0)
@@ -240,16 +256,22 @@ model FlashcardContent {
   cAt             DateTime          @default(now())
   mAt             DateTime          @updatedAt
   FlashcardAnswer FlashcardAnswer[]
+  Flashcard       Flashcard         @relation(fields: [card_id], references: [id], onDelete: Cascade)
+
+  @@index([card_id], map: "FlashcardContent_card_id_fkey")
 }
 
 model FlashcardParticipant {
   id              Int               @id @default(autoincrement())
   card_id         Int
   user_id         String
-  User            User              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Card            Flashcard         @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   cAt             DateTime          @default(now())
   FlashcardAnswer FlashcardAnswer[]
+  Card            Flashcard         @relation(fields: [card_id], references: [id], onDelete: Cascade)
+  User            User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([card_id], map: "FlashcardParticipant_card_id_fkey")
+  @@index([user_id], map: "FlashcardParticipant_user_id_fkey")
 }
 
 model FlashcardAnswer {
@@ -257,41 +279,44 @@ model FlashcardAnswer {
   content_id     Int
   participant_id Int
   status         FlashcardAnswerStatus @default(UNANSWERED)
-  Content        FlashcardContent      @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Participant    FlashcardParticipant  @relation(fields: [participant_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   cAt            DateTime              @default(now())
+  Content        FlashcardContent      @relation(fields: [content_id], references: [id], onDelete: Cascade)
+  Participant    FlashcardParticipant  @relation(fields: [participant_id], references: [id], onDelete: Cascade)
+
+  @@index([content_id], map: "FlashcardAnswer_content_id_fkey")
+  @@index([participant_id], map: "FlashcardAnswer_participant_id_fkey")
 }
 
 model DiscussionFavorites {
   discussionId Int
   userId       String
-  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
   cAt          DateTime   @default(now())
+  Discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([discussionId, userId])
+  @@index([userId], map: "DiscussionFavorites_userId_fkey")
 }
 
 model FlashcardFavorites {
   flashcardId Int
   userId      String
-  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
   cAt         DateTime  @default(now())
+  Flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([flashcardId, userId])
+  @@index([userId], map: "FlashcardFavorites_userId_fkey")
 }
 
 model ProfilePermission {
-  userId    String
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @id
   home      Acl      @default(PUBLIC)
   favorites Acl      @default(PUBLIC)
   uploads   Acl      @default(PUBLIC)
   cAt       DateTime @default(now())
   mAt       DateTime @updatedAt
-
-  @@id([userId])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum CommentType {
