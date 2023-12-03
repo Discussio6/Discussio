@@ -37,11 +37,11 @@ function CommentForm({ initialContent, onSubmit, onCancel }: CommentFormProps) {
 					onClick={handleSubmit}
 					disabled={content.length === 0}
 				>
-					작성
+					Submit
 				</Button>
 				{onCancel && (
 					<Button variant="secondary" onClick={handleCancel}>
-						취소
+						Cancel
 					</Button>
 				)}
 			</div>
