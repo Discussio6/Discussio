@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx prisma db push --accept-data-loss && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "deploy": "dotenv -e .env -- cross-var fly deploy --build-arg DATABASE_URL=%DATABASE_URL%",
-    "env:test": "dotenv -e .env -- cross-var echo DATABASE_URL=%DATABASE_URL%"
+    "db:push": "prisma db push --accept-data-loss",
+    "deploy": "dotenv -e .env -- cross-var fly deploy --build-arg DATABASE_URL=%DATABASE_URL%"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -64,7 +64,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@flydotio/dockerfile": "^0.4.11",
     "@iconify/react": "^4.1.1",
     "@tanstack/react-query-devtools": "^4.35.3",
     "@types/lodash-es": "^4.17.10",

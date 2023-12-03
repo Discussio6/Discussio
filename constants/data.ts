@@ -7,10 +7,10 @@ export const SUB_MENUS = [
 		label: "Discussions",
 		link: "/discussions",
 	},
-	{
-		label: "Quizzes",
-		link: "/quizzes",
-	},
+	// {
+	// 	label: "Quizzes",
+	// 	link: "/quizzes",
+	// },
 	{
 		label: "Flashcards",
 		link: "/flashcards",

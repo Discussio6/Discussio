@@ -8,7 +8,6 @@ import {
 	CheckCircleIcon,
 	CheckIcon,
 	RepeatIcon,
-	SaveIcon,
 	XCircleIcon,
 	XIcon,
 } from "lucide-react";
@@ -154,11 +153,7 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
 						</Button>
 					</div>
 				) : (
-					<div className="flex gap-2 items-center justify-between">
-						<Button className="flex gap-2 items-center bg-orange-500 hover:bg-orange-500/80">
-							<SaveIcon className="w-4 h-4" />
-							<span>Save</span>
-						</Button>
+					<div className="flex gap-8 items-center justify-center">
 						<Button
 							className="flex gap-2 items-center bg-green-500 hover:bg-green-500/80"
 							onClick={handleCorrect}
