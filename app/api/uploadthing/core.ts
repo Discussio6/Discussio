@@ -12,6 +12,9 @@ export const imageSingleRouter = {
 
 			return { userId: session.id };
 		})
+		.onUploadError(async ({ error }) => {
+			console.log(error);
+		})
 		.onUploadComplete(async ({ metadata, file }) => {
 			return {
 				id: file.key,

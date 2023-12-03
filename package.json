@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma db push --accept-data-loss && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "deploy": "dotenv -e .env -- cross-var fly deploy --build-arg DATABASE_URL=%DATABASE_URL%",
+    "env:test": "dotenv -e .env -- cross-var echo DATABASE_URL=%DATABASE_URL%"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -53,6 +55,7 @@
     "react-hook-form": "^7.47.0",
     "react-sortablejs": "^6.1.4",
     "react-spinners": "^0.13.8",
+    "sharp": "^0.33.0",
     "sortablejs": "^1.15.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
@@ -73,6 +76,7 @@
     "@types/react-dom": "latest",
     "@types/sortablejs": "^1.15.5",
     "autoprefixer": "latest",
+    "cross-var": "^1.1.0",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "latest",
