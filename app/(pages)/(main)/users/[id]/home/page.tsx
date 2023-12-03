@@ -21,8 +21,7 @@ async function HomePage({ params: { id } }: Props) {
 		where: { userId: id },
 		select: { home: true },
 	});
-	if (session?.id !== id && permission?.home === "PRIVATE")
-		return <Blocking />;
+	if (session?.id !== id && permission?.home === "PRIVATE") return <Blocking />;
 
 	const commentCount = await db.comment.count({ where: { userId: id } });
 	const questionCount = await db.discussion.count({
@@ -54,20 +53,20 @@ async function HomePage({ params: { id } }: Props) {
 					</div>
 				</div>
 			</CardHeader>
-			<CardContent className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-4">
-				<div className="flex flex-col gap-1">
+			<CardContent className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-8">
+				<div className="flex flex-col gap-1 items-center">
 					<span className="text-sm font-semibold">Questions uploaded</span>
 					<span className="text-sm text-slate-500">{questionCount}</span>
 				</div>
-				<div className="flex flex-col gap-1">
+				<div className="flex flex-col gap-1 items-center">
 					<span className="text-sm font-semibold">Answers wrote</span>
 					<span className="text-sm text-slate-500">{answerCount}</span>
 				</div>
-				<div className="flex flex-col gap-1">
+				<div className="flex flex-col gap-1 items-center">
 					<span className="text-sm font-semibold">Flashcards created</span>
 					<span className="text-sm text-slate-500">{flashcardCount}</span>
 				</div>
-				<div className="flex flex-col gap-1">
+				<div className="flex flex-col gap-1 items-center">
 					<span className="text-sm font-semibold">Comments wrote</span>
 					<span className="text-sm text-slate-500">{commentCount}</span>
 				</div>

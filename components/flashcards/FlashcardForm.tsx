@@ -267,7 +267,7 @@ function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
 																<TrashIcon className="w-4 h-4" />
 															</Button>
 														</div>
-														<div className="grid grid-cols-2 gap-4">
+														<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 															<FormField
 																control={form.control}
 																name={`contents.${index}.question`}
@@ -308,7 +308,7 @@ function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
 																control={form.control}
 																name={`contents.${index}.difficulty`}
 																render={({ field }) => (
-																	<FormItem className="col-span-2">
+																	<FormItem className="lg:col-span-2">
 																		<FormLabel className="font-bold text-md">
 																			difficulty
 																		</FormLabel>

@@ -19,7 +19,7 @@ function FlashcardViewItem({
 	return (
 		<div
 			className={`
-					drop-shadow-md flex flex-col gap-2 flip-card bg-transparent w-[50vw] h-[300px] ${
+					drop-shadow-md flex flex-col gap-2 flip-card bg-transparent min-w-full w-[50vw] h-[300px] ${
 						flipped ? "flip-card-active" : ""
 					}
 				`}

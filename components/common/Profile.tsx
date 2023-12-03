@@ -104,7 +104,7 @@ function Profile() {
 					</div>
 					<Separator />
 					<div className="flex flex-col">
-						<Link href={`/users/${userId}/notifications`}>
+						{/* <Link href={`/users/${userId}/notifications`}>
 							<Button
 								variant="ghost"
 								className="w-full flex gap-1 justify-start"
@@ -113,7 +113,7 @@ function Profile() {
 								<BellIcon className="w-4 h-4" />
 								Notifications
 							</Button>
-						</Link>
+						</Link> */}
 						<Link href={`/users/${userId}/settings`}>
 							<Button
 								variant="ghost"
@@ -124,16 +124,16 @@ function Profile() {
 								Settings
 							</Button>
 						</Link>
+						{/* <Separator /> */}
+						<Button
+							variant="ghost"
+							className="w-full flex gap-1 text-red-500 hover:text-red-700 justify-start"
+							onClick={() => signOut({ callbackUrl: "/" })}
+						>
+							<LogOutIcon className="w-4 h-4" />
+							Log out
+						</Button>
 					</div>
-					<Separator />
-					<Button
-						variant="ghost"
-						className="w-full flex gap-1 text-red-500 hover:text-red-700 justify-start"
-						onClick={() => signOut({ callbackUrl: "/" })}
-					>
-						<LogOutIcon className="w-4 h-4" />
-						Log out
-					</Button>
 				</article>
 			</PopoverContent>
 		</Popover>
