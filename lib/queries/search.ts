@@ -45,11 +45,11 @@ export const useGetSearch = (
         ListResponse<searchResponse>
     >
 ) => {
+    // check if the keyword is empty
     return useQuery<
         ListResponse<searchResponse>,
         AxiosError<any>,
         ListResponse<searchResponse>
-    >([...QUERY_KEYS.search.all, params.keyword], () => getSearch(params), {
-        ...options,
-    });
+    >([QUERY_KEYS.search.all, params], () => getSearch(params), options);
+    
 }

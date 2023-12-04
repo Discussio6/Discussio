@@ -8,7 +8,7 @@ import { get } from "http";
 const getParam = (req: NextRequest, key: string) => {
     return req.nextUrl.searchParams.get(key);
 };
-// from the keyword get corresponding discussions, quizs, users 
+// from the keyword get corresponding discussions, questions, flashcards
 // search for the keyword in the discussions(title, comments), tags,
 export async function GET(req: NextRequest) {
     try {
@@ -33,16 +33,30 @@ export async function GET(req: NextRequest) {
                             contains: params.keyword,
                         },
                     },
+                    {
+                        Tags: {
+                            some: {
+                                name: params.keyword
+                            }
+                        }
+                    },
                 ],
             },
             take: params.count,
             skip: (params.page - 1) * params.count,
+            include: {
+                User: true,
+				Likes: { select: { User: true, cAt: true } },
+				DiscussionFavorites: { select: { User: true, cAt: true } },
+				Tags: true,
+            }
         });
         const quizs = await db.quiz.findMany({
+            // search for the keyword in the quiz_name, quiz_description and tag
             where: {
                 OR: [
                     {
-                        name: {
+                        quiz_name : {
                             contains: params.keyword,
                         },
                     },
@@ -50,6 +64,13 @@ export async function GET(req: NextRequest) {
                         quiz_description: {
                             contains: params.keyword,
                         },
+                    },
+                    {
+                        Tags: {
+                            some: {
+                                name: params.keyword
+                            }
+                        }
                     },
                 ]
             },
@@ -69,10 +90,23 @@ export async function GET(req: NextRequest) {
                             contains: params.keyword,
                         },
                     },
+                    {
+                        Tags: {
+                            some: {
+                                name: params.keyword
+                            }
+                        }
+                    },
                 ],
             },
             take: params.count,
             skip: (params.page - 1) * params.count,
+            include:  {
+				User: true,
+				Tags: true,
+				Contents: true,
+				FlashcardFavorites: { select: { User: true, cAt: true } },
+			}
         });
         let total = discussions.length + quizs.length + flashcards.length;
         return NextResponse.json({

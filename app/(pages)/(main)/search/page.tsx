@@ -1,25 +1,24 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { getSearch, getSearchProps, useGetSearch } from "@/lib/queries/search";
+import { set } from "lodash-es";
 import { useState } from "react";
+import DiscussionsList from "../discussions/DiscussionsList";
+import FlashcardList from "../flashcards/FlashcardList";
+import DiscussionItem from "@/components/common/DiscussionItem";
+import FlashcardItem from "../flashcards/FlashcardItem";
 
 const SearchPage = () => {
     const [keyword, setKeyword] = useState("");
-    const [quizReserachs, setQuizReserachs] = useState([]);
-    const [discussionReserachs, setDiscussionReserachs] = useState([]);
-    const [flashcardReserachs, setFlashcardReserachs] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [renderResults, setRenderResults] = useState(null);
     const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
     }
+    const result = useGetSearch({ keyword: searchKeyword, count: 10, page: 1, orderBy: "cAt:desc" });
+
     const onClickSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const searchProps: getSearchProps = {
-            keyword: keyword,
-            count: 10,
-            page: 1,
-            orderBy: "cAt:desc",
-        }
-        const result = useGetSearch(searchProps);
-        console.log(result);
+        setSearchKeyword(keyword);
     }
 
     return (
@@ -35,20 +34,45 @@ const SearchPage = () => {
                 </div>
             </article>
             <div className="flex flex-col gap-4">
-                    <div className="flex flex-row gap-4">
-                        quiz reserachs
-                    </div>
+                <div className="flex flex-row gap-4 text-xl font-bold">
+                    Discussions and Questions
                 </div>
-                <div className="flex flex-col gap-4">
-                    <div className="flex flex-row gap-4">
-                        discussion reserachs
-                    </div>
+                {result.status == "loading" ? (
+                    <div className="text-center my-16 text-slate-500">Loading...</div>
+                ) : (<article className="flex flex-col gap-2">
+                    <div className="text-lg font-bold">{result.data?.discussions.total} results</div>
+                    {result.data?.discussions.data && result.data?.discussions.total > 0 ? (
+                        <div className="flex flex-col gap-4">
+                            {result.data?.discussions.data?.map((discussion) => (
+                                <DiscussionItem key={discussion.id} discussion={discussion} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center my-16 text-slate-500">No results found</div>
+                    )}
+                </article>)}
+
+            </div>
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-row gap-4 flex flex-row gap-4 text-xl font-bold ">
+                    Flashcards
                 </div>
-                <div className="flex flex-col gap-4">
-                    <div className="flex flex-row gap-4">
-                        flashcard reserachs
-                    </div>
-                </div>
+                {result.status == "loading" ? (
+                    <div className="text-center my-16 text-slate-500">Loading...</div>
+                ) : (<article className="flex flex-col gap-2">
+                    <div className="text-lg font-bold">{result.data?.flashcards.total} results</div>
+                    {result.data?.flashcards.data && result.data?.flashcards.total > 0 ? (
+                        <div className="flex flex-col gap-4">
+                            {result.data?.flashcards.data?.map((flashcard) => (
+                                <FlashcardItem key={flashcard.id} flashcard={flashcard} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center my-16 text-slate-500">No results found</div>
+                    )}
+                </article>)}
+
+            </div>
         </main>
     )
 }
