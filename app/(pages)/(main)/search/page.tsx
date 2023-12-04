@@ -33,11 +33,18 @@ const SearchPage = () => {
                     </Button>
                 </div>
             </article>
+            {searchKeyword == "" ? (
+                <div className="flex flex-col align-center justify-center gap-4">
+                    <div className="text-lg text-slate-500">
+                        Search for content, questions, and more...
+                    </div>
+                </div>
+            ):(<>
             <div className="flex flex-col gap-4">
                 <div className="flex flex-row gap-4 text-xl font-bold">
                     Discussions and Questions
                 </div>
-                {result.status == "loading" ? (
+                {result && result.status == "loading" ? (
                     <div className="text-center my-16 text-slate-500">Loading...</div>
                 ) : (<article className="flex flex-col gap-2">
                     <div className="text-lg font-bold">{result.data?.discussions.total} results</div>
@@ -57,7 +64,7 @@ const SearchPage = () => {
                 <div className="flex flex-row gap-4 flex flex-row gap-4 text-xl font-bold ">
                     Flashcards
                 </div>
-                {result.status == "loading" ? (
+                {result && result.status == "loading" ? (
                     <div className="text-center my-16 text-slate-500">Loading...</div>
                 ) : (<article className="flex flex-col gap-2">
                     <div className="text-lg font-bold">{result.data?.flashcards.total} results</div>
@@ -72,7 +79,7 @@ const SearchPage = () => {
                     )}
                 </article>)}
 
-            </div>
+            </div></>)}
         </main>
     )
 }
