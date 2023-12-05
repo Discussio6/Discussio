@@ -37,4 +37,7 @@ export const QUERY_KEYS = {
 			list: (userId: string) => ["favorites", "flashcards", "list"],
 		},
 	},
+	search: {
+		all: ["search"],
+	}
 };

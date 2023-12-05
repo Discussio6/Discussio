@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { contentList } from "../search/contentList";
-import ResultItem from "../search/resultArea/ResultItem";
+import { contentList } from "../search_content/contentList";
+import ResultItem from "../search_content/resultArea/ResultItem";
 import { Icon } from "@iconify/react/dist/iconify.js";
 const ContentPage = () => {
     // get content id from url and find content from contentList
