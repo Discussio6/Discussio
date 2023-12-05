@@ -15,6 +15,7 @@ export interface getSearchProps {
 }
 
 export interface searchResponse {
+    total: number;
     discussions: ListResponse<Discussion>
     quizs: ListResponse<Quiz>;
     flashcards: ListResponse<Flashcard>;

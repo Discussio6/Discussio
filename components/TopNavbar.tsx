@@ -11,7 +11,7 @@ function TopNavbar() {
 			<Logo />
 			<div className="flex flex-1 items-center gap-16">
 				<TopSearchBar />
-				<div className="flex gap-4 items-center">
+				<div className="flex gap-4 items-center shrink-0">
 					<Profile />
 				</div>
 			</div>

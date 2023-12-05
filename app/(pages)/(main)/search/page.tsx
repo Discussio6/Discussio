@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import * as qs from "qs";
 import Pagination from "@/components/common/Pagination";
+import BeatLoader from "@/components/common/BeatLoader";
 
 interface Props {
 	searchParams: {
@@ -73,65 +74,74 @@ const SearchPage = ({
 			</article>
 			{key == "" ? (
 				<div className="flex flex-col align-center justify-center gap-4">
-					<div className="text-lg text-slate-500">
+					<div className="text-lg text-slate-500 flex justify-center py-8">
 						Search for content, questions, and more...
 					</div>
 				</div>
 			) : (
 				<>
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4 text-xl font-bold">
-							Discussions and Questions
-						</div>
-						{isLoading ? (
-							<div className="text-center my-16 text-slate-500">Loading...</div>
-						) : (
-							<article className="flex flex-col gap-2">
-								<div className="text-lg font-bold">
-									{discussions?.total} results
+					{searchData?.total && searchData.total > 0 ? (
+						<div className="flex flex-col gap-8">
+							<h2 className="font-bold text-xl">
+								{searchData?.total} results found
+							</h2>
+							{(discussions?.total || 0 > 0) && (
+								<div className="flex flex-col gap-4">
+									<div className="flex flex-row gap-4 text-xl font-bold">
+										Discussions and Questions
+									</div>
+									<article className="flex flex-col gap-2">
+										<div className="text-lg font-bold">
+											{discussions?.total} results
+										</div>
+										<div className="flex flex-col gap-4">
+											{discussions?.hits?.map((discussion) => (
+												<DiscussionItem
+													key={discussion.id}
+													discussion={discussion}
+												/>
+											))}
+										</div>
+									</article>
 								</div>
-								{discussions?.total && discussions.total > 0 ? (
-									<div className="flex flex-col gap-4">
-										{discussions?.hits?.map((discussion) => (
-											<DiscussionItem
-												key={discussion.id}
-												discussion={discussion}
-											/>
-										))}
+							)}
+							{(flashcards?.total || 0 > 0) && (
+								<div className="flex flex-col gap-4">
+									<div className="flex flex-row gap-4 text-xl font-bold">
+										Flashcards
 									</div>
-								) : (
-									<div className="text-center my-16 text-slate-500">
-										No results found
-									</div>
-								)}
-							</article>
-						)}
-					</div>
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4 text-xl font-bold">
-							Flashcards
-						</div>
-						{isLoading ? (
-							<div className="text-center my-16 text-slate-500">Loading...</div>
-						) : (
-							<article className="flex flex-col gap-2">
-								<div className="text-lg font-bold">
-									{flashcards?.total} results
+									<article className="flex flex-col gap-2">
+										<div className="text-lg font-bold">
+											{flashcards?.total} results
+										</div>
+										<div className="flex flex-col gap-4">
+											{flashcards?.hits.map((flashcard) => (
+												<FlashcardItem
+													key={flashcard.id}
+													flashcard={flashcard}
+												/>
+											))}
+										</div>
+									</article>
 								</div>
-								{flashcards?.total && flashcards.total > 0 ? (
-									<div className="flex flex-col gap-4">
-										{flashcards.hits?.map((flashcard) => (
-											<FlashcardItem key={flashcard.id} flashcard={flashcard} />
-										))}
+							)}
+						</div>
+					) : (
+						<>
+							{isLoading ? (
+								<div className="flex flex-col gap-4 justify-center items-center">
+									<BeatLoader />
+									<div className="text-center text-slate-500">
+										Loading Contents...
 									</div>
-								) : (
-									<div className="text-center my-16 text-slate-500">
-										No results found
-									</div>
-								)}
-							</article>
-						)}
-					</div>
+								</div>
+							) : (
+								<div className="text-center my-16 text-slate-500">
+									No results found
+								</div>
+							)}
+						</>
+					)}
 				</>
 			)}
 			<div className="flex justify-center items-center">
