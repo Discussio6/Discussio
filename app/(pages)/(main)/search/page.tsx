@@ -1,11 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useGetSearch } from "@/lib/queries/search";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import DiscussionItem from "@/components/common/DiscussionItem";
 import FlashcardItem from "../flashcards/FlashcardItem";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import * as qs from "qs";
+import Pagination from "@/components/common/Pagination";
 
 interface Props {
 	searchParams: {
@@ -32,12 +34,24 @@ const SearchPage = ({
 		orderBy: "cAt:desc",
 	});
 
+	const genLink = useCallback(
+		(page: number) => {
+			return `/search?${qs.stringify({
+				key,
+				page,
+				count,
+			})}`;
+		},
+		[key, count]
+	);
+
 	const onSearch = () => {
 		router.push(`/search?key=${keyword}`);
 	};
 
 	const discussions = searchData?.discussions;
 	const flashcards = searchData?.flashcards;
+	const maxTotal = Math.max(discussions?.total ?? 0, flashcards?.total ?? 0);
 
 	return (
 		<main className="container flex flex-col my-8 gap-8">
@@ -46,7 +60,7 @@ const SearchPage = ({
 					<Input
 						className="h-10 w-full resize-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-offset-transparent border border-gray-300 rounded-lg"
 						placeholder="Search for content, questions, and more..."
-                        value={keyword}
+						value={keyword}
 						onChange={handleKeywordChange}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") onSearch();
@@ -120,6 +134,15 @@ const SearchPage = ({
 					</div>
 				</>
 			)}
+			<div className="flex justify-center items-center">
+				<Pagination
+					count={count}
+					page={page}
+					total={maxTotal}
+					pageCnt={10}
+					genLink={genLink}
+				/>
+			</div>
 		</main>
 	);
 };
