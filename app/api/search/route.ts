@@ -2,8 +2,6 @@
 import { getSearchProps } from "@/lib/queries/search";
 import {db} from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { get } from "http";
 
 const getParam = (req: NextRequest, key: string) => {
     return req.nextUrl.searchParams.get(key);
@@ -113,15 +111,15 @@ export async function GET(req: NextRequest) {
             total,
             discussions: {
                 total: discussions.length,
-                data: discussions,
+                hits: discussions,
             },
             quizs: {
                 total: quizs.length,
-                data: quizs,
+                hits: quizs,
             },
             flashcards: {
                 total: flashcards.length,
-                data: flashcards,
+                hits: flashcards,
             },
         }, { status: 200 });
 

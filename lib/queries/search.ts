@@ -13,26 +13,15 @@ export interface getSearchProps {
     count: number;
     orderBy: string;
 }
-export interface countAndDiscussions {
-    count: number;
-    data: Discussion[];
-}
-export interface countAndQuizs {
-    count: number;
-    data: Quiz[];
-}
-export interface countAndFlashcards {
-    count: number;
-    data: Flashcard[];
-}
+
 export interface searchResponse {
-    discussions: countAndDiscussions
-    quizs: countAndQuizs;
-    flashcards: countAndFlashcards;
+    discussions: ListResponse<Discussion>
+    quizs: ListResponse<Quiz>;
+    flashcards: ListResponse<Flashcard>;
 }
 
 export const getSearch = async (params: getSearchProps) => {
-    const { data } = await api.get<ListResponse<searchResponse>>(apiBaseUrl, {
+    const { data } = await api.get<searchResponse>(apiBaseUrl, {
         params,
     });
     return data;
@@ -40,17 +29,17 @@ export const getSearch = async (params: getSearchProps) => {
 export const useGetSearch = (
     params: getSearchProps,
     options?: UseQueryOptions<
-        ListResponse<searchResponse>,
+        searchResponse,
         AxiosError<any>,
-        ListResponse<searchResponse>
+        searchResponse
     >
 ) => {
     return useQuery<
-        ListResponse<searchResponse>,
+        searchResponse,
         AxiosError<any>,
-        ListResponse<searchResponse>
+        searchResponse
     >(
-        [QUERY_KEYS.search.all, params], 
+        [...QUERY_KEYS.search.all, params], 
         () => getSearch(params), 
         { 
             ...options,
