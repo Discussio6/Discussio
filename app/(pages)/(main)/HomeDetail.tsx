@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetDiscussions } from "@/lib/queries/discussions";
 import { useGetFlashcards } from "@/lib/queries/flashcards";
-import { ListIcon, LoaderIcon } from "lucide-react";
+import { ListIcon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import React from "react";
@@ -106,6 +106,7 @@ function HomeDetail({ qcount, acount, dcount, fcount }: HomeDetailProps) {
 									<>
 										{questionsData?.hits.map((item) => (
 											<ContentListItem
+												key={item.id}
 												title={item.title}
 												date={moment(item.cAt).fromNow()}
 												author={item.User.name}
@@ -146,6 +147,7 @@ function HomeDetail({ qcount, acount, dcount, fcount }: HomeDetailProps) {
 									<>
 										{discussionsData?.hits.map((item) => (
 											<ContentListItem
+												key={item.id}
 												title={item.title}
 												date={moment(item.cAt).fromNow()}
 												author={item.User.name}
@@ -184,6 +186,7 @@ function HomeDetail({ qcount, acount, dcount, fcount }: HomeDetailProps) {
 									<>
 										{flashcardsData?.hits.map((item) => (
 											<ContentListItem
+												key={item.id}
 												title={item.name}
 												date={moment(item.cAt).fromNow()}
 												author={item.User.name}
