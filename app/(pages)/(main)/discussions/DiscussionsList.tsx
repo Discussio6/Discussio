@@ -26,6 +26,7 @@ function DiscussionsList({
 			initialData: { total: initialTotal, hits: initialDiscussions },
 		}
 	);
+	console.log(discussions);
 	return (
 		<article className="flex flex-col gap-2">
 			<div className="text-lg font-bold">{discussions?.total} results</div>
