@@ -18,13 +18,17 @@ import {
 	postAnswerProps,
 	usePostFlashcardParticipant,
 } from "@/lib/queries/flashcards";
+import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
 
 interface FlashcardViewProps {
 	flashcard: Flashcard;
 }
 
 function FlashcardView({ flashcard }: FlashcardViewProps) {
+	const { toast } = useToast();
 	const router = useRouter();
+	const { status } = useSession();
 	const postParticipant = usePostFlashcardParticipant();
 	const [index, setIndex] = useState(1);
 	const [result, setResult] = useState<postAnswerProps[]>(
@@ -36,8 +40,6 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
 	const [showAnswer, setShowAnswer] = useState(false);
 
 	const total = flashcard.Contents.length;
-
-	console.log(result);
 
 	const handleNext = useCallback(() => {
 		if (index < total) {
@@ -87,7 +89,15 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
 	}, [index]);
 
 	const handleSubmit = useCallback(() => {
-		if (confirm("Are you sure you want to finish?"))
+		if (confirm("Are you sure you want to finish?")) {
+			if (status !== "authenticated") {
+				toast({
+					title: "Please login to save your result",
+					variant: "destructive",
+					duration: 2000,
+				});
+				return;
+			}
 			postParticipant.mutate(
 				{
 					card_id: flashcard.id,
@@ -99,6 +109,7 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
 					},
 				}
 			);
+		}
 	}, [result, router, flashcard.id]);
 
 	return (
