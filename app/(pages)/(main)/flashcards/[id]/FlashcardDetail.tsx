@@ -20,6 +20,7 @@ import Comments from "@/components/comments/Comments";
 import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/querykeys";
+import { useSession } from "next-auth/react";
 
 interface FlashcardDetailProps {
 	id: number;
@@ -37,6 +38,7 @@ function FlashcardDetail({
 	isAuthor,
 }: FlashcardDetailProps) {
 	const queryClient = useQueryClient();
+	const { data: session } = useSession();
 	const favoriteMutation = usefavoriteFlashcard();
 	const { data: flashcardData } = useGetFlashcard(id, {
 		initialData: { data: initialFlashcard, success: true },
@@ -68,7 +70,7 @@ function FlashcardDetail({
 	const participants = flashcardParticipant?.hits ?? [];
 	const participantTotal = flashcardParticipant?.total ?? 0;
 	const favorited = flashcard?.FlashcardFavorites?.some(
-		(fav) => fav.User.id === flashcard.user_id
+		(fav) => fav.User.id === session?.id
 	);
 
 	return (
