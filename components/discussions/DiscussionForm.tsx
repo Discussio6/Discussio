@@ -21,6 +21,7 @@ import MDEditor from "@uiw/react-md-editor";
 import TagAutocomplete from "./TagAutocomplete";
 import { Badge } from "../ui/badge";
 import { XIcon } from "lucide-react";
+import { useMediaQuery } from "react-responsive";
 
 export const discussionFormSchema = z.object({
 	title: z
@@ -57,6 +58,7 @@ function DiscussionForm({
 	onCancel,
 	initialData,
 }: DiscussionFormProps) {
+	const lg = useMediaQuery({ query: "(min-width: 1024px)" });
 	const form = useForm<z.infer<typeof discussionFormSchema>>({
 		resolver: zodResolver(discussionFormSchema),
 		defaultValues: { title: "", content: "", tags: [], ...initialData },
@@ -92,7 +94,11 @@ function DiscussionForm({
 						<FormItem>
 							<FormLabel className="font-bold text-md">Contents</FormLabel>
 							<FormControl>
-								<MDEditor placeholder="Enter the contents..." {...field} />
+								<MDEditor
+									placeholder="Enter the contents..."
+									preview={lg ? "live" : "edit"}
+									{...field}
+								/>
 							</FormControl>
 							<FormDescription>At most 5000 characters</FormDescription>
 							<FormMessage />
@@ -113,7 +119,7 @@ function DiscussionForm({
 											onChange([...value, newValue]);
 										}}
 									/>
-									<div className="flex gap-2">
+									<div className="flex gap-2 flex-col sm:flex-row">
 										{value.map((tag) => (
 											<Badge
 												key={tag}

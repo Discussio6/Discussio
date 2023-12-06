@@ -261,7 +261,7 @@ function DiscussionCard({
 					</CardHeader>
 					<CardContent className="flex flex-col gap-4">
 						<MDEditor.Markdown source={discussion.content} />
-						<div className="space-x-2 line-clamp-1 flex-1">
+						<div className="space-x-2 md:line-clamp-1 md:flex-1 space-y-2 md:space-y-0">
 							{discussion.Tags.map((tag) => (
 								<Badge
 									key={tag.name}
@@ -325,7 +325,7 @@ function DiscussionCard({
 								</Button>
 							</div>
 						</div>
-						<div className="flex gap-2">
+						<div className="flex md:gap-2 flex-col md:flex-row items-start">
 							<Button
 								className="flex items-center gap-2"
 								variant="ghost"

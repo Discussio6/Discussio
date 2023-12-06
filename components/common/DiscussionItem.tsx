@@ -36,9 +36,9 @@ function DiscussionItem({ discussion }: DiscussionItemProps) {
 				<div>{discussion.views} views</div>
 				<div>{discussion.Likes?.length} likes</div>
 			</div>
-			<div className="mt-2 flex justify-between items-center">
+			<div className="mt-2 flex flex-col md:flex-row justify-between md:items-center gap-3">
 				{discussion.Tags.length > 0 && (
-					<div className="space-x-2 line-clamp-1 flex-1">
+					<div className="space-x-2 md:line-clamp-1 md:flex-1 space-y-2 md:space-y-0">
 						{discussion.Tags.map((tag) => (
 							<Badge
 								key={tag.name}

@@ -37,6 +37,7 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { Acl } from "@prisma/client";
+import { useMediaQuery } from "react-responsive";
 
 export const flashcardFormSchema = z.object({
 	name: z
@@ -90,6 +91,7 @@ let curId = 1;
 const getId = () => curId++;
 
 function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
+	const lg = useMediaQuery({ query: "(min-width: 1024px)" });
 	const data = useMemo(() => {
 		if (!initialData) return;
 		return {
@@ -156,7 +158,11 @@ function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
 								Flashcard Description
 							</FormLabel>
 							<FormControl>
-								<MDEditor placeholder="Enter the description..." {...field} />
+								<MDEditor
+									placeholder="Enter the description..."
+									preview={lg ? "live" : "edit"}
+									{...field}
+								/>
 							</FormControl>
 							<FormDescription>At most 500 characters</FormDescription>
 							<FormMessage />
@@ -177,7 +183,7 @@ function FlashcardForm({ onSubmit, initialData }: FlashcardFormProps) {
 											onChange([...value, newValue]);
 										}}
 									/>
-									<div className="flex gap-2">
+									<div className="flex gap-2 flex-col sm:flex-row">
 										{value.map((tag) => (
 											<Badge
 												key={tag}

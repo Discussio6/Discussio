@@ -86,11 +86,13 @@ function FlashcardDetail({
 	return (
 		<div className="flex flex-col p-8 gap-8">
 			<div>
-				<div className=" flex items-center justify-between">
+				<div className=" flex flex-col md:flex-row gap-3 md:gap-0 md:items-center justify-between">
 					<h1 className="text-xl font-bold">{flashcard.name}</h1>
-					<div className="flex gap-2 items-center">
+					<div className="flex flex-col sm:flex-row gap-2 sm:items-center mb-2">
 						<Link href={`/flashcards/${id}/view`}>
-							<Button variant="primary">View Flashcard</Button>
+							<Button variant="primary" className="w-full">
+								View Flashcard
+							</Button>
 						</Link>
 						<Button
 							variant="outline"
@@ -110,7 +112,7 @@ function FlashcardDetail({
 				</div>
 				<div className="text-slate-600 pb-4">{flashcard.description}</div>
 				{flashcard.Tags.length > 0 && (
-					<div className="space-x-2 line-clamp-1 flex-1 mb-4">
+					<div className="space-x-2 md:line-clamp-1 md:flex-1 mb-4 space-y-2 md:space-y-0">
 						{flashcard.Tags.map((tag) => (
 							<Badge
 								key={tag.name}

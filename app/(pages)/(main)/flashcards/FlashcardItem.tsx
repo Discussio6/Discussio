@@ -28,7 +28,7 @@ function FlashcardItem({ flashcard }: FlashcardItemProps) {
 				<div>{flashcard.Contents.length} Questions</div>
 			</div>
 			<div className="text-sm line-clamp-2">{flashcard.description}</div>
-			<div className="mt-2 flex justify-between items-center">
+			<div className="mt-2 flex flex-col md:flex-row justify-between md:items-center gap-3">
 				{flashcard.Tags.length > 0 && (
 					<div className="space-x-2 line-clamp-1 flex-1">
 						{flashcard.Tags.map((tag) => (

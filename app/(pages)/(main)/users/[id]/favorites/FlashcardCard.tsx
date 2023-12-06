@@ -6,7 +6,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useGetFlashcards } from "@/lib/queries/flashcards";
-import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import FlashcardItem from "../../../flashcards/FlashcardItem";
 import { Button } from "@/components/ui/button";
@@ -15,14 +14,13 @@ import { useParams } from "next/navigation";
 
 function FlashcardCard() {
 	const { id } = useParams();
-	const { data: session } = useSession();
 	const [page, setPage] = useState(1);
 	const { data: flashcardsData } = useGetFlashcards(
 		{
 			count: 10,
 			page,
 			orderBy: "cAt:desc",
-			favoriteUserId: id as string
+			favoriteUserId: id as string,
 		},
 		{ suspense: true }
 	);
