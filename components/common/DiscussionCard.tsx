@@ -71,6 +71,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
+import { useToast } from "../ui/use-toast";
 
 interface DiscussionCardProps {
 	discussion: Discussion;
@@ -85,6 +86,7 @@ function DiscussionCard({
 	onLike,
 	onFavorite,
 }: DiscussionCardProps) {
+	const { toast } = useToast();
 	const [openComments, setOpenComments] = useState(false);
 	const [openReportForm, setOpenReportForm] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
@@ -106,7 +108,11 @@ function DiscussionCard({
 			form: DiscussionFormType
 		) => {
 			if (status !== "authenticated") {
-				alert("Please login");
+				toast({
+					title: "Please login to upload a discussion",
+					variant: "destructive",
+					duration: 2000,
+				})
 				return;
 			}
 			patchDiscussion.mutate(
@@ -127,7 +133,11 @@ function DiscussionCard({
 
 	const handleAccept = useCallback(() => {
 		if (status !== "authenticated") {
-			alert("Please login");
+			toast({
+				title: "Please login",
+				variant: "destructive",
+				duration: 2000,
+			})
 			return;
 		}
 		if (!discussion.parent_id) return;

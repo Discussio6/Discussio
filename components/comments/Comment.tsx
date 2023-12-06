@@ -52,6 +52,7 @@ import {
 } from "../ui/dialog";
 import ReportForm, { ReportFormProps } from "../common/ReportForm";
 import { postReport } from "@/lib/queries/report";
+import { useToast } from "../ui/use-toast";
 
 interface CommentProps {
 	comment: Comment;
@@ -67,6 +68,7 @@ function Comment({ comment }: CommentProps) {
 	const patchComment = usePatchComment();
 	const deleteComment = useDeleteComment();
 	const { data: session, status } = useSession();
+	const { toast } = useToast();
 	const {
 		data: replyData,
 		fetchNextPage,
@@ -82,6 +84,14 @@ function Comment({ comment }: CommentProps) {
 
 	const handleSubmit = useCallback(
 		(content: string, setContent: Dispatch<SetStateAction<string>>) => {
+			if (status !== "authenticated") {
+				toast({
+					title: "Please login to leave a comment",
+					variant: "destructive",
+					duration: 2000,
+				});
+				return;
+			}
 			postComment.mutate(
 				{
 					content_id: comment.content_id,
@@ -103,7 +113,11 @@ function Comment({ comment }: CommentProps) {
 	const handleUpdate = useCallback(
 		(content: string, setContent: Dispatch<SetStateAction<string>>) => {
 			if (status !== "authenticated") {
-				alert("Please login to comment.");
+				toast({
+					title: "Please login",
+					variant: "destructive",
+					duration: 2000,
+				});
 				return;
 			}
 			patchComment.mutate(
@@ -123,6 +137,14 @@ function Comment({ comment }: CommentProps) {
 	);
 
 	const handleDelete = useCallback(() => {
+		if (status !== "authenticated") {
+			toast({
+				title: "Please login",
+				variant: "destructive",
+				duration: 2000,
+			});
+			return;
+		}
 		deleteComment.mutate(
 			{ id: comment.id },
 			{

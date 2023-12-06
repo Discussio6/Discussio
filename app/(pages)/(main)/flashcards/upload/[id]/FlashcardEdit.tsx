@@ -11,6 +11,7 @@ import FlashcardForm, {
 } from "@/components/flashcards/FlashcardForm";
 import { usePatchFlashcard } from "@/lib/queries/flashcards";
 import { Flashcard } from "@/types/schema";
+import { useToast } from "@/components/ui/use-toast";
 
 interface FlashcardEditProps {
 	initialData: Flashcard;
@@ -18,6 +19,7 @@ interface FlashcardEditProps {
 
 function FlashcardEdit({ initialData }: FlashcardEditProps) {
 	const { status } = useSession();
+	const { toast } = useToast();
 	const router = useRouter();
 	const patchFlashcard = usePatchFlashcard();
 
@@ -37,7 +39,11 @@ function FlashcardEdit({ initialData }: FlashcardEditProps) {
 	const handleSubmit = useCallback(
 		(values: z.infer<typeof flashcardFormSchema>, form: FlashcardFormType) => {
 			if (status !== "authenticated") {
-				alert("Please login");
+				toast({
+					title: "Please login to upload a flashcard",
+					variant: "destructive",
+					duration: 2000,
+				});
 				return;
 			}
 			patchFlashcard.mutate(

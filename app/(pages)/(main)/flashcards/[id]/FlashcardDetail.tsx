@@ -21,6 +21,7 @@ import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/querykeys";
 import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface FlashcardDetailProps {
 	id: number;
@@ -38,7 +39,8 @@ function FlashcardDetail({
 	isAuthor,
 }: FlashcardDetailProps) {
 	const queryClient = useQueryClient();
-	const { data: session } = useSession();
+	const { toast } = useToast();
+	const { data: session, status } = useSession();
 	const favoriteMutation = usefavoriteFlashcard();
 	const { data: flashcardData } = useGetFlashcard(id, {
 		initialData: { data: initialFlashcard, success: true },
@@ -54,6 +56,14 @@ function FlashcardDetail({
 
 	const handleFavorite = useCallback(
 		(id: number) => {
+			if (status !== "authenticated") {
+				toast({
+					title: "Please login",
+					variant: "destructive",
+					duration: 2000,
+				});
+				return;
+			}
 			favoriteMutation.mutate(
 				{ id },
 				{

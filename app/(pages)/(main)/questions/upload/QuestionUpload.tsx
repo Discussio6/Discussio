@@ -10,9 +10,11 @@ import { useRouter } from "next/navigation";
 import { postDiscussion, usePostDiscussion } from "@/lib/queries/discussions";
 import * as z from "zod";
 import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
 
 function QuestionUpload() {
 	const { status } = useSession();
+	const { toast } = useToast();
 	const router = useRouter();
 	const discussionMutation = usePostDiscussion();
 
@@ -22,7 +24,11 @@ function QuestionUpload() {
 			form: DiscussionFormType
 		) => {
 			if (status !== "authenticated") {
-				alert("Please login");
+				toast({
+					title: "Please login to upload a discussion",
+					variant: "destructive",
+					duration: 2000,
+				})
 				return;
 			}
 			discussionMutation.mutate(

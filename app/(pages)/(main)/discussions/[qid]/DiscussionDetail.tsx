@@ -7,6 +7,7 @@ import DiscussionForm, {
 	discussionFormSchema,
 } from "@/components/discussions/DiscussionForm";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { QUERY_KEYS } from "@/constants/querykeys";
 import {
 	useGetDiscussion,
@@ -35,6 +36,7 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 		count: 10,
 	};
 	const { status } = useSession();
+	const { toast } = useToast();
 	const { data: discussion } = useGetDiscussion(qid, {
 		initialData: { data: initialDiscussion, success: true },
 	});
@@ -64,7 +66,11 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 		form: DiscussionFormType
 	) => {
 		if (status !== "authenticated") {
-			alert("Please login");
+			toast({
+				title: "Please login",
+				variant: "destructive",
+				duration: 2000,
+			});
 			return;
 		}
 		discussionMutation.mutate(
@@ -86,6 +92,14 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 
 	const handleLike = useCallback(
 		(id: number) => {
+			if (status !== "authenticated") {
+				toast({
+					title: "Please login",
+					variant: "destructive",
+					duration: 2000,
+				});
+				return;
+			}
 			likeMutation.mutate(
 				{ id },
 				{
@@ -100,6 +114,14 @@ function DiscussionDetail({ qid, discussion: initialDiscussion }: Props) {
 
 	const handleFavorite = useCallback(
 		(id: number) => {
+			if (status !== "authenticated") {
+				toast({
+					title: "Please login",
+					variant: "destructive",
+					duration: 2000,
+				});
+				return;
+			}
 			favoriteMutation.mutate(
 				{ id },
 				{

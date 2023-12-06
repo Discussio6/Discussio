@@ -10,16 +10,22 @@ import FlashcardForm, {
 	flashcardFormSchema,
 } from "@/components/flashcards/FlashcardForm";
 import { usePostFlashcard } from "@/lib/queries/flashcards";
+import { useToast } from "@/components/ui/use-toast";
 
 function FlashcardUpload() {
 	const { status } = useSession();
+	const { toast } = useToast();
 	const router = useRouter();
 	const postFlashcard = usePostFlashcard();
 
 	const handleSubmit = useCallback(
 		(values: z.infer<typeof flashcardFormSchema>, form: FlashcardFormType) => {
 			if (status !== "authenticated") {
-				alert("Please login");
+				toast({
+					title: "Please login to upload a flashcard",
+					variant: "destructive",
+					duration: 2000,
+				});
 				return;
 			}
 			postFlashcard.mutate(

@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { CommentType } from "@prisma/client";
+import { useToast } from "../ui/use-toast";
 
 interface CommentsProps {
 	content_id: number;
@@ -18,6 +19,7 @@ interface CommentsProps {
 
 function Comments({ content_id, type }: CommentsProps) {
 	const postComment = usePostComment();
+	const { toast } = useToast();
 	const { status } = useSession();
 	const { data } = useGetComments({ content_id, count: 0, type });
 	const {
@@ -39,7 +41,11 @@ function Comments({ content_id, type }: CommentsProps) {
 	const handleSubmit = useCallback(
 		(comment: string, setContent: Dispatch<SetStateAction<string>>) => {
 			if (status !== "authenticated") {
-				alert("Please login to comment.");
+				toast({
+					title: "Please login to leave a comment",
+					variant: "destructive",
+					duration: 2000,
+				});
 				return;
 			}
 			postComment.mutate(
