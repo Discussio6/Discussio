@@ -3,17 +3,24 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
-function TopSearchBar() {
+interface TopSearchBarProps {
+	onSearchCallback?: (keyword: string) => void;
+}
+
+function TopSearchBar({ onSearchCallback }: TopSearchBarProps) {
 	const router = useRouter();
-    const searchParams = useSearchParams();
+	const searchParams = useSearchParams();
 	const [keyword, setKeyword] = useState("");
 	const onSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter" && keyword) router.push(`/search?key=${keyword}`);
+		if (e.key === "Enter" && keyword) {
+			onSearchCallback?.(keyword);
+			router.push(`/search?key=${keyword}`);
+		}
 	};
 
-    useEffect(() => {
-        setKeyword(searchParams.get("key") || "");
-    }, [searchParams]);
+	useEffect(() => {
+		setKeyword(searchParams.get("key") || "");
+	}, [searchParams]);
 
 	return (
 		<input

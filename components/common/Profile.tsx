@@ -34,7 +34,11 @@ export const ProfileImage = React.forwardRef<HTMLSpanElement, {}>((_, ref) => {
 	);
 });
 
-function Profile() {
+interface ProfileProps {
+	onClickCallback?: (link: string) => void;
+}
+
+function Profile({ onClickCallback }: ProfileProps) {
 	const { data: session, status } = useSession();
 	const [open, setOpen] = useState(false);
 
@@ -50,6 +54,11 @@ function Profile() {
 		);
 
 	const userId = session?.id;
+
+	const handleLinkClick = (link: string) => {
+		setOpen(false);
+		onClickCallback?.(link);
+	};
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -75,7 +84,7 @@ function Profile() {
 							<Button
 								variant="ghost"
 								className="w-full flex gap-2 justify-start items-center"
-								onClick={() => setOpen(false)}
+								onClick={() => handleLinkClick("home")}
 							>
 								<HomeIcon className="w-4 h-4" />
 								Home
@@ -85,7 +94,7 @@ function Profile() {
 							<Button
 								variant="ghost"
 								className="w-full flex gap-2 justify-start items-center"
-								onClick={() => setOpen(false)}
+								onClick={() => handleLinkClick("favorites")}
 							>
 								<HeartFilledIcon className="w-4 h-4" />
 								Favorites
@@ -95,7 +104,7 @@ function Profile() {
 							<Button
 								variant="ghost"
 								className="w-full flex gap-2 justify-start items-center"
-								onClick={() => setOpen(false)}
+								onClick={() => handleLinkClick("uploads")}
 							>
 								<UploadIcon className="w-4 h-4" />
 								Uploads
@@ -118,7 +127,7 @@ function Profile() {
 							<Button
 								variant="ghost"
 								className="w-full flex gap-1 justify-start"
-								onClick={() => setOpen(false)}
+								onClick={() => handleLinkClick("settings")}
 							>
 								<SettingsIcon className="w-4 h-4" />
 								Settings
