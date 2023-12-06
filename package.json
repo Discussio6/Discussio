@@ -43,7 +43,7 @@
 		"mobx-react": "latest",
 		"mobx-react-lite": "latest",
 		"moment": "^2.29.4",
-		"next": "^13.5.3",
+		"next": "^13.5.4",
 		"next-auth": "^4.24.3",
 		"prisma": "^5.5.0",
 		"qs": "^6.11.2",
