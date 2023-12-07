@@ -26,9 +26,7 @@ export function TagAutocomplete({ value, onSelect }: TagAutocompleteProps) {
 	const postTag = usePostTag();
 	const debouncedInputValue = useDebounce(inputValue, 200);
 	const { data: tags } = useGetTags({ keyword: debouncedInputValue });
-	console.log(tags);
 	const filteredTags = tags?.hits.filter((tag) => !value?.includes(tag.name));
-	console.log(value);
 
 	const handleCreateTag = useCallback(() => {
 		postTag.mutate(
