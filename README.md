@@ -306,3 +306,7 @@ Since api requests are sent and handled inside the Nextjs, we don't need to pass
 ![image](https://github.com/Discussio6/Discussio/assets/32610225/063bcb1f-7ba6-465a-874d-6086d63a51dc)
 
 If the user reports some post, it'll be stored in our Notion database as above for efficient management.
+
+## Contributors
+|[<img src="https://avatars.githubusercontent.com/u/32610225?v=4" width="100px;"/>](https://github.com/chan-hwi)<br /><sub><b>Chanhwi Hwang</b></sub><br />Frontend, Backend, Design|[<img src="https://avatars.githubusercontent.com/u/81289768?v=4" width="100px;"/>](https://github.com/cemo123)<br /><sub><b>Junghwan Lee</b></sub><br />Design, Presentation, Planning|[<img src="https://avatars.githubusercontent.com/u/26340267?v=4" width="100px;"/>](https://github.com/123wwwa)<br /><sub><b>Hwiwon Seo</b></sub><br />Backend, Deployment, Design|
+|:---:|:---:|:---:|
