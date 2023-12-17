@@ -301,3 +301,8 @@ Discussio
 
 ## API Authorization
 Since api requests are sent and handled inside the Nextjs, we don't need to pass the session token to the api requests. Instead, we can use the `useServerSession` method from the `next-auth` to get the session object from the server.
+
+## Reporting
+![image](https://github.com/Discussio6/Discussio/assets/32610225/063bcb1f-7ba6-465a-874d-6086d63a51dc)
+
+If the user reports some post, it'll be stored in our Notion database as above for efficient management.
